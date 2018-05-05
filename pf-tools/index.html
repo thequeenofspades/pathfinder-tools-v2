@@ -1,11 +1,22 @@
 <!DOCTYPE html><html lang="en"><head>
   <meta charset="utf-8">
   <title>PfTools</title>
-  <base href="https://thequeenofspades.github.io/pathfinder-tools-v2/">
+  <base href="/pathfinder-tools-v2/">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="assets/forms.css">
+
+  <script>
+	  // See http://www.backalleycoder.com/2016/05/13/sghpa-the-single-page-app-hack-for-github-pages/
+	  (function(){
+	    var redirect = sessionStorage.redirect;
+	    delete sessionStorage.redirect;
+	    if (redirect && redirect != location.href) {
+	      history.replaceState(null, null, redirect);
+	    }
+	  })();
+	</script>
 <link rel="stylesheet" href="styles.98bd2694c4b0b8a2d07b.css"></head>
 <body>
   <app-root></app-root>
