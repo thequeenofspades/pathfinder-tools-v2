@@ -1,0 +1,37 @@
+<h2>Monsters</h2>
+<div class="container" *ngIf="!showNewMonsterForm">
+	<button (click)="showNewMonsterForm = true" type="button" class="btn btn-default">New Monster</button>
+	<button (click)="clear()" type="button" class="btn btn-danger">Clear</button>
+	<button (click)="addAllToInitiative()" type="button" class="btn btn-success">Add All to Initiative</button>
+</div>
+<div class="container" *ngIf="showNewMonsterForm">
+	<app-monster-form
+		(onSubmitted)="add($event); showNewMonsterForm = false"
+		(onCanceled)="showNewMonsterForm = false"></app-monster-form>
+</div>
+<div class="container" *ngIf="monsters">
+	<ul>
+		<li *ngFor="let monster of monsters">
+			{{ monster.name }}
+			<span *ngIf="monster.quantity > 1">({{ monster.id }} of {{ monster.quantity }})</span>
+			<button (click)="monster.showDetails=!monster.showDetails"
+				type="button" class="btn btn-info">Details</button>
+			<button (click)="addToInitiative(monster)"
+				type="button" class="btn btn-success">Add to Initiative</button>
+			<div *ngIf="monster.showDetails && !monster.edit">
+				HP: {{ monster.hp }} <br>
+				Initiative Bonus: {{ monster.initiativeBonus }} <br>
+				Perception Bonus: {{ monster.perceptionBonus }} <br>
+				<button type="button" class="btn btn-warning"
+						(click)="monster.edit=true">Edit</button>
+				<button (click)="remove(monster)" type="button" class="btn btn-danger">Remove</button>
+			</div>
+			<div *ngIf="monster.showDetails && monster.edit">
+				<app-monster-form
+					[model]="monster"
+					(onSubmitted)="update(monster, $event); monster.edit = false"
+					(onCanceled)="monster.edit = false"></app-monster-form>
+			</div>
+		</li>
+	</ul>
+</div>

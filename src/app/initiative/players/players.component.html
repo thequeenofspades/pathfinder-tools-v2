@@ -1,0 +1,48 @@
+<h2>Players</h2>
+<div class="container" *ngIf="!showNewPlayerForm">
+	<button (click)="showNewPlayerForm = true" type="button" class="btn btn-default">New Player</button>
+	<button (click)="clear()" type="button" class="btn btn-danger">Clear</button>
+	<button (click)="addAllToInitiative()" type="button" class="btn btn-success">Add All to Initiative (Roll)</button>
+	<button (click)="rollPerceptionForAll()" type="button" class="btn btn-default">Roll Perception</button>
+	<button (click)="rollSenseMotiveForAll()" type="button" class="btn btn-default">Roll Sense Motive</button>
+</div>
+<div class="container" *ngIf="showNewPlayerForm">
+	<app-player-form
+		(onSubmitted)="add($event); showNewPlayerForm = false"
+		(onCanceled)="showNewPlayerForm = false"></app-player-form>
+</div>
+<div class="container" *ngIf="players">
+	<ul>
+		<li *ngFor="let player of players">
+			{{ player.name }}
+			<button (click)="player.showDetails=!player.showDetails"
+					type="button" class="btn btn-info">Details</button>
+			<span *ngIf="!player.showInitiativeForm">
+				<button (click)="addToInitiative(player)"
+						type="button" class="btn btn-success">Add to Initiative (Roll)</button>
+				<button (click)="player.showInitiativeForm=true"
+						type="button" class="btn btn-default">Add to Initiative (Manual)</button>
+				{{player.notification}}
+			</span>
+			<div *ngIf="player.showInitiativeForm">
+				<app-initiative-form
+					(onSubmitted)="addToInitiative(player, $event); player.showInitiativeForm=false"
+					(onCanceled)="player.showInitiativeForm=false"></app-initiative-form>
+			</div>
+			<div *ngIf="player.showDetails && !player.edit">
+				Initiative Bonus: {{ player.initiativeBonus }} <br>
+				Perception Bonus: {{ player.perceptionBonus }} <br>
+				Sense Motive Bonus: {{ player.senseMotiveBonus }} <br>
+				<button type="button" class="btn btn-warning"
+						(click)="player.edit=true">Edit</button>
+				<button (click)="remove(player)" type="button" class="btn btn-danger">Remove</button>
+			</div>
+			<div *ngIf="player.showDetails && player.edit">
+				<app-player-form
+					[model]="player"
+					(onSubmitted)="update(player, $event); player.edit = false"
+					(onCanceled)="player.edit = false"></app-player-form>
+			</div>
+		</li>
+	</ul>
+</div>

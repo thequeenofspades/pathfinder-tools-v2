@@ -1,0 +1,61 @@
+<h2>Initiative</h2>
+<div class="container" *ngIf="order.length > 0">
+	<button (click)="clear()" type="button" class="btn btn-danger">Clear</button>
+	<button (click)="previous()" type="button" class="btn btn-default">Previous</button>
+	<button (click)="advance()" type="button" class="btn btn-primary">Advance</button>
+	Round: {{round}}
+	<ul>
+		<li *ngFor="let creature of order">
+			<span *ngIf="creature == order[active]">=></span>{{ creature.name }}
+			<span *ngIf="creature.quantity > 1">({{ creature.id }} of {{ creature.quantity }})</span>
+			<button (click)="creature.showDetails=!creature.showDetails"
+					type="button" class="btn btn-info">Details</button>
+			<span *ngIf="!creature.damage && !creature.condition && !creature.note">
+				<span *ngIf="creature.hp">
+					<button (click)="creature.damage=true" type="button" class="btn btn-default">Damage</button>
+				</span>
+				<button (click)="creature.condition=true" type="button" class="btn btn-default">Add Condition</button>
+				<button (click)="creature.note=true" type="button" class="btn btn-default">Add Note</button>
+			</span>
+			<span *ngIf="creature.damage">
+				<app-damage-form
+					(onSubmitted)="damage(creature, $event); creature.damage=false"
+					(onCanceled)="creature.damage=false"></app-damage-form>
+			</span>
+			<span *ngIf="creature.condition">
+				<app-condition-form
+					(onSubmitted)="addCondition(creature, $event); creature.condition=false"
+					(onCanceled)="creature.condition=false"></app-condition-form>
+			</span>
+			<span *ngIf="creature.note">
+				<app-note-form
+					(onSubmitted)="addNote(creature, $event); creature.note=false"
+					(onCanceled)="creature.note=false"></app-note-form>
+			</span>
+			<div *ngIf="creature.showDetails">
+				<button (click)="moveUp(creature)" type="button" class="btn btn-default">Move Up</button>
+				<button (click)="moveDown(creature)" type="button" class="btn btn-default">Move Down</button>
+				<button (click)="remove(creature)" type="button" class="btn btn-danger">Remove</button> <br>
+				Initiative: {{ creature.initiative - creature.initiativeBonus }} + {{creature.initiativeBonus}}
+					<span *ngIf="adjusted(creature)">(adjusted)</span> <br>
+				<span *ngIf="creature.hp">HP: {{ creature.currentHp }} out of {{ creature.hp }}<br></span>
+				<div *ngIf="creature.conditions.length">
+					Conditions:
+					<ul>
+						<li *ngFor="let condition of creature.conditions">
+							{{condition.name}} ({{condition.duration}})
+						</li>
+					</ul>
+				</div>
+				<div *ngIf="creature.notes.length">
+					Notes:
+					<ul>
+						<li *ngFor="let note of creature.notes">
+							{{note}}
+						</li>
+					</ul>
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>

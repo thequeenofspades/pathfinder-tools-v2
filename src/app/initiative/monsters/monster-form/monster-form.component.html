@@ -1,0 +1,42 @@
+<form (ngSubmit)="onSubmit()" #monsterForm="ngForm">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input 	type="text" class="form-control" id="name"
+    		required
+    		[(ngModel)]="model.name" name="name"
+    		#name="ngModel">
+    <div [hidden]="name.valid || name.pristine"
+    	class="alert alert-danger">
+    	Name is required
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="hp">HP</label>
+    <input 	type="number" class="form-control" id="hp"
+    		[(ngModel)]="model.hp" name="hp">
+  </div>
+
+  <div class="form-group">
+    <label for="initiativeBonus">Initiative Bonus</label>
+    <input 	type="number" class="form-control" id="initiativeBonus"
+    		[(ngModel)]="model.initiativeBonus" name="initiativeBonus">
+  </div>
+
+   <div class="form-group">
+    <label for="perceptionBonus">Perception Bonus</label>
+    <input 	type="number" class="form-control" id="perceptionBonus"
+    		[(ngModel)]="model.perceptionBonus" name="perceptionBonus">
+  </div>
+
+   <div class="form-group">
+    <label for="quantity">Quantity</label>
+    <input 	type="number" class="form-control" id="quantity"
+    		[(ngModel)]="model.quantity" name="quantity">
+  </div>
+
+  <button type="button" class="btn btn-default" (click)="onCancel(); monsterForm.reset()">Cancel</button>
+  <button 	type="submit" class="btn btn-success"
+  			[disabled]="!monsterForm.form.valid">Submit</button>
+
+</form>
