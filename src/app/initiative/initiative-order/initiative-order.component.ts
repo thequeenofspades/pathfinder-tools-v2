@@ -96,4 +96,22 @@ export class InitiativeOrderComponent implements OnInit {
   	return creature.attributes.some(a => a == "moved");
   }
 
+  delay(creature: Creature): void {
+  	this.initiativeService.delay(creature)
+  		.subscribe(order => this.order = order);
+  	this.getActive();
+  	this.getRound();
+  }
+
+  undelay(creature: Creature): void {
+  	this.initiativeService.undelay(creature)
+  		.subscribe(order => this.order = order);
+  	this.getActive();
+  	this.getRound();
+  }
+
+  delayed(creature: Creature): boolean {
+  	return creature.attributes.some(a => a == "delayed");
+  }
+
 }

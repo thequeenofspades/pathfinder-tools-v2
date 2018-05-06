@@ -6,7 +6,10 @@
 	Round: {{round}}
 	<table class="table table-hover">
 		<tr *ngFor="let creature of order"
-			[class.success]="creature == order[active]">
+			[class.warning]="creature.currentHp <= creature.hp / 2"
+			[class.danger]="creature.currentHp < 0"
+			[class.success]="creature == order[active]"
+			[class.info]="delayed(creature)">
 			<td>
 				{{creature.name}}
 				<span *ngIf="creature.quantity > 1">({{ creature.id }} of {{ creature.quantity }})</span>
@@ -62,6 +65,14 @@
 					<app-note-form
 						(onSubmitted)="addNote(creature, $event); creature.note=false"
 						(onCanceled)="creature.note=false"></app-note-form>
+				</div>
+			</td>
+			<td>
+				<div *ngIf="!delayed(creature)">
+					<button (click)="delay(creature)" type="button" class="btn btn-default">Delay</button>
+				</div>
+				<div *ngIf="delayed(creature)">
+					<button (click)="undelay(creature)" type="button" class="btn btn-primary">Undelay</button>
 				</div>
 			</td>
 			<td>

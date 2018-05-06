@@ -63,6 +63,8 @@ export class InitiativeService {
       this.active = 0;
       this.round = this.round + 1;
     }
+    this.messageService.add(`${this.order[this.active].name} no longer delayed`);
+    this.order[this.active].attributes = this.order[this.active].attributes.filter(a => a != 'delayed');
     this.messageService.add(`${this.order[this.active].name}'s turn`);
     return of(this.active);
   }
@@ -141,6 +143,26 @@ export class InitiativeService {
 
   addNote(creature: Creature, note: string): Observable<Creature[]> {
     creature.notes.push(note);
+    return of(this.order);
+  }
+
+  delay(creature: Creature): Observable<Creature[]> {
+    this.messageService.add(`${creature.name} delayed`);
+    creature.attributes.push('delayed');
+    this.active = this.active + 1;
+    if (this.active >= this.order.length) {
+      this.active = 0;
+      this.round = this.round + 1;
+    }
+    this.messageService.add(`${this.order[this.active].name}'s turn`);
+    return of(this.order);
+  }
+
+  undelay(creature: Creature): Observable<Creature[]> {
+    this.messageService.add(`${creature.name} undelayed`);
+    creature.attributes = creature.attributes.filter(a => a != 'delayed');
+    this.remove(creature);
+    this.order.splice(this.active + 1, 0, creature);
     return of(this.order);
   }
 
