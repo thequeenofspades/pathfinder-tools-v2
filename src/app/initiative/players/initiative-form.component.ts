@@ -1,41 +1,25 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
   selector: 'app-initiative-form',
-  template: `
-    <form (ngSubmit)="onSubmit()" #initiativeForm="ngForm">
-      <div class="form-group">
-        <label for="initiative">Initiative (with bonuses)</label>
-        <input type="number" class="form-control" id="initiative"
-                required [(ngModel)]="initiative" name="initiative"
-                #name="ngModel">
-      </div>
-      <button type="button" class="btn btn-default"
-              (click)="onCancel()">Cancel</button>
-      <button type="submit" class="btn btn-success"
-              [disabled]="!initiativeForm.form.valid">Submit</button>
-    </form>
-  `,
+  templateUrl: './initiative-form.component.html',
   styles: []
 })
 export class InitiativeFormComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public dialogRef: MatDialogRef<InitiativeFormComponent>) { }
 
   ngOnInit() {
+    this.roll = new FormControl(0, Validators.required);
   }
 
-  @Output() onSubmitted = new EventEmitter<number>();
-  @Output() onCanceled = new EventEmitter();
-
-  initiative: number;
-
-  onSubmit(): void {
-    this.onSubmitted.emit(this.initiative);
-  }
+  roll: FormControl;
 
   onCancel(): void {
-    this.onCanceled.emit();
+    this.dialogRef.close();
   }
 
 }

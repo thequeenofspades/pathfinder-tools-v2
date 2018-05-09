@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 
 import { Player } from '../../player';
 import { PlayerService } from '../../player.service';
 import { InitiativeService } from '../../initiative.service'; 
+import { InitiativeFormComponent } from './initiative-form.component';
 
 @Component({
   selector: 'app-players',
@@ -12,13 +14,12 @@ import { InitiativeService } from '../../initiative.service';
 export class PlayersComponent implements OnInit {
 
   constructor(private playerService: PlayerService,
-  	private initiativeService: InitiativeService) { }
+  	private initiativeService: InitiativeService,
+    public dialog: MatDialog) { }
 
   ngOnInit() {
   	this.getPlayers();
   }
-
-  showNewPlayerForm: boolean = false;
 
   currentPlayer: Player = new Player('Akita');
 
@@ -50,12 +51,23 @@ export class PlayersComponent implements OnInit {
   }
 
   addToInitiative(player: Player, initiative: number = null): void {
-  	if (initiative) {
+  	if (initiative !== null) {
   		this.initiativeService.add(player, initiative);
   	} else {
 	  	let roll = getRandomInt(1, 20);
 	  	this.initiativeService.add(player, roll + player.initiativeBonus);
-	}
+	  }
+  }
+
+  openInitiativeDialog(player: Player): void {
+    let dialogRef = this.dialog.open(InitiativeFormComponent, {
+      width: '250px'
+    });
+    dialogRef.afterClosed().subscribe(roll => {
+      if (roll !== undefined) {
+        this.addToInitiative(player, roll);
+      }
+    })
   }
 
   addAllToInitiative(): void {
@@ -66,12 +78,12 @@ export class PlayersComponent implements OnInit {
 
   rollPerception(player: Player): void {
   	let roll = getRandomInt(1, 20);
-  	player.notification = `Perception: ${roll+player.perceptionBonus}`;
+  	player.notification.perception = `${roll+player.perceptionBonus}`;
   }
 
   rollSenseMotive(player: Player): void {
   	let roll = getRandomInt(1, 20);
-  	player.notification = `Sense Motive: ${roll+player.senseMotiveBonus}`;
+  	player.notification.senseMotive = `${roll+player.senseMotiveBonus}`;
   }
 
   rollPerceptionForAll(): void {

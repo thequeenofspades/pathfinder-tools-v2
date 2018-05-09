@@ -1,41 +1,30 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
   selector: 'app-damage-form',
-  template: `
-    <form (ngSubmit)="onSubmit()" #damageForm="ngForm">
-      <div class="form-group">
-        <label for="damage">Damage</label>
-        <input type="number" class="form-control" id="damage"
-                required [(ngModel)]="damage" name="damage"
-                #name="ngModel">
-      </div>
-      <button type="button" class="btn btn-default"
-              (click)="onCancel()">Cancel</button>
-      <button type="submit" class="btn btn-success"
-              [disabled]="!damageForm.form.valid">Submit</button>
-    </form>
-  `,
+  templateUrl: './damage-form.component.html',
   styles: []
 })
 export class DamageFormComponent implements OnInit {
 
-  constructor() { }
+  constructor(public dialogRef: MatDialogRef<DamageFormComponent>) { }
 
   ngOnInit() {
+    this.damage = new FormControl('', Validators.required);
   }
 
-  @Output() onSubmitted = new EventEmitter<number>();
-  @Output() onCanceled = new EventEmitter();
+  damage: FormControl;
 
-  damage: number;
-
-  onSubmit(): void {
-    this.onSubmitted.emit(this.damage);
+  trySubmit(): void {
+    if (this.damage.valid) {
+      this.dialogRef.close(this.damage.value);
+    }
   }
 
   onCancel(): void {
-    this.onCanceled.emit();
+    this.dialogRef.close();
   }
 
 }

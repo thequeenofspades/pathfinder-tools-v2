@@ -1,37 +1,48 @@
-<h2>Monsters</h2>
-<div class="container" *ngIf="!showNewMonsterForm">
-	<button (click)="showNewMonsterForm = true" type="button" class="btn btn-default">New Monster</button>
-	<button (click)="clear()" type="button" class="btn btn-danger">Clear</button>
-	<button (click)="addAllToInitiative()" type="button" class="btn btn-success">Add All to Initiative</button>
-</div>
-<div class="container" *ngIf="showNewMonsterForm">
+<mat-expansion-panel #monsterFormContainer>
+	<mat-expansion-panel-header>
+		<mat-panel-title>
+			New Monster
+		</mat-panel-title>
+		<mat-panel-description>
+			Add a new monster
+		</mat-panel-description>
+	</mat-expansion-panel-header>
 	<app-monster-form
-		(onSubmitted)="add($event); showNewMonsterForm = false"
-		(onCanceled)="showNewMonsterForm = false"></app-monster-form>
+		(onSubmitted)="add($event); monsterFormContainer.close()"
+		(onCanceled)="monsterFormContainer.close()"></app-monster-form>
+</mat-expansion-panel>
+<div class="button-row">
+	<button mat-button (click)="clear()" color="warn">Clear</button>
+	<button mat-button (click)="addAllToInitiative()" color="primary">Add All to Initiative (Roll)</button>
 </div>
-<div class="container" *ngIf="monsters">
-	<ul>
-		<li *ngFor="let monster of monsters">
-			{{ monster.name }}
+<div class="container" fxLayout="row wrap" fxLayoutAlign="center start" fxLayout.xs="column">
+	<mat-card *ngFor="let monster of monsters" class="player-card" fxFlex="1 0 250px">
+		<mat-card-title>
+			{{monster.name}}
 			<span *ngIf="monster.quantity > 1">({{ monster.id }} of {{ monster.quantity }})</span>
-			<button (click)="monster.showDetails=!monster.showDetails"
-				type="button" class="btn btn-info">Details</button>
-			<button (click)="addToInitiative(monster)"
-				type="button" class="btn btn-success">Add to Initiative</button>
-			<div *ngIf="monster.showDetails && !monster.edit">
-				HP: {{ monster.hp }} <br>
-				Initiative Bonus: {{ monster.initiativeBonus }} <br>
-				Perception Bonus: {{ monster.perceptionBonus }} <br>
-				<button type="button" class="btn btn-warning"
-						(click)="monster.edit=true">Edit</button>
-				<button (click)="remove(monster)" type="button" class="btn btn-danger">Remove</button>
-			</div>
-			<div *ngIf="monster.showDetails && monster.edit">
-				<app-monster-form
-					[model]="monster"
-					(onSubmitted)="update(monster, $event); monster.edit = false"
-					(onCanceled)="monster.edit = false"></app-monster-form>
-			</div>
-		</li>
-	</ul>
+		</mat-card-title>
+		<mat-card-content *ngIf="!monster.edit">
+			<mat-expansion-panel>
+				<mat-expansion-panel-header>
+					<mat-panel-title>Details</mat-panel-title>
+				</mat-expansion-panel-header>
+				HP: {{monster.hp}}<br>
+				Initiative Bonus: {{monster.initiativeBonus}}<br>
+				Perception Bonus: {{monster.perceptionBonus}}
+				<mat-action-row>
+					<button mat-button (click)="monster.edit=true">Edit</button>
+				</mat-action-row>
+			</mat-expansion-panel>
+		</mat-card-content>
+		<mat-card-content *ngIf="monster.edit">
+			<app-monster-form
+				[model]="monster"
+				(onSubmitted)="update(monster, $event); monster.edit = false"
+				(onCanceled)="monster.edit = false"></app-monster-form>
+		</mat-card-content>
+		<mat-card-actions *ngIf="!monster.edit">
+			<button mat-button color="primary" (click)="addToInitiative(monster)">Add to Initiative</button>
+			<button mat-button color="warn" (click)="remove(monster)">Remove</button>
+		</mat-card-actions>
+	</mat-card>
 </div>

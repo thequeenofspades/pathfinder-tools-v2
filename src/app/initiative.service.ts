@@ -51,13 +51,7 @@ export class InitiativeService {
   }
 
   advance(): Observable<number> {
-    for (let condition of this.order[this.active].conditions) {
-      condition.duration = condition.duration - 1;
-      if (condition.duration == 0) {
-        this.messageService.add(`${this.order[this.active].name} is no longer ${condition.name}`);
-      }
-    }
-    this.order[this.active].conditions = this.order[this.active].conditions.filter(c => c.duration > 0);
+    this.updateConditions(this.order[this.active]);
     this.active = this.active + 1;
     if (this.active >= this.order.length) {
       this.active = 0;
@@ -69,9 +63,21 @@ export class InitiativeService {
     return of(this.active);
   }
 
+  updateConditions(creature: Creature): void {
+    for (let condition of creature.conditions) {
+      if (!condition.permanent) {
+        condition.duration--;
+        if (condition.duration == 0) {
+          this.messageService.add(`${this.order[this.active].name} is no longer ${condition.name}`);
+        }
+      }
+    }
+    creature.conditions = creature.conditions.filter(c => c.duration > 0 || c.permanent);
+  }
+
   add(creature: Creature, initiative: number): Observable<Creature[]> {
     this.messageService.add(`Added ${creature.name} to initiative order`);
-    let creatureCopy = Object.assign({}, creature);
+    let creatureCopy = Object.create(creature);
   	creatureCopy.initiative = initiative;
   	let insertIndex = this.order.findIndex(c => this.goesBefore(creatureCopy, c));
     if (insertIndex < 0) {
@@ -122,21 +128,54 @@ export class InitiativeService {
 
   damage(creature: Creature, amount: number): Observable<Creature[]> {
     this.messageService.add(`${creature.name} took ${amount} damage`);
-    if ((creature as Monster).currentHp - amount <= (creature as Monster).hp / 2 &&
-          (creature as Monster).currentHp > (creature as Monster).hp / 2) {
-      this.messageService.add(`${creature.name} became bloodied`);
-      creature.attributes.push('bloodied');
-    }
+    this.checkHpStatus((creature as Monster), amount);
     (creature as Monster).currentHp = (creature as Monster).currentHp - amount;
-    if ((creature as Monster).currentHp == 0) {
-      this.messageService.add(`${creature.name} died!`);
-      creature.attributes.push('dead');
-    }
     return of(this.order);
   }
 
-  addCondition(creature: Creature, condition: Condition): Observable<Creature[]> {
-    this.messageService.add(`${creature.name} became ${condition.name} for ${condition.duration} rounds`);
+  checkHpStatus(monster: Monster, amount: number): void {
+    monster.removeConditions(['dead', 'dying', 'disabled', 'bloodied']);
+    if (monster.isDead(amount)) {
+      this.applyDeath(monster);
+    } else if (monster.isDying(amount)) {
+      this.applyDying(monster);
+    } else if (monster.isDisabled(amount)) {
+      this.applyDisabled(monster);
+    } else if (monster.isBloodied(amount) && !monster.isBloodied()) {
+      this.applyBloodied(monster);
+    }
+  }
+
+  applyBloodied(monster: Monster) {
+    this.messageService.add(`${monster.name} became bloodied`);
+    monster.attributes.push('bloodied');
+  }
+
+  applyDeath(monster: Monster) {
+    this.messageService.add(`${monster.name} died!`);
+    monster.attributes.push('dead');
+    let deadCondition = new Condition('dead', 0, true);
+    this.addCondition(monster, deadCondition, false);
+  }
+
+  applyDying(monster: Monster) {
+    this.messageService.add(`${monster.name} is dying!`);
+    monster.attributes.push('dying');
+    let dyingCondition = new Condition('dying', 0, true);
+    this.addCondition(monster, dyingCondition, false);
+  }
+
+  applyDisabled(monster: Monster) {
+    this.messageService.add(`${monster.name} is at 0 hp and disabled`);
+    monster.attributes.push('disabled');
+    let disabledCondition = new Condition('disabled', 0, true);
+    this.addCondition(monster, disabledCondition, false);
+  }
+
+  addCondition(creature: Creature, condition: Condition, log: boolean = true): Observable<Creature[]> {
+    if (log) {
+      this.messageService.add(`${creature.name} became ${condition.name} for ${condition.duration} rounds`);
+    }
     creature.conditions.push(condition);
     return of(this.order);
   }

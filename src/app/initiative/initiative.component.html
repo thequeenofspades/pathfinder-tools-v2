@@ -1,3 +1,16 @@
-<app-players></app-players>
-<app-monsters></app-monsters>
-<app-initiative-order></app-initiative-order>
+<mat-tab-group>
+	<mat-tab label="Players">
+		<ng-template matTabContent>
+			<app-players></app-players>
+		</ng-template>
+	</mat-tab>
+	<mat-tab label="Monsters">
+		<ng-template matTabContent>
+			<app-monsters></app-monsters>
+		</ng-template>
+	</mat-tab>
+	<mat-tab label="Initiative">
+		<ng-template matTabContent>
+			<app-initiative-order></app-initiative-order>
+		</ng-template>
+	</mat-tab>

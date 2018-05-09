@@ -1,36 +1,22 @@
-<form (ngSubmit)="onSubmit()" #playerForm="ngForm">
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input 	type="text" class="form-control" id="name"
-    		required
-    		[(ngModel)]="model.name" name="name"
-    		#name="ngModel">
-    <div [hidden]="name.valid || name.pristine"
-    	class="alert alert-danger">
-    	Name is required
-    </div>
-  </div>
+<form [formGroup]="playerForm" (ngSubmit)="onSubmit()">
+  <mat-form-field>
+    <input matInput type="text" placeholder="Name" formControlName="name" required>
+  </mat-form-field>
+  <mat-form-field>
+    <input type="number" placeholder="Initiative bonus" matInput formControlName="initiativeBonus" required>
+  </mat-form-field>
 
-  <div class="form-group">
-    <label for="initiativeBonus">Initiative Bonus</label>
-    <input 	type="number" class="form-control" id="initiativeBonus"
-    		[(ngModel)]="model.initiativeBonus" name="initiativeBonus">
-  </div>
+  <mat-form-field>
+    <input type="number" placeholder="Perception bonus" matInput formControlName="perceptionBonus" required>
+  </mat-form-field>
 
-  <div class="form-group">
-    <label for="perceptionBonus">Perception Bonus</label>
-    <input 	type="number" class="form-control" id="perceptionBonus"
-    		[(ngModel)]="model.perceptionBonus" name="perceptionBonus">
-  </div>
+  <mat-form-field>
+    <input type="number" placeholder="Sense Motive bonus" matInput formControlName="senseMotiveBonus" required>
+  </mat-form-field>
 
-   <div class="form-group">
-    <label for="senseMotiveBonus">Sense Motive Bonus</label>
-    <input 	type="number" class="form-control" id="senseMotiveBonus"
-    		[(ngModel)]="model.senseMotiveBonus" name="senseMotiveBonus">
+  <div class="button-row">
+    <button mat-button type="button" (click)="onCancel()">Cancel</button>
+    <button mat-button color="primary" type="submit" [disabled]="playerForm.invalid">Submit</button>
   </div>
-
-  <button type="button" class="btn btn-default" (click)="onCancel(); playerForm.reset()">Cancel</button>
-  <button 	type="submit" class="btn btn-success"
-  			[disabled]="!playerForm.form.valid">Submit</button>
 
 </form>

@@ -1,42 +1,32 @@
-<form (ngSubmit)="onSubmit()" #monsterForm="ngForm">
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input 	type="text" class="form-control" id="name"
-    		required
-    		[(ngModel)]="model.name" name="name"
-    		#name="ngModel">
-    <div [hidden]="name.valid || name.pristine"
-    	class="alert alert-danger">
-    	Name is required
-    </div>
-  </div>
+<form (ngSubmit)="onSubmit()" [formGroup]="monsterForm">
 
-  <div class="form-group">
-    <label for="hp">HP</label>
-    <input 	type="number" class="form-control" id="hp"
-    		[(ngModel)]="model.hp" name="hp">
-  </div>
+  <mat-form-field>
+    <input matInput type="text" formControlName="name" required placeholder="Name">
+  </mat-form-field>
 
-  <div class="form-group">
-    <label for="initiativeBonus">Initiative Bonus</label>
-    <input 	type="number" class="form-control" id="initiativeBonus"
-    		[(ngModel)]="model.initiativeBonus" name="initiativeBonus">
-  </div>
+  <mat-form-field>
+    <input matInput type="number" formControlName="hp" required placeholder="HP">
+  </mat-form-field>
 
-   <div class="form-group">
-    <label for="perceptionBonus">Perception Bonus</label>
-    <input 	type="number" class="form-control" id="perceptionBonus"
-    		[(ngModel)]="model.perceptionBonus" name="perceptionBonus">
-  </div>
+  <mat-form-field>
+    <input matInput type="number" formControlName="conScore" required placeholder="Constitution Score">
+  </mat-form-field>
 
-   <div class="form-group">
-    <label for="quantity">Quantity</label>
-    <input 	type="number" class="form-control" id="quantity"
-    		[(ngModel)]="model.quantity" name="quantity">
-  </div>
+  <mat-form-field>
+    <input matInput type="number" formControlName="initiativeBonus" required placeholder="Initiative Bonus">
+  </mat-form-field>
 
-  <button type="button" class="btn btn-default" (click)="onCancel(); monsterForm.reset()">Cancel</button>
-  <button 	type="submit" class="btn btn-success"
-  			[disabled]="!monsterForm.form.valid">Submit</button>
+  <mat-form-field>
+    <input matInput type="number" formControlName="perceptionBonus" required placeholder="Perception Bonus">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput type="number" formControlName="quantity" required placeholder="Quantity">
+  </mat-form-field>
+
+  <div class="button-row">
+    <button mat-button type="button" (click)="onCancel()">Cancel</button>
+    <button mat-button type="submit" color="primary" [disabled]="monsterForm.invalid">Submit</button>
+  </div>
 
 </form>

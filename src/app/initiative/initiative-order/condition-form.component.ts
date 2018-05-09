@@ -1,52 +1,87 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
-class Condition {
+import { Condition, CONDITIONS } from '../condition';
+
+class MockCondition {
   name: string;
-  duration: number;
+  description: string
 }
 
 @Component({
   selector: 'app-condition-form',
-  template: `
-    <form (ngSubmit)="onSubmit()" #conditionForm="ngForm">
-      <div class="form-group">
-        <label for="name">Condition</label>
-        <input type="text" class="form-control" id="name"
-                required [(ngModel)]="condition.name" name="name"
-                #name="ngModel">
-      </div>
-      <div class="form-group">
-        <label for="duration">Duration</label>
-        <input type="number" class="form-control" id="duration"
-                required [(ngModel)]="condition.duration" name="duration"
-                #name="ngModel">
-      </div>
-      <button type="button" class="btn btn-default"
-              (click)="onCancel()">Cancel</button>
-      <button type="submit" class="btn btn-success"
-              [disabled]="!conditionForm.form.valid">Submit</button>
-    </form>
-  `,
+  templateUrl: './condition-form.component.html',
   styles: []
 })
 export class ConditionFormComponent implements OnInit {
 
-  constructor() { }
+  conditionForm: FormGroup;
+
+  conditions: MockCondition[];
+
+  constructor(private fb: FormBuilder,
+    public dialogRef: MatDialogRef<ConditionFormComponent>) {  }
 
   ngOnInit() {
+    this.createForm();
+    this.conditions = CONDITIONS;
+    this.filteredConditions = this.conditionForm.get('name').valueChanges
+      .pipe(startWith(''), map(val => this.filter(val)));
   }
 
-  @Output() onSubmitted = new EventEmitter<Condition>();
-  @Output() onCanceled = new EventEmitter();
+  customCondition: boolean = false;
 
-  condition: Condition = new Condition();
+  filteredConditions: Observable<MockCondition[]>;
 
-  onSubmit(): void {
-    this.onSubmitted.emit(this.condition);
+  filter(val: string): MockCondition[] {
+    return this.conditions.filter(c =>
+      c.name.toLowerCase().includes(val.toLowerCase()));
+  }
+
+  displayName(condition?: MockCondition): string | undefined {
+    return condition ? condition.name : undefined;
+  }
+
+  createForm(): void {
+    this.conditionForm = this.fb.group({
+      name: ['', Validators.required],
+      description: '',
+      duration: [0, Validators.required],
+      permanent: [false]
+    });
+    this.conditionForm.get('name').valueChanges.subscribe(data => this.onNameValueChanged(data));
+    this.conditionForm.get('permanent').valueChanges.subscribe(data => this.onPermanentValueChanged(data));
+  }
+
+  onNameValueChanged(name: string): void {
+    let condition = this.conditions.find(c => c.name == name);
+    if (condition) {
+      this.conditionForm.get('description').setValue(condition.description);
+    }
+  }
+
+  onPermanentValueChanged(selected: boolean): void {
+    if (selected) {
+      this.conditionForm.get('duration').clearValidators();
+      this.conditionForm.get('duration').disable();
+    } else {
+      this.conditionForm.get('duration').setValidators([Validators.required]);
+      this.conditionForm.get('duration').enable();
+    }
+    this.conditionForm.get('duration').updateValueAndValidity();
+  }
+
+  trySubmit(): void {
+    if (this.conditionForm.valid) {
+      this.dialogRef.close(this.conditionForm.value);
+    }
   }
 
   onCancel(): void {
-    this.onCanceled.emit();
+    this.dialogRef.close();
   }
 
 }

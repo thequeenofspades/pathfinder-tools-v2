@@ -1,89 +1,86 @@
-<h2>Initiative</h2>
-<div class="container" *ngIf="order.length > 0">
-	<button (click)="clear()" type="button" class="btn btn-danger">Clear</button>
-	<button (click)="previous()" type="button" class="btn btn-default">Previous</button>
-	<button (click)="advance()" type="button" class="btn btn-primary">Advance</button>
+<div class="button-row" *ngIf="order.length">
+	<button mat-button (click)="clear()" color="warn">Clear</button>
+	<button mat-button (click)="previous()">Previous</button>
+	<button mat-button (click)="advance()" color="primary">Advance</button>
+</div>
+<div *ngIf="order.length">
 	Round: {{round}}
-	<table class="table table-hover">
-		<tr *ngFor="let creature of order"
-			[class.warning]="creature.currentHp <= creature.hp / 2"
-			[class.danger]="creature.currentHp < 0"
-			[class.success]="creature == order[active]"
-			[class.info]="delayed(creature)">
-			<td>
-				{{creature.name}}
-				<span *ngIf="creature.quantity > 1">({{ creature.id }} of {{ creature.quantity }})</span>
+</div>
+<div class="container" *ngIf="order.length" fxLayout="row" fxLayoutGap="10px">
+	<table class="mat-table" fxFlex="2 1 auto">
+		<tr class="mat-row" *ngFor="let creature of order"
+			[class.active-creature-row]="creature == order[active]"
+			(click)="selectedCreature = creature">
+
+			<td class="mat-cell initiativeCell">
+				{{creature.initiative}}
 			</td>
-			<td>
-				<button (click)="creature.showDetails=!creature.showDetails" type="button" class="btn btn-info">Details</button>
-				<div *ngIf="creature.showDetails">
-					Initiative: {{ creature.initiative - creature.initiativeBonus }} + {{creature.initiativeBonus}}
-						<span *ngIf="adjusted(creature)">(adjusted)</span> <br>
-					<span *ngIf="creature.hp">HP: {{ creature.currentHp }} out of {{ creature.hp }}<br></span>
-					<div *ngIf="creature.conditions.length">
-						Conditions:
-						<ul>
-							<li *ngFor="let condition of creature.conditions">
-								{{condition.name}} ({{condition.duration}})
-							</li>
-						</ul>
-					</div>
-					<div *ngIf="creature.notes.length">
-						Notes:
-						<ul>
-							<li *ngFor="let note of creature.notes">
-								{{note}}
-							</li>
-						</ul>
-					</div>
+
+			<td class="mat-cell initiativeCell">
+				<span *ngIf="!creature.hp"><mat-icon>person</mat-icon></span>
+				<span class="creature-name"> {{creature.name}}</span>
+				<span *ngIf="creature.quantity > 1"> ({{ creature.id }} of {{ creature.quantity }})</span>
+				<mat-chip-list>
+					<mat-chip *ngFor="let condition of creature.conditions">
+						{{condition.name}}
+					</mat-chip>
+				</mat-chip-list>
+			</td>
+
+			<td class="mat-cell initiativeCell">
+				<div *ngIf="creature.hp" fxLayout="column">
+					<span>
+						{{creature.currentHp}}/{{creature.hp}}
+						<button mat-icon-button (click)="openDamageFormDialog(creature)" matTooltip="Damage"><mat-icon svgIcon="sword"></mat-icon></button>
+					</span>
+					<mat-progress-bar mode="determinate" color="warn" [value]="100*(creature.currentHp/creature.hp)"></mat-progress-bar>
 				</div>
 			</td>
-			<td><span *ngIf="creature.hp && !creature.damage">
-					<button (click)="creature.damage=true" type="button" class="btn btn-default">Damage</button>
+
+			<td class="mat-cell initiativeCell">
+				<button mat-icon-button (click)="openConditionFormDialog(creature)" matTooltip="Add Condition"><mat-icon svgIcon="skull"></mat-icon></button>
+				<button mat-icon-button (click)="openNoteFormDialog(creature)" type="button" matTooltip="Add Note"><mat-icon>note_add</mat-icon></button>
+				<span *ngIf="!delayed(creature)">
+					<button mat-icon-button (click)="delay(creature)" matTooltip="Delay"><mat-icon>snooze</mat-icon></button>
 				</span>
-				<div *ngIf="creature.damage">
-					<app-damage-form
-						(onSubmitted)="damage(creature, $event); creature.damage=false"
-						(onCanceled)="creature.damage=false"></app-damage-form>
-				</div>
-			</td>
-			<td>
-				<div *ngIf="!creature.condition">
-					<button (click)="creature.condition=true" type="button" class="btn btn-default">Add Condition</button>
-				</div>
-				<div *ngIf="creature.condition">
-					<app-condition-form
-						(onSubmitted)="addCondition(creature, $event); creature.condition=false"
-						(onCanceled)="creature.condition=false"></app-condition-form>
-				</div>
-			</td>
-			<td>
-				<div *ngIf="!creature.note">
-					<button (click)="creature.note=true" type="button" class="btn btn-default">Add Note</button>
-				</div>
-				<div *ngIf="creature.note">
-					<app-note-form
-						(onSubmitted)="addNote(creature, $event); creature.note=false"
-						(onCanceled)="creature.note=false"></app-note-form>
-				</div>
-			</td>
-			<td>
-				<div *ngIf="!delayed(creature)">
-					<button (click)="delay(creature)" type="button" class="btn btn-default">Delay</button>
-				</div>
-				<div *ngIf="delayed(creature)">
-					<button (click)="undelay(creature)" type="button" class="btn btn-primary">Undelay</button>
-				</div>
-			</td>
-			<td>
-				<button (click)="moveUp(creature)" type="button" class="btn btn-default">Move Up</button>
-			</td>
-			<td>
-				<button (click)="moveDown(creature)" type="button" class="btn btn-default">Move Down</button>
-			</td>
-			<td>
-				<button (click)="remove(creature)" type="button" class="btn btn-danger">Remove</button>
+				<span *ngIf="delayed(creature)">
+					<button mat-icon-button (click)="undelay(creature)" color="primary" matTooltip="Undelay"><mat-icon>alarm_on</mat-icon></button>
+				</span>
+				<button mat-icon-button (click)="moveUp(creature)" matTooltip="Move Up"><mat-icon>arrow_upward</mat-icon></button>
+				<button mat-icon-button (click)="moveDown(creature)" matTooltip="Move Down"><mat-icon>arrow_downward</mat-icon></button>
+				<button mat-icon-button (click)="remove(creature)" matTooltip="Remove"><mat-icon>delete</mat-icon></button>
 			</td>
 		</tr>
 	</table>
+	<mat-card fxFlex="1 1 auto" *ngIf="selectedCreature">
+		<mat-card-title>
+			{{selectedCreature.name}}
+		</mat-card-title>
+		<mat-card-content>
+			<mat-list>
+				<h3 mat-subheader>Basics</h3>
+				<mat-list-item>
+					Initiative: {{selectedCreature.initiative - selectedCreature.initiativeBonus}} + {{selectedCreature.initiativeBonus}}
+				</mat-list-item>
+				<mat-list-item *ngIf="selectedCreature.hp">
+					HP: {{selectedCreature.currentHp}}/{{selectedCreature.hp}}
+				</mat-list-item>
+
+				<mat-divider *ngIf="selectedCreature.conditions.length"></mat-divider>
+				<h3 mat-subheader *ngIf="selectedCreature.conditions.length">Conditions</h3>
+				<mat-list-item *ngFor="let condition of selectedCreature.conditions">
+					{{condition.name}} <span *ngIf="!condition.permanent">({{condition.duration}})</span>
+				</mat-list-item>
+
+				<mat-divider *ngIf="selectedCreature.notes.length"></mat-divider>
+				<h3 mat-subheader *ngIf="selectedCreature.notes.length">Notes</h3>
+				<mat-list-item *ngFor="let note of selectedCreature.notes">
+					{{note}}
+				</mat-list-item>
+			</mat-list>
+		</mat-card-content>
+		<mat-card-actions>
+			<button mat-button (click)="selectedCreature = null">Close</button>
+		</mat-card-actions>
+	</mat-card>
 </div>

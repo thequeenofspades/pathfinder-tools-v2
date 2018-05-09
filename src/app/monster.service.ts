@@ -21,7 +21,7 @@ export class MonsterService {
   addMonster(monster: Monster): Observable<Monster[]> {
   	this.messageService.add(`Added monster ${monster.name}!`);
   	for (var i = 0; i < monster.quantity; i++) {
-  		let newMonster = Object.assign(new Monster('', 0), monster);
+      let newMonster = Object.create(monster);
   		newMonster.id = i + 1;
   		this.monsters.push(newMonster);
   	}

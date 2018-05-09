@@ -1,41 +1,30 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
   selector: 'app-note-form',
-  template: `
-    <form (ngSubmit)="onSubmit()" #noteForm="ngForm">
-      <div class="form-group">
-        <label for="note">Note</label>
-        <input type="text" class="form-control" id="note"
-                required [(ngModel)]="note" name="note"
-                #name="ngModel">
-      </div>
-      <button type="button" class="btn btn-default"
-              (click)="onCancel()">Cancel</button>
-      <button type="submit" class="btn btn-success"
-              [disabled]="!noteForm.form.valid">Submit</button>
-    </form>
-  `,
+  templateUrl: './note-form.component.html',
   styles: []
 })
 export class NoteFormComponent implements OnInit {
 
-  constructor() { }
+  constructor(public dialogRef: MatDialogRef<NoteFormComponent>) { }
 
   ngOnInit() {
+    this.note = new FormControl('', Validators.required);
   }
 
-  @Output() onSubmitted = new EventEmitter<string>();
-  @Output() onCanceled = new EventEmitter();
+  note: FormControl;
 
-  note: string;
-
-  onSubmit(): void {
-    this.onSubmitted.emit(this.note);
+  trySubmit(): void {
+    if (this.note.valid) {
+      this.dialogRef.close(this.note.value);
+    }
   }
 
   onCancel(): void {
-    this.onCanceled.emit();
+    this.dialogRef.close();
   }
 
 }

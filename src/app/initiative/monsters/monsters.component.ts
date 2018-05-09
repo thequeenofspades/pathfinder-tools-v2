@@ -20,8 +20,6 @@ export class MonstersComponent implements OnInit {
 
   monsters: Monster[];
 
-  showNewMonsterForm: boolean = false;
-
   private getMonsters(): void {
   	this.monsterService.getMonsters()
   		.subscribe(monsters => this.monsters = monsters);

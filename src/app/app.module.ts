@@ -1,6 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
+
+import { MaterialModule } from './material-module/material-module.module';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './/app-routing.module';
@@ -36,7 +40,17 @@ import { NoteFormComponent } from './initiative/initiative-order/note-form.compo
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    MaterialModule,
+    BrowserAnimationsModule,
+    HttpClientModule
+  ],
+  entryComponents: [
+    InitiativeFormComponent,
+    NoteFormComponent,
+    ConditionFormComponent,
+    DamageFormComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

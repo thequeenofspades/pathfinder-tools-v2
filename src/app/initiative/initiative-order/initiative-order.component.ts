@@ -1,9 +1,16 @@
 import { Component, OnInit} from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { MatIconRegistry } from '@angular/material';
+import { DomSanitizer } from '@angular/platform-browser';
 
 import { Player } from '../../player';
 import { Monster } from '../../monster';
 import { InitiativeService } from '../../initiative.service';
 import { Condition } from '../condition';
+
+import { NoteFormComponent } from './note-form.component';
+import { ConditionFormComponent } from './condition-form.component';
+import { DamageFormComponent } from './damage-form.component';
 
 type Creature = Player | Monster;
 
@@ -14,7 +21,12 @@ type Creature = Player | Monster;
 })
 export class InitiativeOrderComponent implements OnInit {
 
-  constructor(private initiativeService: InitiativeService) { }
+  constructor(private initiativeService: InitiativeService,
+    public dialog: MatDialog,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer) {
+      matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl('../../../assets/mdi.svg'));
+  }
 
   ngOnInit() {
   	this.getOrder();
@@ -28,10 +40,15 @@ export class InitiativeOrderComponent implements OnInit {
 
   round: number;
 
+  selectedCreature: Creature;
+
   private getActive(): void {
   	// Get index of active creature
   	this.initiativeService.getActive()
-  		.subscribe(idx => this.active = idx);
+  		.subscribe(idx => {
+        this.active = idx;
+        this.selectedCreature = this.order[this.active];
+      });
   }
 
   private getOrder(): void {
@@ -44,16 +61,59 @@ export class InitiativeOrderComponent implements OnInit {
   		.subscribe(round => this.round = round);
   }
 
+  selectCreature(creature: Creature): void {
+    if (this.selectedCreature == creature) {
+      this.selectedCreature = null;
+    } else {
+      this.selectedCreature = creature;
+    }
+  }
+
+  openDamageFormDialog(creature: Creature): void {
+    let dialogRef = this.dialog.open(DamageFormComponent, {
+      width: '250px'
+    });
+    dialogRef.afterClosed().subscribe(dmg => {
+      if (dmg !== undefined) {
+        this.damage(creature, dmg);
+      }
+    });
+  }
+
+  openConditionFormDialog(creature: Creature): void {
+    let dialogRef = this.dialog.open(ConditionFormComponent, {
+      width: '500px'
+    });
+    dialogRef.afterClosed().subscribe(condition => {
+      if (condition !== undefined) {
+        this.addCondition(creature, condition);
+      }
+    });
+  }
+
+  openNoteFormDialog(creature: Creature): void {
+    let dialogRef = this.dialog.open(NoteFormComponent, {
+      width: '250px'
+    });
+    dialogRef.afterClosed().subscribe(note => {
+      if (note !== undefined) {
+        this.addNote(creature, note);
+      }
+    });
+  } 
+
   previous(): void {
   	this.initiativeService.previous()
   		.subscribe(idx => this.active = idx);
   	this.getRound();
+    this.selectedCreature = this.order[this.active];
   }
 
   advance(): void {
   	this.initiativeService.advance()
   		.subscribe(idx => this.active = idx);
   	this.getRound();
+    this.selectedCreature = this.order[this.active]
   }
 
   remove(creature: Creature): void {
