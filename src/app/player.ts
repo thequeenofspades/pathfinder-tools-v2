@@ -23,4 +23,20 @@ export class Player {
 		this.conditions = this.conditions.filter(c => !conditions.find(name => name == c.name));
 		this.attributes = this.attributes.filter(a => !conditions.find(name => name == a));
 	}
+
+	public rollPerception(): void {
+		let roll = getRandomInt(1, 20);
+  		this.notification.perception = `${roll+this.perceptionBonus}`;
+	}
+
+	public rollSenseMotive(): void {
+		let roll = getRandomInt(1, 20);
+  		this.notification.senseMotive = `${roll+this.senseMotiveBonus}`;
+	}
+}
+
+// Returns a random integer between min (included) and max (included)
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }

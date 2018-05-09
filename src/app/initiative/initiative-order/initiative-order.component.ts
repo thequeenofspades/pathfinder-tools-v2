@@ -184,4 +184,12 @@ export class InitiativeOrderComponent implements OnInit {
   	return creature.attributes.some(a => a == "delayed");
   }
 
+  rollPerception(creature: Creature): void {
+    creature.rollPerception();
+  }
+
+  rollSenseMotive(creature: Creature): void {
+    creature.rollSenseMotive();
+  }
+
 }

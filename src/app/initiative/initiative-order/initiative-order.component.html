@@ -62,12 +62,32 @@
 		</mat-card-title>
 		<mat-card-content>
 			<mat-list>
+
 				<h3 mat-subheader>Basics</h3>
 				<mat-list-item>
 					Initiative: {{selectedCreature.initiative - selectedCreature.initiativeBonus}} + {{selectedCreature.initiativeBonus}}
 				</mat-list-item>
 				<mat-list-item *ngIf="selectedCreature.hp">
 					HP: {{selectedCreature.currentHp}}/{{selectedCreature.hp}}
+				</mat-list-item>
+				<mat-list-item *ngIf="selectedCreature.conScore">
+					Constitution: {{selectedCreature.conScore}}
+				</mat-list-item>
+				<mat-list-item>
+					Perception Bonus: {{selectedCreature.perceptionBonus}}
+					<span matBadge="{{selectedCreature.notification.perception}}" matBadgeColor="accent" [matBadgeHidden]="!selectedCreature.notification.perception">
+						<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollPerception(selectedCreature)">
+							<mat-icon svgIcon="dice-d20"></mat-icon>
+						</button>
+					</span>
+				</mat-list-item>
+				<mat-list-item *ngIf="selectedCreature.senseMotiveBonus !== undefined">
+					Sense Motive Bonus: {{selectedCreature.senseMotiveBonus}}
+					<span matBadge="{{selectedCreature.notification.senseMotive}}" matBadgeColor="accent" [matBadgeHidden]="!selectedCreature.notification.senseMotive">
+						<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollSenseMotive(selectedCreature)">
+							<mat-icon svgIcon="dice-d20"></mat-icon>
+						</button>
+					</span>
 				</mat-list-item>
 
 				<mat-divider *ngIf="selectedCreature.conditions.length"></mat-divider>
@@ -79,15 +99,16 @@
 						<mat-icon matChipRemove (click)="removeCondition(selectedCreature, condition)">cancel</mat-icon>
 					</mat-chip>
 				</mat-chip-list>
-<!-- 				<mat-list-item *ngFor="let condition of selectedCreature.conditions">
-					{{condition.name}} <span *ngIf="!condition.permanent">({{condition.duration}})</span>
-				</mat-list-item> -->
 
 				<mat-divider *ngIf="selectedCreature.notes.length"></mat-divider>
 				<h3 mat-subheader *ngIf="selectedCreature.notes.length">Notes</h3>
-				<mat-list-item *ngFor="let note of selectedCreature.notes">
-					{{note}}
-				</mat-list-item>
+				<mat-chip-list>
+					<mat-chip *ngFor="let note of selectedCreature.notes" [removable]="true">
+						{{note}}
+						<mat-icon matChipRemove (click)="removeNote(selectedCreature, note)">cancel</mat-icon>
+					</mat-chip>
+				</mat-chip-list>
+
 			</mat-list>
 		</mat-card-content>
 		<mat-card-actions>
