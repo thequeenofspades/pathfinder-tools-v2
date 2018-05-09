@@ -51,11 +51,12 @@ export class PlayersComponent implements OnInit {
   }
 
   addToInitiative(player: Player, initiative: number = null): void {
+    let playerCopy = this.playerService.deepCopyPlayer(player);
   	if (initiative !== null) {
-  		this.initiativeService.add(player, initiative);
+  		this.initiativeService.add(playerCopy, initiative);
   	} else {
 	  	let roll = getRandomInt(1, 20);
-	  	this.initiativeService.add(player, roll + player.initiativeBonus);
+	  	this.initiativeService.add(playerCopy, roll + player.initiativeBonus);
 	  }
   }
 
@@ -65,7 +66,8 @@ export class PlayersComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(roll => {
       if (roll !== undefined) {
-        this.addToInitiative(player, roll);
+        let playerCopy = this.playerService.deepCopyPlayer(player);
+        this.addToInitiative(playerCopy, roll);
       }
     })
   }

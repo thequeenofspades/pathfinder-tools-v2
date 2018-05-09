@@ -75,27 +75,23 @@ export class InitiativeService {
     creature.conditions = creature.conditions.filter(c => c.duration > 0 || c.permanent);
   }
 
-  add(creature: Creature, initiative: number): Observable<Creature[]> {
+  add(creature: Creature, initiative: number = null): Observable<Creature[]> {
+    if (initiative == null) {
+      initiative = getRandomInt(1, 20) + creature.initiativeBonus;
+    }
     this.messageService.add(`Added ${creature.name} to initiative order`);
-    let creatureCopy = Object.create(creature);
-  	creatureCopy.initiative = initiative;
-  	let insertIndex = this.order.findIndex(c => this.goesBefore(creatureCopy, c));
+    creature.initiative = initiative;
+  	let insertIndex = this.order.findIndex(c => this.goesBefore(creature, c));
     if (insertIndex < 0) {
       insertIndex = this.order.length;
     }
-    // if (insertIndex <= this.active) {
-    //   this.active = this.active + 1;
-    // }
-  	this.order.splice(insertIndex, 0, creatureCopy);
+    this.order.splice(insertIndex, 0, creature);
   	return of(this.order);
   }
 
   remove(creature: Creature): Observable<Creature[]> {
     this.messageService.add(`Removed ${creature.name} from initiative order`);
     let idx = this.order.findIndex(c => c == creature);
-    // if (idx < this.active) {
-    //   this.active = this.active - 1;
-    // }
     this.order = this.order.filter(c => c != creature);
     return of(this.order);
   }
@@ -173,6 +169,7 @@ export class InitiativeService {
   }
 
   addCondition(creature: Creature, condition: Condition, log: boolean = true): Observable<Creature[]> {
+    console.log(creature, condition);
     if (log) {
       this.messageService.add(`${creature.name} became ${condition.name} for ${condition.duration} rounds`);
     }
@@ -229,4 +226,10 @@ export class InitiativeService {
       return false;
     }
   }
+}
+
+// Returns a random integer between min (included) and max (included)
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }

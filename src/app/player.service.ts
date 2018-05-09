@@ -20,6 +20,16 @@ export class PlayerService {
   	return of(this.players);
   }
 
+  deepCopyPlayer(player: Player): Player {
+    let playerCopy = new Player(player.name);
+    Object.assign(playerCopy, player);
+    playerCopy.conditions = [];
+    playerCopy.notes = [];
+    playerCopy.attributes = [];
+    playerCopy.notification = {};
+    return playerCopy;
+  }
+
   addPlayer(player: Player): Observable<Player[]> {
   	this.messageService.add(`Added new player ${player.name}!`);
   	this.players.push(player);

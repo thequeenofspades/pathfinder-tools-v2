@@ -13,7 +13,7 @@
 </mat-expansion-panel>
 <div class="button-row">
 	<button mat-button (click)="clear()" color="warn">Clear</button>
-	<button mat-button (click)="addAllToInitiative()" color="primary">Add All to Initiative (Roll)</button>
+	<button mat-button (click)="addAllToInitiative()" color="primary">Add All to Initiative</button>
 	<button mat-button (click)="rollPerceptionForAll()" color="accent">Roll Perception</button>
 	<button mat-button (click)="rollSenseMotiveForAll()" color="accent">Roll Sense Motive</button>
 </div>
@@ -25,10 +25,22 @@
 				<mat-expansion-panel-header>
 					<mat-panel-title>Details</mat-panel-title>
 				</mat-expansion-panel-header>
-				Initiative Bonus: {{player.initiativeBonus}}<br>
-				Perception Bonus: {{player.perceptionBonus}}<br>
-				Sense Motive Bonus: {{player.senseMotiveBonus}}
+				Initiative: +{{player.initiativeBonus}}<br>
+				Perception: +{{player.perceptionBonus}}
+				<span matBadge="{{player.notification.perception}}" matBadgeColor="accent" [matBadgeHidden]="!player.notification.perception">
+					<button mat-icon-button color="primary" matTooltip="Roll" (click)="player.rollPerception()">
+						<mat-icon svgIcon="dice-d20"></mat-icon>
+					</button>
+				</span>
+				<br>
+				Sense Motive: +{{player.senseMotiveBonus}}
+				<span matBadge="{{player.notification.senseMotive}}" matBadgeColor="accent" [matBadgeHidden]="!player.notification.senseMotive">
+					<button mat-icon-button color="primary" matTooltip="Roll" (click)="player.rollSenseMotive()">
+						<mat-icon svgIcon="dice-d20"></mat-icon>
+					</button>
+				</span>
 				<mat-action-row>
+					<button mat-button (click)="openInitiativeDialog(player)">Add to Initiative (Manual)</button>
 					<button mat-button (click)="player.edit=true">Edit</button>
 				</mat-action-row>
 			</mat-expansion-panel>
@@ -40,15 +52,7 @@
 				(onCanceled)="player.edit = false"></app-player-form>
 		</mat-card-content>
 		<mat-card-actions *ngIf="!player.edit">
-			<button mat-button color="primary" (click)="addToInitiative(player)">Add to Initiative (Roll)</button>
-			<button mat-button (click)="openInitiativeDialog(player)">Add to Initiative (Manual)</button>
-			<button mat-button color="accent" (click)="rollPerception(player)"
-				matBadge="{{player.notification.perception}}" matBadgePosition="after" matBadgeColor="accent" 
-				[matBadgeHidden]="!player.notification.perception">
-				Roll Perception</button>
-			<button mat-button color="accent" (click)="rollSenseMotive(player)"
-				matBadge="{{player.notification.senseMotive}}" matBadgePosition="after" matBadgeColor="accent"
-				[matBadgeHidden]="!player.notification.senseMotive">Roll Sense Motive</button>
+			<button mat-button color="primary" (click)="addToInitiative(player)">Add to Initiative</button>
 			<button mat-button color="warn" (click)="remove(player)">Remove</button>
 		</mat-card-actions>
 	</mat-card>

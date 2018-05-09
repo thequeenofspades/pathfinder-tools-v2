@@ -11,39 +11,30 @@ export class MonsterService {
 
   constructor(private messageService: MessageService) { }
 
-  monsters: Monster[] = [
-  	new Monster('Zombie', 100)];
-
-  getMonsters(): Observable<Monster[]> {
-  	return of(this.monsters);
+  createMonsters(monster: Monster): Observable<Monster[]> {
+    let monsters = [];
+    for (var i = 0; i < monster.quantity; i++) {
+      let newMonster = this.deepCopyMonster(monster);
+      newMonster.id = i + 1;
+      monsters.push(newMonster);
+    }
+    return of(monsters);
   }
 
-  addMonster(monster: Monster): Observable<Monster[]> {
-  	this.messageService.add(`Added monster ${monster.name}!`);
-  	for (var i = 0; i < monster.quantity; i++) {
-      let newMonster = Object.create(monster);
-  		newMonster.id = i + 1;
-  		this.monsters.push(newMonster);
-  	}
-  	return of(this.monsters);
+  deepCopyMonster(monster: Monster): Monster {
+    let newMonster = new Monster(monster.name, monster.hp);
+    Object.assign(newMonster, monster);
+    newMonster.conditions = [];
+    newMonster.attributes = [];
+    newMonster.notes = [];
+    newMonster.notification = {};
+    return newMonster;
   }
 
-  removeMonster(monster: Monster): Observable<Monster[]> {
-  	this.messageService.add(`Removed monster ${monster.name}`);
-  	this.monsters = this.monsters.filter(m => m != monster);
-  	return of(this.monsters);
-  }
-
-  updateMonster(monster: Monster, updated: Monster): Observable<Monster[]> {
+  updateMonster(monster: Monster, updated: Monster): Observable<Monster> {
   	this.messageService.add(`Updated monster ${monster.name}`);
-  	let monsterToUpdate = this.monsters.indexOf(monster);
-  	Object.assign(this.monsters[monsterToUpdate], updated);
-  	return of(this.monsters);
+  	Object.assign(monster, updated);
+  	return of(monster);
   }
 
-  clear(): Observable<Monster[]> {
-  	this.messageService.add('Cleared all monsters');
-    this.monsters = [];
-    return of(this.monsters);
-  }
 }

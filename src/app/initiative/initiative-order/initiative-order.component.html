@@ -33,7 +33,9 @@
 					</div>
 					<mat-chip-list>
 						<mat-chip *ngFor="let condition of creature.conditions" [removable]="true">
-							<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
+							<ng-container *ngIf="!condition.permanent">
+								<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
+							</ng-container>
 							{{condition.name}}
 							<mat-icon matChipRemove (click)="removeCondition(creature, condition)">cancel</mat-icon>
 						</mat-chip>
@@ -74,17 +76,17 @@
 					Constitution: {{selectedCreature.conScore}}
 				</mat-list-item>
 				<mat-list-item>
-					Perception Bonus: {{selectedCreature.perceptionBonus}}
+					Perception: +{{selectedCreature.perceptionBonus}}
 					<span matBadge="{{selectedCreature.notification.perception}}" matBadgeColor="accent" [matBadgeHidden]="!selectedCreature.notification.perception">
-						<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollPerception(selectedCreature)">
+						<button mat-icon-button color="primary" matTooltip="Roll" (click)="selectedCreature.rollPerception()">
 							<mat-icon svgIcon="dice-d20"></mat-icon>
 						</button>
 					</span>
 				</mat-list-item>
 				<mat-list-item *ngIf="selectedCreature.senseMotiveBonus !== undefined">
-					Sense Motive Bonus: {{selectedCreature.senseMotiveBonus}}
+					Sense Motive: +{{selectedCreature.senseMotiveBonus}}
 					<span matBadge="{{selectedCreature.notification.senseMotive}}" matBadgeColor="accent" [matBadgeHidden]="!selectedCreature.notification.senseMotive">
-						<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollSenseMotive(selectedCreature)">
+						<button mat-icon-button color="primary" matTooltip="Roll" (click)="selectedCreature.rollSenseMotive()">
 							<mat-icon svgIcon="dice-d20"></mat-icon>
 						</button>
 					</span>
@@ -94,7 +96,9 @@
 				<h3 mat-subheader *ngIf="selectedCreature.conditions.length">Conditions</h3>
 				<mat-chip-list>
 					<mat-chip *ngFor="let condition of selectedCreature.conditions" [removable]="true">
-						<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
+						<ng-container *ngIf="!condition.permanent">
+							<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
+						</ng-container>
 						{{condition.name}}
 						<mat-icon matChipRemove (click)="removeCondition(selectedCreature, condition)">cancel</mat-icon>
 					</mat-chip>

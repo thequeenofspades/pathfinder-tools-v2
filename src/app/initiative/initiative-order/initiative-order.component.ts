@@ -1,7 +1,5 @@
 import { Component, OnInit} from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { MatIconRegistry } from '@angular/material';
-import { DomSanitizer } from '@angular/platform-browser';
 
 import { Player } from '../../player';
 import { Monster } from '../../monster';
@@ -22,11 +20,7 @@ type Creature = Player | Monster;
 export class InitiativeOrderComponent implements OnInit {
 
   constructor(private initiativeService: InitiativeService,
-    public dialog: MatDialog,
-    private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer) {
-      matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl('assets/mdi.svg'));
-  }
+    public dialog: MatDialog) { }
 
   ngOnInit() {
   	this.getOrder();
@@ -59,14 +53,6 @@ export class InitiativeOrderComponent implements OnInit {
   private getRound(): void {
   	this.initiativeService.getRound()
   		.subscribe(round => this.round = round);
-  }
-
-  selectCreature(creature: Creature): void {
-    if (this.selectedCreature == creature) {
-      this.selectedCreature = null;
-    } else {
-      this.selectedCreature = creature;
-    }
   }
 
   openDamageFormDialog(creature: Creature): void {
@@ -182,14 +168,6 @@ export class InitiativeOrderComponent implements OnInit {
 
   delayed(creature: Creature): boolean {
   	return creature.attributes.some(a => a == "delayed");
-  }
-
-  rollPerception(creature: Creature): void {
-    creature.rollPerception();
-  }
-
-  rollSenseMotive(creature: Creature): void {
-    creature.rollSenseMotive();
   }
 
 }

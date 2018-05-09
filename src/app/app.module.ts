@@ -20,6 +20,7 @@ import { DamageFormComponent } from './initiative/initiative-order/damage-form.c
 import { ConditionFormComponent } from './initiative/initiative-order/condition-form.component';
 import { InitiativeFormComponent } from './initiative/players/initiative-form.component';
 import { NoteFormComponent } from './initiative/initiative-order/note-form.component';
+import { EncounterFormComponent } from './initiative/encounter-form/encounter-form.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { NoteFormComponent } from './initiative/initiative-order/note-form.compo
     DamageFormComponent,
     ConditionFormComponent,
     InitiativeFormComponent,
-    NoteFormComponent
+    NoteFormComponent,
+    EncounterFormComponent
   ],
   imports: [
     BrowserModule,

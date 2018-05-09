@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { Monster } from '../../monster';
 import { MonsterService } from '../../monster.service';
 import { InitiativeService } from '../../initiative.service';
+import { EncounterService } from '../encounter.service';
+import { Encounter } from '../encounter';
 
 @Component({
   selector: 'app-monsters',
@@ -12,48 +14,58 @@ import { InitiativeService } from '../../initiative.service';
 export class MonstersComponent implements OnInit {
 
   constructor(private monsterService: MonsterService,
-  	private initiativeService: InitiativeService) { }
+  	private initiativeService: InitiativeService,
+    private encounterService: EncounterService) { }
 
   ngOnInit() {
-  	this.getMonsters();
+    this.getEncounters();
   }
 
-  monsters: Monster[];
+  encounters: Encounter[];
 
-  private getMonsters(): void {
-  	this.monsterService.getMonsters()
-  		.subscribe(monsters => this.monsters = monsters);
+  getEncounters(): void {
+    this.encounterService.getEncounters()
+      .subscribe(encounters => this.encounters = encounters);
   }
 
-  add(monster: Monster): void {
-  	this.monsterService.addMonster(monster)
-  		.subscribe(monsters => this.monsters = monsters);
+  add(monster: Monster, encounter: Encounter = null): void {
+    this.monsterService.createMonsters(monster)
+      .subscribe(monsters => {
+        for (let monster of monsters) {
+          if (encounter != null) {
+            this.encounterService.addToEncounter(monster, encounter)
+              .subscribe(encounters => this.encounters = encounters);
+          } else {
+            this.addToInitiative(monster);
+          }
+        }
+      });
   }
 
-  remove(monster: Monster): void {
-  	this.monsterService.removeMonster(monster)
-  		.subscribe(monsters => this.monsters = monsters);
+  remove(monster: Monster, encounter: Encounter = null): void {
+    if (encounter != null) {
+      this.encounterService.removeFromEncounter(monster, encounter)
+        .subscribe(encounters => this.encounters = encounters);
+    }
+  }
+
+  removeEncounter(encounter: Encounter): void {
+    this.encounterService.removeEncounter(encounter)
+      .subscribe(encounters => this.encounters = encounters);
   }
 
   update(monster: Monster, updated: Monster) : void {
-  	this.monsterService.updateMonster(monster, updated)
-  		.subscribe(monsters => this.monsters = monsters);
-  }
-
-  clear(): void {
-  	this.monsterService.clear()
-  		.subscribe(monsters => this.monsters = monsters);
+  	this.monsterService.updateMonster(monster, updated).subscribe();
   }
 
   addToInitiative(monster: Monster): void {
   	let roll = getRandomInt(1, 20);
-  	this.initiativeService.add(monster, roll + monster.initiativeBonus);
+    let monsterCopy = this.monsterService.deepCopyMonster(monster);
+  	this.initiativeService.add(monsterCopy, roll + monster.initiativeBonus);
   }
 
-  addAllToInitiative(): void {
-    for (let monster of this.monsters) {
-      this.addToInitiative(monster);
-    }
+  addEncounterToInitiative(encounter: Encounter): void {
+    this.encounterService.addEncounterToInitiative(encounter);
   }
 
 }
