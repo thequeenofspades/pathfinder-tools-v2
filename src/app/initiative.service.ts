@@ -180,8 +180,18 @@ export class InitiativeService {
     return of(this.order);
   }
 
+  removeCondition(creature: Creature, condition: Condition): Observable<Creature[]> {
+    creature.conditions = creature.conditions.filter(c => c != condition);
+    return of(this.order);
+  }
+
   addNote(creature: Creature, note: string): Observable<Creature[]> {
     creature.notes.push(note);
+    return of(this.order);
+  }
+
+  removeNote(creature: Creature, note: string): Observable<Creature[]> {
+    creature.notes = creature.notes.filter(n => n != note);
     return of(this.order);
   }
 

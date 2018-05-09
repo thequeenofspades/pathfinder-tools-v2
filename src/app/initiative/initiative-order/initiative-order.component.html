@@ -7,8 +7,8 @@
 	Round: {{round}}
 </div>
 <div class="container" *ngIf="order.length" fxLayout="row" fxLayoutGap="10px">
-	<table class="mat-table" fxFlex="2 1 auto">
-		<tr class="mat-row" *ngFor="let creature of order"
+	<table class="mat-table initiativeTable" fxFlex="2 1 auto">
+		<tr class="mat-row initiativeRow" *ngFor="let creature of order"
 			[class.active-creature-row]="creature == order[active]"
 			(click)="selectedCreature = creature">
 
@@ -20,20 +20,24 @@
 				<span *ngIf="!creature.hp"><mat-icon>person</mat-icon></span>
 				<span class="creature-name"> {{creature.name}}</span>
 				<span *ngIf="creature.quantity > 1"> ({{ creature.id }} of {{ creature.quantity }})</span>
-				<mat-chip-list>
-					<mat-chip *ngFor="let condition of creature.conditions">
-						{{condition.name}}
-					</mat-chip>
-				</mat-chip-list>
 			</td>
 
 			<td class="mat-cell initiativeCell">
-				<div *ngIf="creature.hp" fxLayout="column">
-					<span>
-						{{creature.currentHp}}/{{creature.hp}}
-						<button mat-icon-button (click)="openDamageFormDialog(creature)" matTooltip="Damage"><mat-icon svgIcon="sword"></mat-icon></button>
-					</span>
-					<mat-progress-bar mode="determinate" color="warn" [value]="100*(creature.currentHp/creature.hp)"></mat-progress-bar>
+				<div fxLayout="row" fxLayoutAlign="start center">
+					<div *ngIf="creature.hp" fxLayout="column" fxLayoutAlign="center center">
+						<span>
+							{{creature.currentHp}}/{{creature.hp}}
+							<button mat-icon-button (click)="openDamageFormDialog(creature)" matTooltip="Damage"><mat-icon svgIcon="sword"></mat-icon></button>
+						</span>
+						<mat-progress-bar mode="determinate" color="warn" [value]="100*(creature.currentHp/creature.hp)"></mat-progress-bar>
+					</div>
+					<mat-chip-list>
+						<mat-chip *ngFor="let condition of creature.conditions" [removable]="true">
+							<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
+							{{condition.name}}
+							<mat-icon matChipRemove (click)="removeCondition(creature, condition)">cancel</mat-icon>
+						</mat-chip>
+					</mat-chip-list>
 				</div>
 			</td>
 
@@ -68,9 +72,16 @@
 
 				<mat-divider *ngIf="selectedCreature.conditions.length"></mat-divider>
 				<h3 mat-subheader *ngIf="selectedCreature.conditions.length">Conditions</h3>
-				<mat-list-item *ngFor="let condition of selectedCreature.conditions">
+				<mat-chip-list>
+					<mat-chip *ngFor="let condition of selectedCreature.conditions" [removable]="true">
+						<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
+						{{condition.name}}
+						<mat-icon matChipRemove (click)="removeCondition(selectedCreature, condition)">cancel</mat-icon>
+					</mat-chip>
+				</mat-chip-list>
+<!-- 				<mat-list-item *ngFor="let condition of selectedCreature.conditions">
 					{{condition.name}} <span *ngIf="!condition.permanent">({{condition.duration}})</span>
-				</mat-list-item>
+				</mat-list-item> -->
 
 				<mat-divider *ngIf="selectedCreature.notes.length"></mat-divider>
 				<h3 mat-subheader *ngIf="selectedCreature.notes.length">Notes</h3>

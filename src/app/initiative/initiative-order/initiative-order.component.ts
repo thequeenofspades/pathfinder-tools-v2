@@ -25,7 +25,7 @@ export class InitiativeOrderComponent implements OnInit {
     public dialog: MatDialog,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer) {
-      matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl('../../../assets/mdi.svg'));
+      matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl('assets/mdi.svg'));
   }
 
   ngOnInit() {
@@ -131,9 +131,19 @@ export class InitiativeOrderComponent implements OnInit {
   		.subscribe(order => this.order = order);
   }
 
+  removeCondition(creature: Creature, condition: Condition): void {
+    this.initiativeService.removeCondition(creature, condition)
+      .subscribe(order => this.order = order);
+  }
+
   addNote(creature: Creature, note: string): void {
   	this.initiativeService.addNote(creature, note)
   		.subscribe(order => this.order = order);
+  }
+
+  removeNote(creature: Creature, note: string): void {
+    this.initiativeService.removeNote(creature, note)
+      .subscribe(order => this.order = order);
   }
 
   clear(): void {
