@@ -1,0 +1,32 @@
+<div class="button-row">
+	<span matBadge="{{d4.roll}}" [matBadgeHidden]="!d4.roll">
+		<button mat-icon-button #d4 (click)="d4.roll = getRandomInt(1,4)">
+			<mat-icon svgIcon="dice-d4"></mat-icon>
+		</button>
+	</span>
+	<span matBadge="{{d6.roll}}" [matBadgeHidden]="!d6.roll">
+		<button mat-icon-button #d6 (click)="d6.roll = getRandomInt(1,6)">
+			<mat-icon svgIcon="dice-d6"></mat-icon>
+		</button>
+	</span>
+	<span matBadge="{{d8.roll}}" [matBadgeHidden]="!d8.roll">
+		<button mat-icon-button #d8 (click)="d8.roll = getRandomInt(1,8)">
+			<mat-icon svgIcon="dice-d8"></mat-icon>
+		</button>
+	</span>
+	<span matBadge="{{d10.roll}}" [matBadgeHidden]="!d10.roll">
+		<button mat-icon-button #d10 (click)="d10.roll = getRandomInt(1,10)">
+			<mat-icon svgIcon="dice-d10"></mat-icon>
+		</button>
+	</span>
+	<span matBadge="{{d12.roll}}" [matBadgeHidden]="!d12.roll">
+		<button mat-icon-button #d12 (click)="d12.roll = getRandomInt(1,12)">
+			<mat-icon svgIcon="dice-d12"></mat-icon>
+		</button>
+	</span>
+	<span matBadge="{{d20.roll}}" [matBadgeHidden]="!d20.roll">
+		<button mat-icon-button #d20 (click)="d20.roll = getRandomInt(1,20)">
+			<mat-icon svgIcon="dice-d20"></mat-icon>
+		</button>
+	</span>
+</div>

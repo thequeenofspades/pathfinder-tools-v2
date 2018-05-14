@@ -1,0 +1,67 @@
+/* You can add global styles to this file, and also import other style files */
+/*@import url('https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css');
+*/
+/*@import "~@angular/material/prebuilt-themes/pink-bluegrey.css";
+
+@import '~@angular/material/theming';
+
+@include mat-core();*/
+
+@import './pf-app-theme.scss';
+
+mat-progress-bar {
+	min-width: 30px;
+}
+
+.color-bar {
+	background-color: mat-color($pf-app-primary);
+}
+
+.player-card {
+	min-width: 250px;
+	margin: 10px;
+}
+
+.creature-name {
+	font-size: large;
+}
+
+.initiativeTable {
+	border-collapse: collapse;
+}
+
+.initiativeRow:hover {
+	background: rgba(black, 0.04);
+	cursor: pointer;
+}
+
+.active-creature-row {
+	background: mat-color($pf-app-primary);
+}
+
+.active-creature-row:hover {
+	background: mat-color($pf-app-primary, darker);
+}
+
+.initiativeCell {
+	text-align: center;
+	vertical-align: center;
+	padding: 5px;
+}
+
+.health-good {
+	color: mat-color(mat-palette($mat-green));
+}
+
+.health-bad {
+	color: mat-color(mat-palette($mat-yellow));
+}
+
+.health-dead {
+	color: mat-color(mat-palette($mat-red));
+}
+
+.condition-chip-avatar {
+	background-color: mat-color($pf-app-accent);
+	color: black;
+}

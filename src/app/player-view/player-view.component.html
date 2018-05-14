@@ -1,0 +1,42 @@
+<ng-container *ngIf="initiativeService.init$ | async as init">
+	<ng-container *ngIf="init.order.length; else noEncounterMsg">
+		<h2>Round: {{init.round}}</h2>
+		<div fxLayout="row">
+			<table class="mat-table initiativeTable" fxFlex="2 1 auto">
+				<tr class="mat-row initiativeRow" *ngFor="let creature of init.order; index as i"
+					[class.active-creature-row]="i == init.active">
+					<ng-container *ngIf="!creature.hp || creature.visible">
+						<td class="mat-cell initiativeCell">
+							{{creature.initiative}}
+						</td>
+
+						<td class="mat-cell initiativeCell">
+							<span *ngIf="!creature.hp"><mat-icon>person</mat-icon></span>
+							<span class="creature-name"> {{creature.name}}</span>
+							<span *ngIf="creature.quantity > 1"> ({{ creature.idx }} of {{ creature.quantity }})</span>
+						</td>
+
+						<td class="mat-cell initiativeCell">
+							<div fxLayout="row" fxAlign="start center">
+								<div *ngIf="creature.hp" fxFlex="1 1 auto">
+									<mat-progress-bar mode="determinate" color="warn" [value]="100*(creature.currentHp/creature.hp)"></mat-progress-bar>
+								</div>
+								<mat-chip-list fxFlex="2 1 auto">
+									<mat-chip *ngIf="delayed(creature)">
+										delayed
+									</mat-chip>
+									<mat-chip *ngFor="let condition of creature.conditions">
+										{{condition.name}}
+									</mat-chip>
+								</mat-chip-list>
+							</div>
+						</td>
+					</ng-container>
+				</tr>
+			</table>
+		</div>
+	</ng-container>
+	<ng-template #noEncounterMsg>
+		The encounter hasn't started yet.
+	</ng-template>
+</ng-container>

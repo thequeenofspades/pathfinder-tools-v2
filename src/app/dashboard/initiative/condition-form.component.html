@@ -1,0 +1,30 @@
+<h1 mat-dialog-title>Add Condition</h1>
+<div mat-dialog-content>
+  <form [formGroup]="conditionForm" (ngSubmit)="trySubmit()">
+
+    <mat-form-field>
+      <input type="text" placeholder="Condition" matInput formControlName="name" [matAutocomplete]="auto" required>
+    </mat-form-field>
+
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let condition of filteredConditions | async" [value]="condition.name">
+        {{condition.name}}
+      </mat-option>
+    </mat-autocomplete>
+
+    <mat-form-field>
+      <textarea matInput matTextareaAutosize placeholder="Description" formControlName="description"></textarea>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input type="number" matInput placeholder="Duration" formControlName="duration" required>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="permanent">Permanent</mat-checkbox>
+
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button color="primary" (click)="trySubmit()" [disabled]="conditionForm.invalid">Submit</button>
+</div>

@@ -1,0 +1,56 @@
+<mat-expansion-panel #playerFormContainer>
+	<mat-expansion-panel-header>
+		<mat-panel-title>
+			New Player
+		</mat-panel-title>
+		<mat-panel-description>
+			Add a new player
+		</mat-panel-description>
+	</mat-expansion-panel-header>
+	<app-player-form
+		(onSubmitted)="playerService.add($event); playerFormContainer.close()"
+		(onCanceled)="playerFormContainer.close()"></app-player-form>
+</mat-expansion-panel>
+<div class="button-row">
+	<button mat-button (click)="playerService.clear()" color="warn">Clear</button>
+	<button mat-button (click)="playerService.addAllToInitiative()" color="primary">Add All to Initiative</button>
+	<ng-container *ngIf="playerService.players$ | async as players">
+		<button mat-button (click)="rollPerceptionForAll(players)" color="accent">Roll Perception</button>
+		<button mat-button (click)="rollSenseMotiveForAll(players)" color="accent">Roll Sense Motive</button>
+	</ng-container>
+</div>
+<div class="container" fxLayout="row wrap" fxLayoutAlign="center start" fxLayout.xs="column">
+	<mat-card *ngFor="let player of playerService.players$ | async" class="player-card" fxFlex="1 0 250px">
+		<mat-card-title>
+			{{player.name}}
+			<button mat-icon-button matTooltip="Edit" (click)="player.edit=true"><mat-icon svgIcon="pencil"></mat-icon></button>
+			<button mat-icon-button matTooltip="Remove" (click)="playerService.delete(player)"><mat-icon>delete</mat-icon></button>
+		</mat-card-title>
+		<mat-card-content *ngIf="!player.edit">
+			Initiative: <ng-container *ngIf="player.initiativeBonus >= 0">+</ng-container>{{player.initiativeBonus}}<br>
+			Perception: <ng-container *ngIf="player.perceptionBonus >= 0">+</ng-container>{{player.perceptionBonus}}
+			<span matBadge="{{player.notification.perception}}" matBadgeColor="accent" [matBadgeHidden]="!player.notification.perception">
+				<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollPerception(player)">
+					<mat-icon svgIcon="dice-d20"></mat-icon>
+				</button>
+			</span>
+			<br>
+			Sense Motive: <ng-container *ngIf="player.senseMotiveBonus >= 0">+</ng-container>{{player.senseMotiveBonus}}
+			<span matBadge="{{player.notification.senseMotive}}" matBadgeColor="accent" [matBadgeHidden]="!player.notification.senseMotive">
+				<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollSenseMotive(player)">
+					<mat-icon svgIcon="dice-d20"></mat-icon>
+				</button>
+			</span>
+		</mat-card-content>
+		<mat-card-content *ngIf="player.edit">
+			<app-player-form
+				[model]="player"
+				(onSubmitted)="playerService.update(player, $event); player.edit = false"
+				(onCanceled)="player.edit = false"></app-player-form>
+		</mat-card-content>
+		<mat-card-actions *ngIf="!player.edit">
+			<button mat-button (click)="openInitiativeDialog(player)">Add to Initiative (Manual)</button>
+			<button mat-button color="primary" (click)="playerService.addToInitiative(player)">Add to Initiative</button>
+		</mat-card-actions>
+	</mat-card>
+</div>

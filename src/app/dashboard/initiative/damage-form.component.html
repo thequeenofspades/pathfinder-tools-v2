@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Damage/Heal Creature</h1>
+<div mat-dialog-content>
+	<form (ngSubmit)="trySubmit()">
+		<mat-form-field>
+			<input type="number" matInput [formControl]="damage" placeholder="Damage" required>
+		</mat-form-field>
+	</form>
+</div>
+<div mat-dialog-actions>
+	<button mat-button (click)="onCancel()">Cancel</button>
+	<button mat-button [mat-dialog-close]="damage.value" [disabled]="damage.invalid">Submit</button>

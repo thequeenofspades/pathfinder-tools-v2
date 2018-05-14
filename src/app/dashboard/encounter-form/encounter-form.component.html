@@ -1,0 +1,10 @@
+<form (ngSubmit)="submit()" [formGroup]="encounterForm">
+	<mat-form-field>
+		<input matInput type="text" placeholder="Name" required formControlName="name">
+	</mat-form-field>
+
+	<div class="button-row">
+		<button mat-button type="button" (click)="cancel()">Cancel</button>
+		<button mat-button type="submit" color="primary" [disabled]="encounterForm.invalid">Submit</button>
+	</div>
+</form>
