@@ -1,0 +1,27 @@
+<div fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="10px">
+	<a mat-button target="_blank" [routerLink]="['/player', code]">Open Player View</a>
+
+	<mat-expansion-panel>
+		<mat-expansion-panel-header>
+			<mat-panel-title>Player View Options</mat-panel-title>
+			<mat-panel-description>Control what the players can see</mat-panel-description>
+		</mat-expansion-panel-header>
+		<form [formGroup]="optionsForm">
+			<mat-form-field>
+				<mat-select placeholder="Monster health" formControlName="healthOption">
+					<mat-option *ngFor="let opt of healthOptions" [value]="opt">
+						{{opt}}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+
+			<mat-form-field>
+				<mat-select placeholder="Conditions" formControlName="conditionOption">
+					<mat-option *ngFor="let opt of conditionOptions" [value]="opt">
+						{{opt}}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</form>
+	</mat-expansion-panel>
+</div>

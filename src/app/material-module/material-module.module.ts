@@ -18,7 +18,9 @@ import {  MatInputModule,
           MatDividerModule,
           MatChipsModule,
           MatTooltipModule,
-          MatProgressBarModule } from '@angular/material';
+          MatProgressBarModule,
+          MatSelectModule,
+          MatOptionModule } from '@angular/material';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -43,7 +45,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 	MatDividerModule,
 	MatChipsModule,
 	MatTooltipModule,
-	MatProgressBarModule
+	MatProgressBarModule,
+	MatSelectModule,
+	MatOptionModule
   ],
   exports: [
   	FlexLayoutModule,
@@ -65,7 +69,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 	MatDividerModule,
 	MatChipsModule,
 	MatTooltipModule,
-	MatProgressBarModule
+	MatProgressBarModule,
+	MatSelectModule,
+	MatOptionModule
   ]
 })
 export class MaterialModule { }

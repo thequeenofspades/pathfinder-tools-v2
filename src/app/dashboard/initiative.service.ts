@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable, of } from 'rxjs';
+import { take, map } from 'rxjs/operators';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 
 import { Player } from './player';
@@ -59,6 +60,20 @@ export class InitiativeService {
 
   reset(): void {
     this.initDoc.update({round: 1});
+  }
+
+  getPlayerOptions(): Observable<Object> {
+    return Observable.fromPromise(this.initDoc.ref.get()).pipe(
+      take(1),
+      map(doc => {
+        return doc.data().playerOptions;
+      }));
+  }
+
+  updatePlayerOptions(options: Object): void {
+    this.initDoc.update({playerOptions: options}).then(_ => {
+      this.messageService.add('Updated player view options');
+    });
   }
 
   add(creature: Creature, initiative: number = null): void {

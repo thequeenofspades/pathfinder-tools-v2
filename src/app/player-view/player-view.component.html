@@ -17,19 +17,33 @@
 						</td>
 
 						<td class="mat-cell initiativeCell">
-							<div fxLayout="row" fxAlign="start center">
-								<div *ngIf="creature.hp" fxFlex="1 1 auto">
+							<ng-container *ngIf="creature.hp">
+								<div *ngIf="init.playerOptions?.healthOption == 'Health bar'">
 									<mat-progress-bar mode="determinate" color="warn" [value]="100*(creature.currentHp/creature.hp)"></mat-progress-bar>
 								</div>
-								<mat-chip-list fxFlex="2 1 auto">
+								<div *ngIf="init.playerOptions?.healthOption == 'Detailed'">
+									<div>{{ healthCategory(100*(creature.currentHp/creature.hp)) }}</div>
+								</div>
+								<div *ngIf="init.playerOptions?.healthOption == 'Vague'">
+									<div>{{ bloodied(100*(creature.currentHp/creature.hp)) }}</div>
+								</div>
+							</ng-container>
+						</td>
+
+						<td class="mat-cell initiativeCell">
+							<ng-container *ngIf="init.playerOptions?.conditionOption != 'None'">
+								<mat-chip-list>
 									<mat-chip *ngIf="delayed(creature)">
 										delayed
 									</mat-chip>
 									<mat-chip *ngFor="let condition of creature.conditions">
+										<ng-container *ngIf="init.playerOptions?.conditionOption == 'Condition and duration' && !condition.permanent">
+											<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
+										</ng-container>
 										{{condition.name}}
 									</mat-chip>
 								</mat-chip-list>
-							</div>
+							</ng-container>
 						</td>
 					</ng-container>
 				</tr>

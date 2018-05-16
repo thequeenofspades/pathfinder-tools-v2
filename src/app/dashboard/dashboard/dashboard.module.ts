@@ -14,6 +14,7 @@ import { ConditionFormComponent } from '../initiative/condition-form.component';
 import { InitiativeFormComponent } from '../players/initiative-form.component';
 import { NoteFormComponent } from '../initiative/note-form.component';
 import { EncounterFormComponent } from '../encounter-form/encounter-form.component';
+import { PlayerViewOptionsComponent } from '../initiative/player-view-options/player-view-options.component';
 
 import { DiceRollerComponent } from '../../dice-roller/dice-roller.component';
 
@@ -41,7 +42,8 @@ import { DashboardRoutingModule } from '../dashboard-routing/dashboard-routing.m
   	InitiativeFormComponent,
   	NoteFormComponent,
   	EncounterFormComponent,
-  	DiceRollerComponent
+  	DiceRollerComponent,
+    PlayerViewOptionsComponent
   ],
   entryComponents: [
     InitiativeFormComponent,

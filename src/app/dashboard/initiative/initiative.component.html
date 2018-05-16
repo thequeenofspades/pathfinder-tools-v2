@@ -68,7 +68,8 @@
 						</td>
 					</tr>
 				</table>
-				<a mat-button target="_blank" [routerLink]="['/player', code]" fxFlexAlign="center">Open Player View</a>
+				<!-- <a mat-button target="_blank" [routerLink]="['/player', code]" fxFlexAlign="center">Open Player View</a> -->
+				<app-player-view-options [code]="code" [initService]="initiativeService" fxFlexAlign="center"></app-player-view-options>
 			</div>
 			<mat-card fxFlex="1 1 auto" *ngIf="selectedCreature">
 				<mat-card-title>
