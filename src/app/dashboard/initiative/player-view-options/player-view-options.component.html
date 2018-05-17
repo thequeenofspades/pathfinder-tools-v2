@@ -8,6 +8,14 @@
 		</mat-expansion-panel-header>
 		<form [formGroup]="optionsForm">
 			<mat-form-field>
+				<mat-select placeholder="Monster names" formControlName="nameOption">
+					<mat-option *ngFor="let opt of nameOptions" [value]="opt">
+						{{opt}}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+
+			<mat-form-field>
 				<mat-select placeholder="Monster health" formControlName="healthOption">
 					<mat-option *ngFor="let opt of healthOptions" [value]="opt">
 						{{opt}}

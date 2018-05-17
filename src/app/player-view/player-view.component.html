@@ -11,9 +11,21 @@
 						</td>
 
 						<td class="mat-cell initiativeCell">
-							<span *ngIf="!creature.hp"><mat-icon>person</mat-icon></span>
-							<span class="creature-name"> {{creature.name}}</span>
-							<span *ngIf="creature.quantity > 1"> ({{ creature.idx }} of {{ creature.quantity }})</span>
+							<ng-container *ngIf="!creature.hp">
+								<mat-icon>person</mat-icon>
+								<span class="creature-name"> {{creature.name}}</span>
+							</ng-container>
+							<ng-container *ngIf="creature.hp">
+								<span class="creature-name">
+									<ng-container *ngIf="!init.playerOptions || init.playerOptions.nameOption == 'Show names'">
+										 {{creature.name}}
+									</ng-container>
+									<ng-container *ngIf="init.playerOptions?.nameOption == 'Don\'t show'">
+										 Monster
+									</ng-container>
+								</span>
+								<ng-container *ngIf="creature.quantity > 1"> ({{ creature.idx }} of {{ creature.quantity }})</ng-container>
+							</ng-container>
 						</td>
 
 						<td class="mat-cell initiativeCell">

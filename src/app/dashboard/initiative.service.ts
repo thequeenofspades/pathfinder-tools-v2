@@ -22,6 +22,12 @@ class Initiative {
   round: number;
 }
 
+const defaultPlayerOptions = {
+  nameOption: 'Show names',
+  healthOption: 'Health bar',
+  conditionOption: 'Condition only'
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -44,6 +50,7 @@ export class InitiativeService {
           order: [],
           active: 0,
           round: 1,
+          playerOptions: defaultPlayerOptions,
           timestamp: Date.now()});
       } else {
         this.initDoc.update({timestamp: Date.now()});
@@ -66,10 +73,7 @@ export class InitiativeService {
     return Observable.fromPromise(this.initDoc.ref.get()).pipe(
       take(1),
       map(doc => {
-        return doc.data().playerOptions ? doc.data().playerOptions : {
-          'healthOption': 'None',
-          'conditionOption': 'None'
-        };
+        return doc.data().playerOptions ? doc.data().playerOptions : defaultPlayerOptions;
       }));
   }
 

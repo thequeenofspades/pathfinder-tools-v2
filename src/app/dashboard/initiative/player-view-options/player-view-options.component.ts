@@ -14,6 +14,7 @@ export class PlayerViewOptionsComponent implements OnInit {
 
   ngOnInit() {
   	this.optionsForm = this.fb.group({
+  		nameOption: '',
   		healthOption: '',
   		conditionOption: ''
   	});
@@ -28,6 +29,7 @@ export class PlayerViewOptionsComponent implements OnInit {
 
   optionsForm: FormGroup;
 
+  nameOptions: string[] = ['Show names', "Don't show"];
   healthOptions: string[] = ['Health bar', 'Detailed', 'Vague', 'None'];
   conditionOptions: string[] = ['Condition and duration', 'Condition only', 'None'];
 
