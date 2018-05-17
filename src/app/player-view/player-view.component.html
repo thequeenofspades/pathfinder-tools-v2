@@ -1,5 +1,5 @@
 <ng-container *ngIf="initiativeService.init$ | async as init">
-	<ng-container *ngIf="init.order.length; else noEncounterMsg">
+	<ng-container *ngIf="init.order?.length; else noEncounterMsg">
 		<h2>Round: {{init.round}}</h2>
 		<div fxLayout="row">
 			<table class="mat-table initiativeTable" fxFlex="2 1 auto">

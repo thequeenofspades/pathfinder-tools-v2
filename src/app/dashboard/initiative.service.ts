@@ -39,7 +39,7 @@ export class InitiativeService {
   setup(sessionId: string): void {
     this.initDoc = this.db.collection('sessions').doc(sessionId);
     this.initDoc.ref.get().then(doc => {
-      if (!doc.data()) {
+      if (!doc.data().order) {
         this.initDoc.set({
           order: [],
           active: 0,
@@ -66,7 +66,10 @@ export class InitiativeService {
     return Observable.fromPromise(this.initDoc.ref.get()).pipe(
       take(1),
       map(doc => {
-        return doc.data().playerOptions;
+        return doc.data().playerOptions ? doc.data().playerOptions : {
+          'healthOption': 'None',
+          'conditionOption': 'None'
+        };
       }));
   }
 

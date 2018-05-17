@@ -1,6 +1,6 @@
 <app-dice-roller></app-dice-roller>
 <ng-container *ngIf="initiativeService.init$ | async as init">
-	<ng-container *ngIf="init.order.length">
+	<ng-container *ngIf="init.order?.length">
 		<div class="button-row">
 			<button mat-button (click)="initiativeService.clear()" color="warn">Clear</button>
 			<button mat-button (click)="initiativeService.previous()">Previous</button>
@@ -50,12 +50,12 @@
 						<td class="mat-cell initiativeCell">
 							<button mat-icon-button (click)="openConditionFormDialog(creature)" matTooltip="Add Condition"><mat-icon svgIcon="skull"></mat-icon></button>
 							<button mat-icon-button (click)="openNoteFormDialog(creature)" type="button" matTooltip="Add Note"><mat-icon>note_add</mat-icon></button>
-							<span *ngIf="!delayed(creature)">
+							<ng-container *ngIf="!delayed(creature)">
 								<button mat-icon-button (click)="initiativeService.delay(creature)" matTooltip="Delay"><mat-icon>snooze</mat-icon></button>
-							</span>
-							<span *ngIf="delayed(creature)">
+							</ng-container>
+							<ng-container *ngIf="delayed(creature)">
 								<button mat-icon-button (click)="initiativeService.undelay(creature)" color="primary" matTooltip="Undelay"><mat-icon>alarm_on</mat-icon></button>
-							</span>
+							</ng-container>
 							<button mat-icon-button (click)="initiativeService.moveUp(creature)" matTooltip="Move Up"><mat-icon>arrow_upward</mat-icon></button>
 							<button mat-icon-button (click)="initiativeService.moveDown(creature)" matTooltip="Move Down"><mat-icon>arrow_downward</mat-icon></button>
 							<button mat-icon-button matTooltip="Make Invisible to Players" *ngIf="creature.hp && creature.visible" (click)="initiativeService.toggleVisible(creature)">
