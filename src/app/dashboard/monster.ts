@@ -15,5 +15,7 @@ export class Monster {
 		public notes: string[] = [],
 		public conScore: number = 10,
 		public notification: any = {},
-		) { }
+		) {
+			this.currentHp = this.hp;
+		}
 }

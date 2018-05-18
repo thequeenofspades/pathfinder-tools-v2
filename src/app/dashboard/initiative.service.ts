@@ -109,7 +109,8 @@ export class InitiativeService {
       creatures.forEach((creature, i) => {
         let creatureCopy = {
           ...creature,
-          initiative: getRandomInt(1, 20) + creature.initiativeBonus
+          initiative: getRandomInt(1, 20) + creature.initiativeBonus,
+          id: this.db.createId()
         };
         let insertIndex = order.findIndex(c => this.goesBefore(creatureCopy, c));
         if (insertIndex < 0) insertIndex = order.length;

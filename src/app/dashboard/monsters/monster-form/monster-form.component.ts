@@ -38,13 +38,13 @@ export class MonsterFormComponent implements OnInit {
   }
 
   onSubmit() {
-    let monster = new Monster('', 100);
     let form = this.monsterForm;
-    monster.name = form.get('name').value;
-    monster.hp = form.get('hp').value;
+    let monster = new Monster(
+      form.get('name').value,
+      form.get('hp').value,
+      form.get('initiativeBonus').value,
+      form.get('perceptionBonus').value);
     monster.conScore = form.get('conScore').value;
-    monster.initiativeBonus = form.get('initiativeBonus').value;
-    monster.perceptionBonus = form.get('perceptionBonus').value;
     monster.quantity = form.get('quantity').value;
     this.onSubmitted.emit(monster);
   }
