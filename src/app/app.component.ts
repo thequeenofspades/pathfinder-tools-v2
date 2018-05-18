@@ -18,6 +18,5 @@ export class AppComponent {
       db.firestore.settings({
       	timestampsInSnapshots: true
       });
-      db.firestore.enablePersistence();
   }
 }
