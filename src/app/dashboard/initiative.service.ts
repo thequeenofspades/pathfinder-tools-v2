@@ -25,7 +25,8 @@ class Initiative {
 const defaultPlayerOptions = {
   nameOption: 'Show names',
   healthOption: 'Health bar',
-  conditionOption: 'Condition only'
+  conditionOption: 'Condition only',
+  visibleOption: 'invisible'
 }
 
 @Injectable({
@@ -86,11 +87,13 @@ export class InitiativeService {
   add(creature: Creature, initiative: number = null): void {
     this.initDoc.ref.get().then(doc => {
       let order = doc.data().order || [];
+      let playerOptions = doc.data().playerOptions || {}
       if (initiative == null) initiative = getRandomInt(1, 20) + creature.initiativeBonus;
       let creatureCopy = {
         ...creature,
         initiative: initiative,
-        id: this.db.createId()
+        id: this.db.createId(),
+        visible: (playerOptions.visibleOption == 'visible')
       };
       let insertIndex = order.findIndex(c => this.goesBefore(creatureCopy, c));
       if (insertIndex < 0) {
@@ -106,11 +109,13 @@ export class InitiativeService {
   addMultiple(creatures: Creature[]): void {
     this.initDoc.ref.get().then(doc => {
       let order = doc.data().order || [];
+      let playerOptions = doc.data().playerOptions || {}
       creatures.forEach((creature, i) => {
         let creatureCopy = {
           ...creature,
           initiative: getRandomInt(1, 20) + creature.initiativeBonus,
-          id: this.db.createId()
+          id: this.db.createId(),
+          visible: (playerOptions.visibleOption == 'visible')
         };
         let insertIndex = order.findIndex(c => this.goesBefore(creatureCopy, c));
         if (insertIndex < 0) insertIndex = order.length;
@@ -261,6 +266,18 @@ export class InitiativeService {
       cr.visible = !cr.visible;
       this.initDoc.update({order: order});
     })
+  }
+
+  toggleAllVisible(visible: boolean): void {
+    this.initDoc.ref.get().then(doc => {
+      let order = doc.data().order || [];
+      for (let creature of order) {
+        if (creature.hp) {
+          creature.visible = visible;
+        }
+      }
+      this.initDoc.update({order: order});
+    });
   }
 
   damage(creature: Creature, amount: number): void {

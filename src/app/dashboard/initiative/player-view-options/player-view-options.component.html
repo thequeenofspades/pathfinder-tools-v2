@@ -30,6 +30,21 @@
 					</mat-option>
 				</mat-select>
 			</mat-form-field>
+
+			<mat-form-field appearance="standard">
+				<mat-select formControlName="visibleOption">
+					<mat-option *ngFor="let opt of visibleOptions" [value]="opt">
+						{{opt}}
+					</mat-option>
+				</mat-select>
+				<span matPrefix>Monsters you add are&nbsp;</span>
+				<span matSuffix>&nbsp;by default.</span>
+			</mat-form-field>
 		</form>
+
+		<div class="button-row">
+			<button mat-button (click)="initService.toggleAllVisible(true)">Make All Visible</button>
+			<button mat-button (click)="initService.toggleAllVisible(false)">Make All Invisible</button>
+		</div>
 	</mat-expansion-panel>
 </div>

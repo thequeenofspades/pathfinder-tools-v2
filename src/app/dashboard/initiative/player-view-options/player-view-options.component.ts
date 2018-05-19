@@ -16,7 +16,8 @@ export class PlayerViewOptionsComponent implements OnInit {
   	this.optionsForm = this.fb.group({
   		nameOption: '',
   		healthOption: '',
-  		conditionOption: ''
+  		conditionOption: '',
+      visibleOption: ''
   	});
   	this.initService.getPlayerOptions().subscribe(opts => {
   		this.optionsForm.setValue(opts);
@@ -32,6 +33,7 @@ export class PlayerViewOptionsComponent implements OnInit {
   nameOptions: string[] = ['Show names', "Don't show"];
   healthOptions: string[] = ['Health bar', 'Detailed', 'Vague', 'None'];
   conditionOptions: string[] = ['Condition and duration', 'Condition only', 'None'];
+  visibleOptions: string[] = ['visible', 'invisible'];
 
   updateOptions(): void {
   	this.initService.updatePlayerOptions(this.optionsForm.value);
