@@ -82,6 +82,7 @@
 			</ng-container>
 			<ng-container *ngIf="encounter.edit && !encounter.new">
 				<app-encounter-form
+					[name]="encounter.name"
 					(onSubmitted)="encounterService.rename(encounter, $event); encounter.edit=false"
 					(onCanceled)="encounter.edit=false"></app-encounter-form>
 			</ng-container>

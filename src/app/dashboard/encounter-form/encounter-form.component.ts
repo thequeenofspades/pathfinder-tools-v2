@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { EncounterService } from '../encounter.service';
@@ -17,6 +17,7 @@ export class EncounterFormComponent implements OnInit {
   	this.createForm();
   }
 
+  @Input() name: string;
   @Output() onSubmitted = new EventEmitter<string>();
   @Output() onCanceled = new EventEmitter();
 
@@ -24,7 +25,7 @@ export class EncounterFormComponent implements OnInit {
 
   createForm(): void {
   	this.encounterForm = this.fb.group({
-  		'name': ['', Validators.required]
+  		'name': [this.name || '', Validators.required]
   	});
   }
 
