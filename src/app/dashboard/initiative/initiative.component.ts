@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatChipSelectionChange } from '@angular/material';
 import { Observable, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 
@@ -11,6 +11,7 @@ import { Condition } from '../condition';
 import { NoteFormComponent } from './note-form.component';
 import { ConditionFormComponent } from './condition-form.component';
 import { DamageFormComponent } from './damage-form.component';
+import { ConditionDetailComponent } from './condition-detail/condition-detail.component';
 
 type Creature = Player | Monster;
 
@@ -71,6 +72,18 @@ export class InitiativeComponent implements OnInit {
         this.initiativeService.addNote(creature, note);
       }
     });
+  }
+
+  openConditionDetailDialog(event: MatChipSelectionChange, condition: Condition): void {
+    if (event.selected) {
+      let dialogRef = this.dialog.open(ConditionDetailComponent, {
+        width: '250px',
+        data: condition
+      });
+      dialogRef.afterClosed().subscribe(_ => {
+        event.source.deselect();
+      });
+    }
   }
 
   rollPerception(creature: Creature): void {

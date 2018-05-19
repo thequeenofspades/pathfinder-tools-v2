@@ -36,12 +36,15 @@
 									<mat-progress-bar mode="determinate" color="warn" [value]="100*(creature.currentHp/creature.hp)"></mat-progress-bar>
 								</div>
 								<mat-chip-list>
-									<mat-chip *ngFor="let condition of creature.conditions" [removable]="true">
+									<mat-chip 	*ngFor="let condition of creature.conditions"
+												[removable]="true"
+												(removed)="initiativeService.removeCondition(creature, condition)"
+												(selectionChange)="openConditionDetailDialog($event, condition)">
 										<ng-container *ngIf="!condition.permanent">
 											<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
 										</ng-container>
 										{{condition.name}}
-										<mat-icon matChipRemove (click)="initiativeService.removeCondition(creature, condition)">cancel</mat-icon>
+										<mat-icon matChipRemove>cancel</mat-icon>
 									</mat-chip>
 								</mat-chip-list>
 							</div>
@@ -109,12 +112,15 @@
 						<mat-divider *ngIf="selectedCreature.conditions.length"></mat-divider>
 						<h3 mat-subheader *ngIf="selectedCreature.conditions.length">Conditions</h3>
 						<mat-chip-list>
-							<mat-chip *ngFor="let condition of selectedCreature.conditions" [removable]="true">
+							<mat-chip 	*ngFor="let condition of selectedCreature.conditions"
+										[removable]="true"
+										(remove)="initiativeService.removeCondition(selectedCreature, condition)"
+										(selectionChange)="openConditionDetailDialog($event, condition)">
 								<ng-container *ngIf="!condition.permanent">
 									<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
 								</ng-container>
 								{{condition.name}}
-								<mat-icon matChipRemove (click)="initiativeService.removeCondition(selectedCreature, condition)">cancel</mat-icon>
+								<mat-icon matChipRemove>cancel</mat-icon>
 							</mat-chip>
 						</mat-chip-list>
 

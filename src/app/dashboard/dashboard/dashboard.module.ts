@@ -20,6 +20,7 @@ import { DiceRollerComponent } from '../../dice-roller/dice-roller.component';
 
 import { MaterialModule } from '../../material-module/material-module.module';
 import { DashboardRoutingModule } from '../dashboard-routing/dashboard-routing.module';
+import { ConditionDetailComponent } from '../initiative/condition-detail/condition-detail.component';
 
 @NgModule({
   imports: [
@@ -43,13 +44,15 @@ import { DashboardRoutingModule } from '../dashboard-routing/dashboard-routing.m
   	NoteFormComponent,
   	EncounterFormComponent,
   	DiceRollerComponent,
-    PlayerViewOptionsComponent
+    PlayerViewOptionsComponent,
+    ConditionDetailComponent
   ],
   entryComponents: [
     InitiativeFormComponent,
     NoteFormComponent,
     ConditionFormComponent,
-    DamageFormComponent
+    DamageFormComponent,
+    ConditionDetailComponent
   ]
 })
 export class DashboardModule { }
