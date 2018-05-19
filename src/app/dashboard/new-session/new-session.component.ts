@@ -47,12 +47,16 @@ export class NewSessionComponent implements OnInit {
     });
     this.localStorage.getItem<string[]>('sessionCodes').subscribe(codes => {
       let sessionCodes = codes || {};
-      this.savedSessions = sessionCodes;
       this.savedCodes = Object.keys(sessionCodes);
       this.savedCodes = this.savedCodes.filter(c => this.ds.checkSession(c));
       this.savedCodes.sort(function(a, b) {
         return sessionCodes[b] - sessionCodes[a];
       });
+      this.savedSessions = {};
+      this.savedCodes.forEach(c => {
+        this.savedSessions[c] = sessionCodes[c];
+      });
+      this.localStorage.setItemSubscribe('sessionCodes', this.savedCodes);
     });
   }
 
