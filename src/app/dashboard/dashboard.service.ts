@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map, take, filter } from 'rxjs/operators';
+import { from } from 'rxjs/observable/from';
 
 @Injectable({
   providedIn: 'root'
@@ -30,12 +31,24 @@ export class DashboardService {
   		take(1),
   		map(doc => {
   			if (doc.data()) {
+          console.log(id, 'is valid');
   				return true;
   			} else {
+          console.log(id, 'is invalid');
   				return false;
   			}
   		})
   	);
+  }
+
+  filterValidSessions(codes: string[]): Observable<string[]> {
+    return Observable.fromPromise(this.db.collection('sessions').ref.get()).pipe(
+      take(1),
+      map(qs => {
+        let validCodes = {};
+        qs.docs.forEach(doc => validCodes[doc.id] = 1);
+        return codes.filter(c => validCodes[c]);
+      }));
   }
 
   goToSessionDM(id: string): void {

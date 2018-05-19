@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, AsyncValidatorFn, AbstractControl } from '@angular/forms';
 import { LocalStorage } from '@ngx-pwa/local-storage';
 import * as moment from 'moment';
+import { Observable } from 'rxjs';
 
 import { DashboardService } from '../dashboard.service';
 
@@ -47,16 +48,16 @@ export class NewSessionComponent implements OnInit {
     });
     this.localStorage.getItem<string[]>('sessionCodes').subscribe(codes => {
       let sessionCodes = codes || {};
-      this.savedCodes = Object.keys(sessionCodes);
-      this.savedCodes = this.savedCodes.filter(c => this.ds.checkSession(c));
-      this.savedCodes.sort(function(a, b) {
-        return sessionCodes[b] - sessionCodes[a];
+      this.ds.filterValidSessions(Object.keys(sessionCodes)).subscribe(validCodes => {
+        this.savedCodes = validCodes.sort(function(a, b) {
+          return sessionCodes[b] - sessionCodes[a];
+        });
+        this.savedSessions = {};
+        this.savedCodes.forEach(c => {
+          this.savedSessions[c] = sessionCodes[c];
+        });
+        this.localStorage.setItemSubscribe('sessionCodes', this.savedSessions);
       });
-      this.savedSessions = {};
-      this.savedCodes.forEach(c => {
-        this.savedSessions[c] = sessionCodes[c];
-      });
-      this.localStorage.setItemSubscribe('sessionCodes', this.savedCodes);
     });
   }
 
