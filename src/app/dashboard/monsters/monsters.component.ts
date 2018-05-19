@@ -17,6 +17,8 @@ export class MonstersComponent implements OnInit {
     public encounterService: EncounterService,
     private route: ActivatedRoute) { }
 
+  badges = {};
+
   ngOnInit() {
     this.route.data.subscribe((data: {id: string}) => {
       this.initiativeService.setup(data.id);
@@ -45,6 +47,18 @@ export class MonstersComponent implements OnInit {
   rollSenseMotive(monster: Monster): void {
     let roll = getRandomInt(1, 20);
     monster.notification.senseMotive = `${roll+monster.senseMotiveBonus}`;
+  }
+
+  rollPerceptionForEncounter(encounter: Encounter): void {
+    for (let monster of encounter.monsters) {
+      this.badges[monster.id] = getRandomInt(1, 20) + monster.perceptionBonus;
+    }
+  }
+
+  rollSMForEncounter(encounter: Encounter): void {
+    for (let monster of encounter.monsters) {
+      this.badges[monster.id] = getRandomInt(1, 20) + monster.senseMotiveBonus;
+    }
   }
 
 }

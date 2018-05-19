@@ -77,7 +77,7 @@ export class InitiativeComponent implements OnInit {
   openConditionDetailDialog(event: MatChipSelectionChange, condition: Condition): void {
     if (event.selected) {
       let dialogRef = this.dialog.open(ConditionDetailComponent, {
-        width: '250px',
+        width: '400px',
         data: condition
       });
       dialogRef.afterClosed().subscribe(_ => {

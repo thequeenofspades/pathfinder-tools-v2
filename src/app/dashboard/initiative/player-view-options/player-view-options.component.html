@@ -7,24 +7,27 @@
 			<mat-panel-description>Control what the players can see</mat-panel-description>
 		</mat-expansion-panel-header>
 		<form [formGroup]="optionsForm">
-			<mat-form-field>
-				<mat-select placeholder="Monster names" formControlName="nameOption">
+			<mat-form-field appearance="outline">
+				<mat-label>Monster names</mat-label>
+				<mat-select formControlName="nameOption">
 					<mat-option *ngFor="let opt of nameOptions" [value]="opt">
 						{{opt}}
 					</mat-option>
 				</mat-select>
 			</mat-form-field>
 
-			<mat-form-field>
-				<mat-select placeholder="Monster health" formControlName="healthOption">
+			<mat-form-field appearance="outline">
+				<mat-label>Monster health</mat-label>
+				<mat-select formControlName="healthOption">
 					<mat-option *ngFor="let opt of healthOptions" [value]="opt">
 						{{opt}}
 					</mat-option>
 				</mat-select>
 			</mat-form-field>
 
-			<mat-form-field>
-				<mat-select placeholder="Conditions" formControlName="conditionOption">
+			<mat-form-field appearance="outline">
+				<mat-label>Conditions</mat-label>
+				<mat-select formControlName="conditionOption">
 					<mat-option *ngFor="let opt of conditionOptions" [value]="opt">
 						{{opt}}
 					</mat-option>
@@ -43,8 +46,8 @@
 		</form>
 
 		<div class="button-row">
-			<button mat-button (click)="initService.toggleAllVisible(true)">Make All Visible</button>
-			<button mat-button (click)="initService.toggleAllVisible(false)">Make All Invisible</button>
+			<button mat-raised-button (click)="initService.toggleAllVisible(true)">Make All Visible</button>
+			<button mat-raised-button (click)="initService.toggleAllVisible(false)">Make All Invisible</button>
 		</div>
 	</mat-expansion-panel>
 </div>

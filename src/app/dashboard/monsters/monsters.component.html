@@ -1,29 +1,31 @@
-<mat-expansion-panel #monsterFormContainer>
-	<mat-expansion-panel-header>
-		<mat-panel-title>
-			New Monster
-		</mat-panel-title>
-		<mat-panel-description>
-			Add new monster(s) directly to initiative
-		</mat-panel-description>
-	</mat-expansion-panel-header>
-	<app-monster-form
-		(onSubmitted)="add($event); monsterFormContainer.close()"
-		(onCanceled)="monsterFormContainer.close()"></app-monster-form>
-</mat-expansion-panel>
-<mat-expansion-panel #encounterFormContainer>
-	<mat-expansion-panel-header>
-		<mat-panel-title>
-			New Encounter
-		</mat-panel-title>
-		<mat-panel-description>
-			Create a new encounter
-		</mat-panel-description>
-	</mat-expansion-panel-header>
-	<app-encounter-form
-		(onSubmitted)="encounterService.newEncounter($event); encounterFormContainer.close()"
-		(onCanceled)="encounterFormContainer.close()"></app-encounter-form>
-</mat-expansion-panel>
+<mat-accordion>
+	<mat-expansion-panel #monsterFormContainer>
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				New Monster
+			</mat-panel-title>
+			<mat-panel-description>
+				Add new monster(s) directly to initiative
+			</mat-panel-description>
+		</mat-expansion-panel-header>
+		<app-monster-form
+			(onSubmitted)="add($event); monsterFormContainer.close()"
+			(onCanceled)="monsterFormContainer.close()"></app-monster-form>
+	</mat-expansion-panel>
+	<mat-expansion-panel #encounterFormContainer>
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				New Encounter
+			</mat-panel-title>
+			<mat-panel-description>
+				Create a new encounter
+			</mat-panel-description>
+		</mat-expansion-panel-header>
+		<app-encounter-form
+			(onSubmitted)="encounterService.newEncounter($event); encounterFormContainer.close()"
+			(onCanceled)="encounterFormContainer.close()"></app-encounter-form>
+	</mat-expansion-panel>
+</mat-accordion>
 <div class="container" fxLayout="row wrap" fxLayoutAlign="center start" fxLayout.xs="column">
 	<mat-card *ngFor="let encounter of encounterService.encounters$ | async" class="player-card" fxFlex="1 0 500px">
 		<mat-card-title>
@@ -38,7 +40,7 @@
 			<ng-container *ngIf="!encounter.new && !encounter.edit">
 				<mat-accordion>
 					<mat-expansion-panel *ngFor="let monster of encounter.monsters">
-						<mat-expansion-panel-header>
+						<mat-expansion-panel-header matBadge="{{badges[monster.id]}}" [matBadgeHidden]="!badges[monster.id]" matBadgeColor="accent" matBadgePosition="before">
 							<mat-panel-title>
 								{{monster.name}} <ng-container *ngIf="monster.quantity > 1">({{ monster.idx }} of {{ monster.quantity }})</ng-container>
 							</mat-panel-title>
@@ -86,6 +88,8 @@
 		</mat-card-content>
 		<mat-card-actions *ngIf="!encounter.new && !encounter.edit">
 			<button mat-button color="primary" (click)="encounterService.addEncounterToInitiative(encounter)" [disabled]="!encounter.monsters.length">Add to Initiative</button>
+			<button mat-button color="accent" (click)="rollPerceptionForEncounter(encounter)" [disabled]="!encounter.monsters.length">Roll Perception</button>
+			<button mat-button color="accent" (click)="rollSMForEncounter(encounter)" [disabled]="!encounter.monsters.length">Roll Sense Motive</button>
 		</mat-card-actions>
 	</mat-card>
 </div>

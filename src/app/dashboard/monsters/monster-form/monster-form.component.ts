@@ -29,6 +29,7 @@ export class MonsterFormComponent implements OnInit {
       conScore: [this.model.conScore, Validators.required],
       initiativeBonus: [this.model.initiativeBonus, Validators.required],
       perceptionBonus: [this.model.perceptionBonus, Validators.required],
+      senseMotiveBonus: [this.model.senseMotiveBonus, Validators.required],
       quantity: [this.model.quantity, Validators.required]
     })
   }
@@ -43,9 +44,10 @@ export class MonsterFormComponent implements OnInit {
       form.get('name').value,
       form.get('hp').value,
       form.get('initiativeBonus').value,
-      form.get('perceptionBonus').value);
-    monster.conScore = form.get('conScore').value;
-    monster.quantity = form.get('quantity').value;
+      form.get('perceptionBonus').value,
+      form.get('senseMotiveBonus').value,
+      form.get('conScore').value,
+      form.get('quantity').value);
     this.onSubmitted.emit(monster);
   }
 

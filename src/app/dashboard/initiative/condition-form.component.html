@@ -3,8 +3,9 @@
   <form [formGroup]="conditionForm" (ngSubmit)="trySubmit()">
     <div fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="10px">
       <div fxLayout="column">
-        <mat-form-field>
-          <input type="text" placeholder="Condition" matInput formControlName="name" [matAutocomplete]="auto" required>
+        <mat-form-field appearance="outline">
+          <mat-label>Condition</mat-label>
+          <input type="text" matInput formControlName="name" [matAutocomplete]="auto" required>
         </mat-form-field>
         <mat-autocomplete #auto="matAutocomplete">
           <mat-option *ngFor="let condition of filteredConditions | async" [value]="condition.name">
@@ -12,20 +13,22 @@
           </mat-option>
         </mat-autocomplete>
 
-        <mat-form-field>
-          <input type="number" matInput placeholder="Duration" formControlName="duration" required (keyup.enter)="trySubmit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Duration</mat-label>
+          <input type="number" matInput formControlName="duration" required (keyup.enter)="trySubmit()">
         </mat-form-field>
 
         <mat-checkbox formControlName="permanent" (keyup.enter)="trySubmit()">Permanent</mat-checkbox>
       </div>
 
-      <mat-form-field>
-        <textarea matInput matTextareaAutosize [matAutosizeMaxRows]="7" placeholder="Description" formControlName="description"></textarea>
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput matTextareaAutosize [matAutosizeMaxRows]="9" formControlName="description"></textarea>
       </mat-form-field>
     </div>
   </form>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-button color="primary" (click)="trySubmit()" [disabled]="conditionForm.invalid">Submit</button>
+  <button mat-raised-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="trySubmit()" [disabled]="conditionForm.invalid">Submit</button>
 </div>

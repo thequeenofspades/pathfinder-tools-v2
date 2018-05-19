@@ -11,14 +11,14 @@
 		(onSubmitted)="playerService.add($event); playerFormContainer.close()"
 		(onCanceled)="playerFormContainer.close()"></app-player-form>
 </mat-expansion-panel>
-<div class="button-row">
-	<button mat-button (click)="playerService.clear()" color="warn">Clear</button>
-	<button mat-button (click)="playerService.addAllToInitiative()" color="primary">Add All to Initiative</button>
-	<ng-container *ngIf="playerService.players$ | async as players">
+<ng-container *ngIf="playerService.players$ | async as players">
+	<div class="button-row" *ngIf="players.length">
+		<button mat-button (click)="playerService.clear()" color="warn">Clear</button>
+		<button mat-button (click)="playerService.addAllToInitiative()" color="primary">Add All to Initiative</button>
 		<button mat-button (click)="rollPerceptionForAll(players)" color="accent">Roll Perception</button>
 		<button mat-button (click)="rollSenseMotiveForAll(players)" color="accent">Roll Sense Motive</button>
-	</ng-container>
-</div>
+	</div>
+</ng-container>
 <div class="container" fxLayout="row wrap" fxLayoutAlign="center start" fxLayout.xs="column">
 	<mat-card *ngFor="let player of playerService.players$ | async" class="player-card" fxFlex="1 0 250px">
 		<mat-card-title>
