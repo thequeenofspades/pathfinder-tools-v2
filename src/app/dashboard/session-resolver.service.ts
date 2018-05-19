@@ -3,6 +3,7 @@ import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@a
 import { Observable, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { AngularFirestore } from 'angularfire2/firestore';
+import { LocalStorage } from '@ngx-pwa/local-storage';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,8 @@ import { AngularFirestore } from 'angularfire2/firestore';
 export class SessionResolverService implements Resolve<string> {
 
   constructor(private router: Router,
-  	private db: AngularFirestore) { }
+  	private db: AngularFirestore,
+    protected localStorage: LocalStorage) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<string> {
   	let id = route.paramMap.get('id');
@@ -18,6 +20,11 @@ export class SessionResolverService implements Resolve<string> {
   		take(1),
   		map(doc => {
   			if (doc.data()) {
+          this.localStorage.getItem<string[]>('sessionCodes').subscribe(codes => {
+            let sessionCodes = codes || {};
+            sessionCodes[id] = Date.now();
+            this.localStorage.setItemSubscribe('sessionCodes', sessionCodes);
+          });
   				return id;
   			} else {
   				this.router.navigate(['/dashboard']);

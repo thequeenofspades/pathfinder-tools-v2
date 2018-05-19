@@ -9,11 +9,19 @@
 		<p>Start a session, or continue an old one.</p>
 		<button mat-raised-button color="primary" (click)="start()">Start</button>
 		<form (ngSubmit)="restart()">
-			<mat-form-field>
-				<input matInput placeholder="Code" [formControl]="codeDM" required>
+			<mat-form-field appearance="standard" hintLabel="4-character code">
+				<mat-label>Code</mat-label>
+				<input matInput [formControl]="codeDM" [matAutocomplete]="autoDM" required>
 				<mat-error *ngIf="codeDM.errors?.minlength || codeDM.errors?.maxlength">Must be 4 characters long</mat-error>
 				<mat-error *ngIf="codeDM.hasError('dne')">Session does not exist</mat-error>
 			</mat-form-field>
+
+			<mat-autocomplete #autoDM="matAutocomplete">
+				<mat-option *ngFor="let code of savedCodes" [value]="code">
+					{{code}} ({{ savedSessions[code] | amFromUtc | amLocale:'en' | amTimeAgo }})
+				</mat-option>
+			</mat-autocomplete>
+
 			<button mat-raised-button color="primary" (click)="restart()" [disabled]="codeDM.invalid">Continue</button>
 		</form>
 	</div>
@@ -21,11 +29,19 @@
 		<h2>Player?</h2>
 		<p>Join a session created by your DM.</p>
 		<form (ngSubmit)="go()">
-			<mat-form-field>
-				<input matInput placeholder="Code" [formControl]="codePlayer" required>
+			<mat-form-field appearance="standard" hintLabel="4-character code">
+				<mat-label>Code</mat-label>
+				<input matInput [formControl]="codePlayer" [matAutocomplete]="autoPlayer" required>
 				<mat-error *ngIf="codePlayer.errors?.minlength || codePlayer.errors?.maxlength">Must be 4 characters long</mat-error>
 				<mat-error *ngIf="codePlayer.hasError('dne')">Session does not exist</mat-error>
 			</mat-form-field>
+
+			<mat-autocomplete #autoPlayer="matAutocomplete">
+				<mat-option *ngFor="let code of savedCodes" [value]="code">
+					{{code}} ({{ savedSessions[code] | amFromUtc | amLocale:'en' | amTimeAgo }})
+				</mat-option>
+			</mat-autocomplete>
+
 			<button mat-raised-button color="primary" (click)="go()" [disabled]="codePlayer.invalid">Go</button>
 		</form>
 	</div>

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, AsyncValidatorFn, AbstractControl } from '@angular/forms';
+import { LocalStorage } from '@ngx-pwa/local-storage';
+import * as moment from 'moment';
 
 import { DashboardService } from '../dashboard.service';
 
@@ -10,15 +12,49 @@ import { DashboardService } from '../dashboard.service';
 })
 export class NewSessionComponent implements OnInit {
 
-  constructor(private ds: DashboardService) { }
+  constructor(private ds: DashboardService,
+    protected localStorage: LocalStorage) { }
 
   ngOnInit() {
   	this.codeDM = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)], this.codeValidator.bind(this));
     this.codePlayer = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)], this.codeValidator.bind(this));
+    this.getOldCodes();
   }
 
   codeDM: FormControl;
   codePlayer: FormControl;
+  savedCodes: string[];
+  savedSessions: Object;
+
+  getOldCodes(): void {
+    moment.updateLocale('en', {
+      relativeTime: {
+        future: "in %s",
+        past: "%s",
+        s: "just now",
+        ss: '%ds ago',
+        m: "1m ago",
+        mm: "%dm ago",
+        h: "1h ago",
+        hh: "%dh ago",
+        d: "1d ago",
+        dd: "%dd ago",
+        M: "1mo ago",
+        MM: "%dmo ago",
+        y: "1yr ago",
+        yy: "%dyr ago"
+      }
+    });
+    this.localStorage.getItem<string[]>('sessionCodes').subscribe(codes => {
+      let sessionCodes = codes || {};
+      this.savedSessions = sessionCodes;
+      this.savedCodes = Object.keys(sessionCodes);
+      this.savedCodes = this.savedCodes.filter(c => this.ds.checkSession(c));
+      this.savedCodes.sort(function(a, b) {
+        return sessionCodes[b] - sessionCodes[a];
+      });
+    });
+  }
 
   start(): void {
   	this.ds.newSession();

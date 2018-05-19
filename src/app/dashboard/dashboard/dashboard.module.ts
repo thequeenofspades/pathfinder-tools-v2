@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { MomentModule } from 'ngx-moment';
+
 import { NewSessionComponent } from '../new-session/new-session.component';
 import { DashboardComponent } from '../dashboard.component';
 import { PlayersComponent } from '../players/players.component';
@@ -28,7 +30,8 @@ import { ConditionDetailComponent } from '../initiative/condition-detail/conditi
     MaterialModule,
     DashboardRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MomentModule
   ],
   declarations: [
     NewSessionComponent,
