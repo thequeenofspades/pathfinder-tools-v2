@@ -31,10 +31,8 @@ export class DashboardService {
   		take(1),
   		map(doc => {
   			if (doc.data()) {
-          console.log(id, 'is valid');
   				return true;
   			} else {
-          console.log(id, 'is invalid');
   				return false;
   			}
   		})

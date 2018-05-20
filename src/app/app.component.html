@@ -1,4 +1,19 @@
-<mat-toolbar>
-	<span>{{title}}</span>
-</mat-toolbar>
-<router-outlet></router-outlet>
+<mat-sidenav-container>
+	<mat-sidenav #sidenav role="navigation" class="main-sidenav">
+		<mat-nav-list fxLayout="column">
+			<!--Workaround to keep the first button from being automatically highlighted; see https://github.com/angular/material2/issues/3215-->
+			<a mat-nav-list-item mat-button style="height: 0; position: absolute;"></a>
+			<!--End workaround-->
+			<a mat-nav-list-item mat-button routerLink="/">Home</a>
+			<a mat-nav-list-item mat-button routerLink="/dashboard/">Dashboard</a>
+			<a mat-nav-list-item mat-button disabled>Character</a>
+			<a mat-nav-list-item mat-button disabled>Spells</a>
+		</mat-nav-list>
+	</mat-sidenav>
+	<mat-sidenav-content role="main">
+		<mat-toolbar>
+			<button mat-icon-button (click)="sidenav.toggle()"><mat-icon>menu</mat-icon></button><span>{{title}}</span>
+		</mat-toolbar>
+		<router-outlet></router-outlet>
+	</mat-sidenav-content>
+</mat-sidenav-container>

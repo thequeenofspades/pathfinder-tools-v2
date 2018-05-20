@@ -1,6 +1,5 @@
-import { Component, OnInit} from '@angular/core';
-import { MatDialog, MatChipSelectionChange } from '@angular/material';
-import { Observable, Subject } from 'rxjs';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 
 import { Player } from '../player';
@@ -12,6 +11,7 @@ import { NoteFormComponent } from './note-form.component';
 import { ConditionFormComponent } from './condition-form.component';
 import { DamageFormComponent } from './damage-form.component';
 import { ConditionDetailComponent } from './condition-detail/condition-detail.component';
+import { CreatureDetailComponent } from './creature-detail/creature-detail.component'
 
 type Creature = Player | Monster;
 
@@ -27,19 +27,24 @@ export class InitiativeComponent implements OnInit {
     public dialog: MatDialog,
     private route: ActivatedRoute) { }
 
+  @ViewChild(CreatureDetailComponent) private detailComponent: CreatureDetailComponent;
+
   ngOnInit() {
     this.route.data.subscribe((data: {id: string}) => {
       this.code = data.id;
       this.initiativeService.setup(data.id);
-      this.initiativeService.init$.subscribe(i => {
-        if (i) this.selectedCreature = (i.order || [])[i.active || 0];
-      });
     });
   }
 
   code: string;
 
-  selectedCreature: Creature;
+  selectCreature(creature: Creature): void {
+    this.detailComponent.creature = creature;
+    this.initiativeService.init$.subscribe(_ => {
+        this.initiativeService.get(this.detailComponent.creature.id).subscribe(c => 
+          this.detailComponent.creature = c);
+      });
+  }
 
   openDamageFormDialog(creature: Creature): void {
     let dialogRef = this.dialog.open(DamageFormComponent, {
@@ -74,26 +79,11 @@ export class InitiativeComponent implements OnInit {
     });
   }
 
-  openConditionDetailDialog(event: MatChipSelectionChange, condition: Condition): void {
-    if (event.selected) {
+  openConditionDetailDialog(condition: Condition): void {
       let dialogRef = this.dialog.open(ConditionDetailComponent, {
         width: '400px',
         data: condition
       });
-      dialogRef.afterClosed().subscribe(_ => {
-        event.source.deselect();
-      });
-    }
-  }
-
-  rollPerception(creature: Creature): void {
-    let roll = this.getRandomInt(1, 20);
-    creature.notification.perception = `${roll+creature.perceptionBonus}`;
-  }
-
-  rollSenseMotive(creature: Creature): void {
-    let roll = this.getRandomInt(1, 20);
-    creature.notification.senseMotive = `${roll+creature.senseMotiveBonus}`;
   }
 
   adjusted(creature: Creature): boolean {

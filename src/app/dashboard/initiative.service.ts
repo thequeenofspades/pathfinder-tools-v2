@@ -84,6 +84,14 @@ export class InitiativeService {
     });
   }
 
+  get(id: string): Observable<Creature> {
+    return Observable.fromPromise(this.initDoc.ref.get()).pipe(
+      map(doc => {
+        let order = doc.data().order || [];
+        return order.find(c => c.id == id);
+      }));
+  }
+
   add(creature: Creature, initiative: number = null): void {
     this.initDoc.ref.get().then(doc => {
       let order = doc.data().order || [];

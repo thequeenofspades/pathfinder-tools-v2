@@ -18,7 +18,7 @@
 
 			<mat-autocomplete #autoDM="matAutocomplete">
 				<mat-option *ngFor="let code of savedCodes" [value]="code">
-					{{code}} ({{ savedSessions[code] | amFromUtc | amLocale:'en' | amTimeAgo }})
+					{{ code | uppercase }} ({{ savedSessions[code] | amFromUtc | amLocale:'en' | amTimeAgo }})
 				</mat-option>
 			</mat-autocomplete>
 
@@ -38,7 +38,7 @@
 
 			<mat-autocomplete #autoPlayer="matAutocomplete">
 				<mat-option *ngFor="let code of savedCodes" [value]="code">
-					{{code}} ({{ savedSessions[code] | amFromUtc | amLocale:'en' | amTimeAgo }})
+					{{ code | uppercase }} ({{ savedSessions[code] | amFromUtc | amLocale:'en' | amTimeAgo }})
 				</mat-option>
 			</mat-autocomplete>
 

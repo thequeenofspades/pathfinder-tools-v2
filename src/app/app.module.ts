@@ -18,7 +18,7 @@ import { MessageService } from './message.service';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,

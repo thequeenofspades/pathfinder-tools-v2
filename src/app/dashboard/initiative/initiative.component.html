@@ -10,135 +10,82 @@
 		Round: {{init.round}}
 		<button mat-button (click)="initiativeService.reset()">Reset</button>
 
-		<div class="container" fxLayout="row" fxLayoutGap="10px">
-			<div fxLayout="column" fxLayoutGap="10px" fxFlex="2 1 auto">
-				<table class="mat-table initiativeTable">
-					<tr class="mat-row initiativeRow" *ngFor="let creature of init.order; index as i"
-						[class.active-creature-row]="i == init.active"
-						(click)="selectedCreature = creature">
-						<td class="mat-cell initiativeCell">
-							{{creature.initiative}}
-						</td>
+		<mat-drawer-container [hasBackdrop]="true">
 
-						<td class="mat-cell initiativeCell">
-							<span *ngIf="!creature.hp"><mat-icon>person</mat-icon></span>
-							<span class="creature-name"> {{creature.name}}</span>
-							<ng-container *ngIf="creature.quantity > 1"> ({{ creature.idx }} of {{ creature.quantity }})</ng-container>
-						</td>
+			<mat-drawer #detailDrawer mode="side">
+				<app-creature-detail #creatureDetail [initService]="initiativeService"></app-creature-detail>
+			</mat-drawer>
 
-						<td class="mat-cell initiativeCell">
-							<div fxLayout="row" fxLayoutAlign="start center">
-								<div *ngIf="creature.hp" fxLayout="column" fxLayoutAlign="center center">
-									<span>
-										{{creature.currentHp}}/{{creature.hp}}
-										<button mat-icon-button (click)="openDamageFormDialog(creature)" matTooltip="Damage"><mat-icon svgIcon="sword"></mat-icon></button>
-									</span>
-									<mat-progress-bar mode="determinate" color="warn" [value]="100*(creature.currentHp/creature.hp)"></mat-progress-bar>
+			<mat-drawer-content>
+				<div fxLayout="column" fxLayoutGap="10px" fxFlex="2 1 auto">
+					<table class="mat-table initiativeTable">
+						<tr class="mat-row initiativeRow" *ngFor="let creature of init.order; index as i"
+							[class.active-creature-row]="i == init.active"
+							(click)="selectCreature(creature); detailDrawer.open()">
+
+							<td class="mat-cell initiativeCell">
+								{{creature.initiative}}
+							</td>
+
+							<td class="mat-cell initiativeCell">
+								<span *ngIf="!creature.hp"><mat-icon>person</mat-icon></span>
+								<span class="creature-name"> {{creature.name}}</span>
+								<ng-container *ngIf="creature.quantity > 1"> ({{ creature.idx }} of {{ creature.quantity }})</ng-container>
+							</td>
+
+							<td class="mat-cell initiativeCell">
+								<div fxLayout="row" fxLayoutAlign="start center">
+									<div *ngIf="creature.hp" fxLayout="column" fxLayoutAlign="center center">
+										<span>
+											{{creature.currentHp}}/{{creature.hp}}
+											<button mat-icon-button appStopClick (click)="openDamageFormDialog(creature)" matTooltip="Damage"><mat-icon svgIcon="sword"></mat-icon></button>
+										</span>
+										<mat-progress-bar mode="determinate" color="warn" [value]="100*(creature.currentHp/creature.hp)"></mat-progress-bar>
+									</div>
+									<mat-chip-list>
+										<mat-chip 	*ngFor="let condition of creature.conditions"
+													[removable]="true"
+													(click)="openConditionDetailDialog(condition)">
+											<ng-container *ngIf="!condition.permanent">
+												<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
+											</ng-container>
+											{{condition.name}}
+											<mat-icon matChipRemove appStopClick (click)="initiativeService.removeCondition(creature, condition)">cancel</mat-icon>
+										</mat-chip>
+									</mat-chip-list>
 								</div>
-								<mat-chip-list>
-									<mat-chip 	*ngFor="let condition of creature.conditions"
-												[removable]="true"
-												(removed)="initiativeService.removeCondition(creature, condition)"
-												(selectionChange)="openConditionDetailDialog($event, condition)">
-										<ng-container *ngIf="!condition.permanent">
-											<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
-										</ng-container>
-										{{condition.name}}
-										<mat-icon matChipRemove>cancel</mat-icon>
-									</mat-chip>
-								</mat-chip-list>
-							</div>
-						</td>
+							</td>
 
-						<td class="mat-cell initiativeCell">
-							<button mat-icon-button (click)="openConditionFormDialog(creature)" matTooltip="Add Condition"><mat-icon svgIcon="skull"></mat-icon></button>
-							<button mat-icon-button (click)="openNoteFormDialog(creature)" type="button" matTooltip="Add Note"><mat-icon>note_add</mat-icon></button>
-							<ng-container *ngIf="!delayed(creature)">
-								<button mat-icon-button (click)="initiativeService.delay(creature)" matTooltip="Delay"><mat-icon>snooze</mat-icon></button>
-							</ng-container>
-							<ng-container *ngIf="delayed(creature)">
-								<button mat-icon-button (click)="initiativeService.undelay(creature)" color="primary" matTooltip="Undelay"><mat-icon>alarm_on</mat-icon></button>
-							</ng-container>
-							<button mat-icon-button (click)="initiativeService.moveUp(creature)" matTooltip="Move Up"><mat-icon>arrow_upward</mat-icon></button>
-							<button mat-icon-button (click)="initiativeService.moveDown(creature)" matTooltip="Move Down"><mat-icon>arrow_downward</mat-icon></button>
-							<button mat-icon-button matTooltip="Make Invisible to Players" *ngIf="creature.hp && creature.visible" (click)="initiativeService.toggleVisible(creature)">
-								<mat-icon svgIcon="eye"></mat-icon>
-							</button>
-							<button mat-icon-button matTooltip="Make Visible to Players" *ngIf="creature.hp && !creature.visible" (click)="initiativeService.toggleVisible(creature)">
-								<mat-icon svgIcon="eye-off"></mat-icon>
-							</button>
-							<button mat-icon-button (click)="initiativeService.remove(creature)" matTooltip="Remove"><mat-icon>delete</mat-icon></button>
-						</td>
-					</tr>
-				</table>
-				<!-- <a mat-button target="_blank" [routerLink]="['/player', code]" fxFlexAlign="center">Open Player View</a> -->
-				<app-player-view-options [code]="code" [initService]="initiativeService" fxFlexAlign="center"></app-player-view-options>
-			</div>
-			<mat-card fxFlex="1 1 auto" *ngIf="selectedCreature">
-				<mat-card-title>
-					{{selectedCreature.name}}
-					<ng-container *ngIf="selectedCreature.quantity > 1"> ({{ selectedCreature.idx }} of {{ selectedCreature.quantity }})</ng-container>
-				</mat-card-title>
-				<mat-card-content>
-					<mat-list>
-
-						<h3 mat-subheader>Basics</h3>
-						<mat-list-item>
-							Initiative: {{selectedCreature.initiative - selectedCreature.initiativeBonus}} <ng-container *ngIf="selectedCreature.initiativeBonus >= 0">+</ng-container> {{selectedCreature.initiativeBonus}}
-						</mat-list-item>
-						<mat-list-item *ngIf="selectedCreature.hp">
-							HP: {{selectedCreature.currentHp}}/{{selectedCreature.hp}}
-						</mat-list-item>
-						<mat-list-item *ngIf="selectedCreature.conScore">
-							Constitution: {{selectedCreature.conScore}}
-						</mat-list-item>
-						<mat-list-item>
-							Perception: <ng-container *ngIf="selectedCreature.perceptionBonus >= 0">+</ng-container>{{selectedCreature.perceptionBonus}}
-							<span matBadge="{{selectedCreature.notification.perception}}" matBadgeColor="accent" [matBadgeHidden]="!selectedCreature.notification.perception">
-								<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollPerception(selectedCreature)">
-									<mat-icon svgIcon="dice-d20"></mat-icon>
-								</button>
-							</span>
-						</mat-list-item>
-						<mat-list-item *ngIf="selectedCreature.senseMotiveBonus !== undefined">
-							Sense Motive: <ng-container *ngIf="selectedCreature.senseMotiveBonus >= 0">+</ng-container>{{selectedCreature.senseMotiveBonus}}
-							<span matBadge="{{selectedCreature.notification.senseMotive}}" matBadgeColor="accent" [matBadgeHidden]="!selectedCreature.notification.senseMotive">
-								<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollSenseMotive(selectedCreature)">
-									<mat-icon svgIcon="dice-d20"></mat-icon>
-								</button>
-							</span>
-						</mat-list-item>
-
-						<mat-divider *ngIf="selectedCreature.conditions.length"></mat-divider>
-						<h3 mat-subheader *ngIf="selectedCreature.conditions.length">Conditions</h3>
-						<mat-chip-list>
-							<mat-chip 	*ngFor="let condition of selectedCreature.conditions"
-										[removable]="true"
-										(remove)="initiativeService.removeCondition(selectedCreature, condition)"
-										(selectionChange)="openConditionDetailDialog($event, condition)">
-								<ng-container *ngIf="!condition.permanent">
-									<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
+							<td class="mat-cell initiativeCell">
+								<button mat-icon-button appStopClick (click)="openConditionFormDialog(creature)" matTooltip="Add Condition"><mat-icon svgIcon="skull"></mat-icon></button>
+								<button mat-icon-button appStopClick (click)="openNoteFormDialog(creature)" type="button" matTooltip="Add Note"><mat-icon>note_add</mat-icon></button>
+								<ng-container *ngIf="!delayed(creature)">
+									<button mat-icon-button appStopClick (click)="initiativeService.delay(creature)" matTooltip="Delay"><mat-icon>snooze</mat-icon></button>
 								</ng-container>
-								{{condition.name}}
-								<mat-icon matChipRemove>cancel</mat-icon>
-							</mat-chip>
-						</mat-chip-list>
+								<ng-container *ngIf="delayed(creature)">
+									<button mat-icon-button appStopClick (click)="initiativeService.undelay(creature)" color="primary" matTooltip="Undelay">
+										<mat-icon>alarm_on</mat-icon>
+									</button>
+								</ng-container>
+								<button mat-icon-button appStopClick (click)="initiativeService.moveUp(creature)" matTooltip="Move Up">
+									<mat-icon>arrow_upward</mat-icon>
+								</button>
+								<button mat-icon-button appStopClick (click)="initiativeService.moveDown(creature)" matTooltip="Move Down"><mat-icon>arrow_downward</mat-icon></button>
+								<button mat-icon-button appStopClick matTooltip="Make Invisible to Players" *ngIf="creature.hp && creature.visible" (click)="initiativeService.toggleVisible(creature)">
+									<mat-icon svgIcon="eye"></mat-icon>
+								</button>
+								<button mat-icon-button appStopClick matTooltip="Make Visible to Players" *ngIf="creature.hp && !creature.visible" (click)="initiativeService.toggleVisible(creature)">
+									<mat-icon svgIcon="eye-off"></mat-icon>
+								</button>
+								<button mat-icon-button appStopClick (click)="initiativeService.remove(creature)" matTooltip="Remove"><mat-icon>delete</mat-icon></button>
+							</td>
+						</tr>
+					</table>
+					<app-player-view-options [code]="code" [initService]="initiativeService" fxFlexAlign="center"></app-player-view-options>
+				</div>
+			</mat-drawer-content>
 
-						<mat-divider *ngIf="selectedCreature.notes.length"></mat-divider>
-						<h3 mat-subheader *ngIf="selectedCreature.notes.length">Notes</h3>
-						<mat-chip-list>
-							<mat-chip *ngFor="let note of selectedCreature.notes" [removable]="true">
-								{{note}}
-								<mat-icon matChipRemove (click)="initiativeService.removeNote(selectedCreature, note)">cancel</mat-icon>
-							</mat-chip>
-						</mat-chip-list>
+		</mat-drawer-container>
 
-					</mat-list>
-				</mat-card-content>
-				<mat-card-actions>
-					<button mat-button (click)="selectedCreature = null">Close</button>
-				</mat-card-actions>
-			</mat-card>
-		</div>
 	</ng-container>
 </ng-container>

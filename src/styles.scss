@@ -9,6 +9,10 @@
 
 @import './pf-app-theme.scss';
 
+.main-sidenav {
+	padding: 10px;
+}
+
 mat-progress-bar {
 	min-width: 30px;
 }

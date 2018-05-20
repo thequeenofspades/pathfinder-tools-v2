@@ -21,7 +21,8 @@ import {  MatInputModule,
           MatProgressBarModule,
           MatSelectModule,
           MatOptionModule,
-          MatGridListModule } from '@angular/material';
+          MatGridListModule,
+          MatSidenavModule } from '@angular/material';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -49,7 +50,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 	MatProgressBarModule,
 	MatSelectModule,
 	MatOptionModule,
-	MatGridListModule
+	MatGridListModule,
+	MatSidenavModule
   ],
   exports: [
   	FlexLayoutModule,
@@ -74,7 +76,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 	MatProgressBarModule,
 	MatSelectModule,
 	MatOptionModule,
-	MatGridListModule
+	MatGridListModule,
+	MatSidenavModule
   ]
 })
 export class MaterialModule { }
