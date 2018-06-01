@@ -53,7 +53,7 @@
 							Constitution: {{monster.conScore}}<br>
 							Initiative: <ng-container *ngIf="monster.initiativeBonus >= 0">+</ng-container>{{monster.initiativeBonus}}<br>
 							Perception: <ng-container *ngIf="monster.perceptionBonus >= 0">+</ng-container>{{monster.perceptionBonus}}
-							<span matBadge="{{monster.notification.perception}}" matBadgeColor="accent" [matBadgeHidden]="!monster.notification.perception">
+							<span matBadge="{{monster.notification.perception}}" matBadgeColor="accent" [matBadgeHidden]="monster.notification.perception == undefined">
 								<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollPerception(monster)">
 									<mat-icon svgIcon="dice-d20"></mat-icon>
 								</button>

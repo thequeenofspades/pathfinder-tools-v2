@@ -29,14 +29,14 @@
 		<mat-card-content *ngIf="!player.edit">
 			Initiative: <ng-container *ngIf="player.initiativeBonus >= 0">+</ng-container>{{player.initiativeBonus}}<br>
 			Perception: <ng-container *ngIf="player.perceptionBonus >= 0">+</ng-container>{{player.perceptionBonus}}
-			<span matBadge="{{player.notification.perception}}" matBadgeColor="accent" [matBadgeHidden]="!player.notification.perception">
+			<span matBadge="{{player.notification.perception}}" matBadgeColor="accent" [matBadgeHidden]="player.notification.perception == undefined">
 				<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollPerception(player)">
 					<mat-icon svgIcon="dice-d20"></mat-icon>
 				</button>
 			</span>
 			<br>
 			Sense Motive: <ng-container *ngIf="player.senseMotiveBonus >= 0">+</ng-container>{{player.senseMotiveBonus}}
-			<span matBadge="{{player.notification.senseMotive}}" matBadgeColor="accent" [matBadgeHidden]="!player.notification.senseMotive">
+			<span matBadge="{{player.notification.senseMotive}}" matBadgeColor="accent" [matBadgeHidden]="player.notification.senseMotive == undefined">
 				<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollSenseMotive(player)">
 					<mat-icon svgIcon="dice-d20"></mat-icon>
 				</button>

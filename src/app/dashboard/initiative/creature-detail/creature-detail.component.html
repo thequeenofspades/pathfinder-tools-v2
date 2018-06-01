@@ -22,7 +22,7 @@
 				</mat-list-item>
 				<mat-list-item>
 					Perception: <ng-container *ngIf="creature.perceptionBonus >= 0">+</ng-container>{{creature.perceptionBonus}}
-					<span matBadge="{{perceptionBadges[creature.id]}}" matBadgeColor="accent" [matBadgeHidden]="!perceptionBadges[creature.id]">
+					<span matBadge="{{perceptionBadges[creature.id]}}" matBadgeColor="accent" [matBadgeHidden]="perceptionBadges[creature.id] == undefined">
 						<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollPerception(creature)">
 							<mat-icon svgIcon="dice-d20"></mat-icon>
 						</button>
@@ -30,7 +30,7 @@
 				</mat-list-item>
 				<mat-list-item *ngIf="creature.senseMotiveBonus !== undefined">
 					Sense Motive: <ng-container *ngIf="creature.senseMotiveBonus >= 0">+</ng-container>{{creature.senseMotiveBonus}}
-					<span matBadge="{{smBadges[creature.id]}}" matBadgeColor="accent" [matBadgeHidden]="!smBadges[creature.id]">
+					<span matBadge="{{smBadges[creature.id]}}" matBadgeColor="accent" [matBadgeHidden]="smBadges[creature.id] == undefined">
 						<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollSenseMotive(creature)">
 							<mat-icon svgIcon="dice-d20"></mat-icon>
 						</button>
