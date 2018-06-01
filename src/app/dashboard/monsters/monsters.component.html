@@ -40,7 +40,7 @@
 			<ng-container *ngIf="!encounter.new && !encounter.edit">
 				<mat-accordion>
 					<mat-expansion-panel *ngFor="let monster of encounter.monsters">
-						<mat-expansion-panel-header matBadge="{{badges[monster.id]}}" [matBadgeHidden]="!badges[monster.id]" matBadgeColor="accent" matBadgePosition="before">
+						<mat-expansion-panel-header matBadge="{{badges[monster.id]}}" [matBadgeHidden]="badges[monster.id] == undefined" matBadgeColor="accent" matBadgePosition="before">
 							<mat-panel-title>
 								{{monster.name}} <ng-container *ngIf="monster.quantity > 1">({{ monster.idx }} of {{ monster.quantity }})</ng-container>
 							</mat-panel-title>
