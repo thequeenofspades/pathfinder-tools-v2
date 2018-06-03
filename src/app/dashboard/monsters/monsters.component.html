@@ -57,6 +57,12 @@
 								<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollPerception(monster)">
 									<mat-icon svgIcon="dice-d20"></mat-icon>
 								</button>
+							</span><br>
+							Sense Motive: <ng-container *ngIf="monster.senseMotiveBonus >= 0">+</ng-container>{{monster.senseMotiveBonus}}
+							<span matBadge="{{monster.notification.senseMotive}}" matBadgeColor="accent" [matBadgeHidden]="monster.notification.senseMotive == undefined">
+								<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollSenseMotive(monster)">
+									<mat-icon svgIcon="dice-d20"></mat-icon>
+								</button>
 							</span>
 							<mat-action-row>
 								<button mat-button (click)="monster.edit=true">Edit</button>
