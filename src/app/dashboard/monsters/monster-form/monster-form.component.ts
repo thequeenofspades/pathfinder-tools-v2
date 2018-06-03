@@ -31,10 +31,12 @@ export class MonsterFormComponent implements OnInit {
       initiativeBonus: [this.model.initiativeBonus, Validators.required],
       perceptionBonus: [this.model.perceptionBonus, Validators.required],
       senseMotiveBonus: [this.model.senseMotiveBonus, Validators.required],
-      quantity: [this.model.quantity, Validators.required]
+      quantity: [this.model.quantity, Validators.required],
+      idx: [this.model.idx]
     });
     if (this.model.name != '') {
       this.monsterForm.get('quantity').clearValidators();
+      this.monsterForm.get('idx').setValidators([Validators.required]);
       this.showQuantity = false;
     };
   }
@@ -52,7 +54,8 @@ export class MonsterFormComponent implements OnInit {
       perceptionBonus: form.get('perceptionBonus').value,
       senseMotiveBonus: form.get('senseMotiveBonus').value,
       conScore: form.get('conScore').value,
-      quantity: form.get('quantity').value
+      quantity: form.get('quantity').value,
+      idx: form.get('idx').value
     };
     this.onSubmitted.emit(monster);
   }
