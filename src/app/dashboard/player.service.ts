@@ -73,7 +73,7 @@ export class PlayerService {
 
   clear(): void {
     this.messageService.add('Cleared all players');
-    this.db.collection('players').ref.get()
+    this.playersCollection.ref.get()
       .then(result => result.forEach(doc => doc.ref.delete()));
   }
 
@@ -88,11 +88,7 @@ export class PlayerService {
   }
 
   addAllToInitiative(): void {
-    // this.db.collection('players').ref.get()
-    //   .then(result => result.docs.forEach(doc => {
-    //     this.addToInitiative(this.convertPlayer(doc.data()));
-    //   }));
-    this.db.collection('players').ref.get()
+    this.playersCollection.ref.get()
       .then(q => {
         let players = q.docs.map(doc => {
           return this.convertPlayer(doc.data());
