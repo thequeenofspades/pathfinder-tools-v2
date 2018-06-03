@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 
@@ -23,6 +23,15 @@ type Creature = Player | Monster;
 })
 export class InitiativeComponent implements OnInit {
 
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (this.listenArrowKeys) {
+      event.stopPropagation();
+      if (event.key == 'ArrowRight') this.initiativeService.advance();
+      if (event.key == 'ArrowLeft') this.initiativeService.previous();
+    }
+  };
+
   constructor(public initiativeService: InitiativeService,
     public dialog: MatDialog,
     private route: ActivatedRoute) { }
@@ -40,6 +49,8 @@ export class InitiativeComponent implements OnInit {
 
   badges = {};
 
+  listenArrowKeys: boolean = true;
+
   selectCreature(creature: Creature): void {
     this.detailComponent.creature = creature;
     this.initiativeService.init$.subscribe(_ => {
@@ -49,10 +60,12 @@ export class InitiativeComponent implements OnInit {
   }
 
   openDamageFormDialog(creature: Creature): void {
+    this.listenArrowKeys = false;
     let dialogRef = this.dialog.open(DamageFormComponent, {
       width: '250px'
     });
     dialogRef.afterClosed().subscribe(dmg => {
+      this.listenArrowKeys = true;
       if (dmg !== undefined) {
         this.initiativeService.damage(creature, dmg);
       }
@@ -60,10 +73,12 @@ export class InitiativeComponent implements OnInit {
   }
 
   openConditionFormDialog(creature: Creature): void {
+    this.listenArrowKeys = false;
     let dialogRef = this.dialog.open(ConditionFormComponent, {
       width: '500px'
     });
     dialogRef.afterClosed().subscribe(condition => {
+      this.listenArrowKeys = true;
       if (condition !== undefined) {
         this.initiativeService.applyCondition(creature, condition);
       }
@@ -71,10 +86,12 @@ export class InitiativeComponent implements OnInit {
   }
 
   openNoteFormDialog(creature: Creature): void {
+    this.listenArrowKeys = false;
     let dialogRef = this.dialog.open(NoteFormComponent, {
       width: '250px'
     });
     dialogRef.afterClosed().subscribe(note => {
+      this.listenArrowKeys = true;
       if (note !== undefined) {
         this.initiativeService.addNote(creature, note);
       }
@@ -82,10 +99,12 @@ export class InitiativeComponent implements OnInit {
   }
 
   openConditionDetailDialog(condition: Condition): void {
-      let dialogRef = this.dialog.open(ConditionDetailComponent, {
-        width: '400px',
-        data: condition
-      });
+    this.listenArrowKeys = false;
+    let dialogRef = this.dialog.open(ConditionDetailComponent, {
+      width: '400px',
+      data: condition
+    });
+    dialogRef.afterClosed().subscribe(() => this.listenArrowKeys = true);
   }
 
   rollPerception(creatures: Creature[]): void {
