@@ -3,8 +3,8 @@
 	<ng-container *ngIf="init.order?.length">
 		<div class="button-row">
 			<button mat-button (click)="initiativeService.clear()" color="warn">Clear</button>
-			<button mat-button (click)="initiativeService.previous()">Previous</button>
-			<button mat-button (click)="initiativeService.advance()" color="primary">Advance</button>
+			<button mat-button (click)="initiativeService.previous()"><mat-icon svgIcon="arrow-left-bold-box-outline"></mat-icon>Previous</button>
+			<button mat-button (click)="initiativeService.advance()" color="primary">Advance<mat-icon svgIcon="arrow-right-bold-box-outline"></mat-icon></button>
 			<button mat-button (click)="rollPerception(init.order)" color="accent">Roll Perception</button>
 		</div>
 
