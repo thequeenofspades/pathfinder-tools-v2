@@ -17,10 +17,11 @@ export class MonsterFormComponent implements OnInit {
   }
 
   @Input() model: Monster = new Monster('', 100);
-  @Output() onSubmitted = new EventEmitter<Monster>();
+  @Output() onSubmitted = new EventEmitter<Object>();
   @Output() onCanceled = new EventEmitter();
 
   monsterForm : FormGroup;
+  showQuantity: boolean = true;
 
   createForm(): void {
     this.monsterForm = this.fb.group({
@@ -31,7 +32,11 @@ export class MonsterFormComponent implements OnInit {
       perceptionBonus: [this.model.perceptionBonus, Validators.required],
       senseMotiveBonus: [this.model.senseMotiveBonus, Validators.required],
       quantity: [this.model.quantity, Validators.required]
-    })
+    });
+    if (this.model.name != '') {
+      this.monsterForm.get('quantity').clearValidators();
+      this.showQuantity = false;
+    };
   }
 
   onCancel() {
@@ -40,14 +45,15 @@ export class MonsterFormComponent implements OnInit {
 
   onSubmit() {
     let form = this.monsterForm;
-    let monster = new Monster(
-      form.get('name').value,
-      form.get('hp').value,
-      form.get('initiativeBonus').value,
-      form.get('perceptionBonus').value,
-      form.get('senseMotiveBonus').value,
-      form.get('conScore').value,
-      form.get('quantity').value);
+    let monster = {
+      name: form.get('name').value,
+      hp: form.get('hp').value,
+      initiativeBonus: form.get('initiativeBonus').value,
+      perceptionBonus: form.get('perceptionBonus').value,
+      senseMotiveBonus: form.get('senseMotiveBonus').value,
+      conScore: form.get('conScore').value,
+      quantity: form.get('quantity').value
+    };
     this.onSubmitted.emit(monster);
   }
 

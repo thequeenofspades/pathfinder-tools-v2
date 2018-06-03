@@ -79,7 +79,7 @@ export class EncounterService {
     });
   }
 
-  update(encounter: {id: string}, monster: {id: string}, updated: Monster): void {
+  update(encounter: {id: string}, monster: {id: string}, updated: {name: string}): void {
     this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
       let monsters = doc.data().monsters || [];
       let monsterref = monsters.find(m => m.id == monster.id);
