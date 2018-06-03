@@ -6,7 +6,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { Player } from './player';
 import { Monster } from './monster';
 import { MessageService } from '../message.service';
-import { Condition } from './condition';
+import { Condition, CONDITIONS } from './condition';
 
 interface Creature {
   id: string;
@@ -340,17 +340,17 @@ export class InitiativeService {
     if (monster.currentHp - amount <= -1 * monster.conScore) {
       this.messageService.add(`${monster.name} died!`);
       monster.attributes.push('dead');
-      let deadCondition = new Condition('dead', 0, true);
+      let deadCondition = new Condition('dead', 0, true, CONDITIONS.find(c => c.name == 'dead').description);
       this.addConditionSync(monster, deadCondition, false);
     } else if (monster.currentHp - amount < 0 && monster.currentHp - amount > -1 * monster.conScore) {
       this.messageService.add(`${monster.name} is dying!`);
       monster.attributes.push('dying');
-      let dyingCondition = new Condition('dying', 0, true);
+      let dyingCondition = new Condition('dying', 0, true, CONDITIONS.find(c => c.name == 'dying').description);
       this.addConditionSync(monster, dyingCondition, false);
     } else if (monster.currentHp - amount == 0) {
       this.messageService.add(`${monster.name} is at 0 hp and disabled`);
       monster.attributes.push('disabled');
-      let disabledCondition = new Condition('disabled', 0, true);
+      let disabledCondition = new Condition('disabled', 0, true, CONDITIONS.find(c => c.name == 'disabled').description);
       this.addConditionSync(monster, disabledCondition, false);
     } else if (monster.currentHp - amount <= monster.hp / 2 && !(monster.currentHp > monster.hp / 2)) {
       this.messageService.add(`${monster.name} became bloodied`);
@@ -367,7 +367,7 @@ export class InitiativeService {
     if (log) {
       this.messageService.add(`${creature.name} became ${condition.name} for ${condition.duration} rounds`);
     }
-    creature.conditions.push(condition);
+    creature.conditions.push({...condition});
   }
 
   goesBefore(c1: any, c2: any) : boolean {
