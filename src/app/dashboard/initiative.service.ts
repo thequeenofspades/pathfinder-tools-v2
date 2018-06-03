@@ -308,11 +308,11 @@ export class InitiativeService {
     });
   }
 
-  removeCondition(creature: Creature, condition: Condition): void {
+  removeCondition(creature: Creature, condition: {id: string}): void {
     this.initDoc.ref.get().then(doc => {
       let order = doc.data().order || [];
       let cr = order.find(c => c.id == creature.id);
-      cr.conditions = cr.conditions.filter(c => c.name != condition.name);
+      cr.conditions = cr.conditions.filter(c => c.id != condition.id);
       this.initDoc.update({order: order});
     });
   }
@@ -336,7 +336,7 @@ export class InitiativeService {
   }
 
   checkHpStatus(monster: Monster, amount: number): void {
-    this.removeConditions(monster, ['dead', 'dying', 'disabled', 'bloodied']);
+    this.removeConditionsByName(monster, ['dead', 'dying', 'disabled', 'bloodied']);
     if (monster.currentHp - amount <= -1 * monster.conScore) {
       this.messageService.add(`${monster.name} died!`);
       monster.attributes.push('dead');
@@ -358,7 +358,7 @@ export class InitiativeService {
     }
   }
 
-  removeConditions(monster: Monster, conditions: string[]) {
+  removeConditionsByName(monster: Monster, conditions: string[]) {
     monster.conditions = monster.conditions.filter(c => !conditions.find(name => name == c.name));
     monster.attributes = monster.attributes.filter(a => !conditions.find(name => name == a));
   };
@@ -367,7 +367,8 @@ export class InitiativeService {
     if (log) {
       this.messageService.add(`${creature.name} became ${condition.name} for ${condition.duration} rounds`);
     }
-    creature.conditions.push({...condition});
+    let conditionCopy = {...condition, id: this.db.createId()};
+    creature.conditions.push(conditionCopy);
   }
 
   goesBefore(c1: any, c2: any) : boolean {
