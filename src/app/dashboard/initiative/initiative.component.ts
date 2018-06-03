@@ -38,6 +38,8 @@ export class InitiativeComponent implements OnInit {
 
   code: string;
 
+  badges = {};
+
   selectCreature(creature: Creature): void {
     this.detailComponent.creature = creature;
     this.initiativeService.init$.subscribe(_ => {
@@ -84,6 +86,12 @@ export class InitiativeComponent implements OnInit {
         width: '400px',
         data: condition
       });
+  }
+
+  rollPerception(creatures: Creature[]): void {
+    creatures.forEach(creature => {
+      this.badges[creature.id] = this.getRandomInt(1, 20) + creature.perceptionBonus;
+    });
   }
 
   adjusted(creature: Creature): boolean {

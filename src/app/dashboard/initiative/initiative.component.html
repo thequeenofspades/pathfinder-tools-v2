@@ -5,6 +5,7 @@
 			<button mat-button (click)="initiativeService.clear()" color="warn">Clear</button>
 			<button mat-button (click)="initiativeService.previous()">Previous</button>
 			<button mat-button (click)="initiativeService.advance()" color="primary">Advance</button>
+			<button mat-button (click)="rollPerception(init.order)" color="accent">Roll Perception</button>
 		</div>
 
 		Round: {{init.round}}
@@ -28,9 +29,12 @@
 							</td>
 
 							<td class="mat-cell initiativeCell">
-								<span *ngIf="!creature.hp"><mat-icon>person</mat-icon></span>
-								<span class="creature-name"> {{creature.name}}</span>
-								<ng-container *ngIf="creature.quantity > 1"> ({{ creature.idx }} of {{ creature.quantity }})</ng-container>
+								<span 	matBadge="{{badges[creature.id]}}" [matBadgeHidden]="badges[creature.id] == undefined"
+										matBadgeColor="accent" matBadgePosition="before" matBadgeOverlap="false">
+									<span *ngIf="!creature.hp"><mat-icon>person</mat-icon></span>
+									<span class="creature-name"> {{creature.name}}</span>
+									<ng-container *ngIf="creature.quantity > 1"> ({{ creature.idx }} of {{ creature.quantity }})</ng-container>
+								</span>
 							</td>
 
 							<td class="mat-cell initiativeCell">
