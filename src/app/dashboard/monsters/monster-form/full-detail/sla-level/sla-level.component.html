@@ -1,0 +1,34 @@
+<form [formGroup]="form">
+	<div fxLayout="row" fxLayoutAlign="start center">
+
+		<button type="button" mat-icon-button (click)="removeSlaLevel()"><mat-icon>delete</mat-icon></button>
+
+	    <mat-form-field appearance="outline">
+	    	<mat-label>Uses per day</mat-label>
+	        <input matInput type="number" formControlName="uses" required>
+	    </mat-form-field>
+
+	    <mat-form-field appearance="outline">
+	    	<mat-label>Type</mat-label>
+	    	<mat-select formControlName="limited" required>
+	    		<mat-option *ngFor="let type of slaTypes" [value]="type">
+	    			{{type}}
+	    		</mat-option>
+	    	</mat-select>
+	    </mat-form-field>
+
+		<mat-form-field appearance="outline">
+			<mat-chip-list formArrayName="slas" #chipList>
+				<mat-chip *ngFor="let sla of slas.controls; let i=index" [formGroupName]="i" [removable]="true" (removed)="removeSla(i)">
+					{{sla.get('name').value}}
+					<mat-icon matChipRemove>cancel</mat-icon>
+				</mat-chip>
+				<input placeholder="Spell-Like Abilities..."
+						[matChipInputFor]="chipList"
+						[matChipInputAddOnBlur]="true"
+						(matChipInputTokenEnd)="addSlaChip($event)">
+			</mat-chip-list>
+		</mat-form-field>
+
+	</div>
+</form>

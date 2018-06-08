@@ -4,17 +4,9 @@ import { take, map } from 'rxjs/operators';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 
 import { Player } from './player';
-import { Monster } from './monster';
+import { Monster, Creature } from './monster';
 import { MessageService } from '../message.service';
 import { Condition, CONDITIONS } from './condition';
-
-interface Creature {
-  id: string;
-  name: string;
-  initiativeBonus: number;
-  attributes: string[];
-  conditions: Condition[];
-}
 
 class Initiative {
   order: any[];

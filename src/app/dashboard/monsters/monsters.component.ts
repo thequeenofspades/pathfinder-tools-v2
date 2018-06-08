@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Monster } from '../monster';
+import { Monster, MonsterI } from '../monster';
 import { InitiativeService } from '../initiative.service';
 import { EncounterService } from '../encounter.service';
 import { Encounter } from '../encounter';
@@ -18,6 +18,7 @@ export class MonstersComponent implements OnInit {
     private route: ActivatedRoute) { }
 
   badges = {};
+  edit = {};
 
   ngOnInit() {
     this.route.data.subscribe((data: {id: string}) => {
@@ -30,34 +31,18 @@ export class MonstersComponent implements OnInit {
     this.encounterService.newEncounter(name);
   }
 
-  add(monster: Monster, encounter: Encounter = null): void {
+  add(monster: MonsterI, encounter: Encounter = null): void {
     let monsters = this.encounterService.createMonsters(monster);
     if (encounter != null) {
       this.encounterService.addMultipleToEncounter(monsters, encounter);
     } else {
-      this.initiativeService.addMultiple(monsters);
+      this.initiativeService.addMultiple(monsters.map(monster => this.encounterService.prepareMonsterForInitiative(monster)));
     }
-  }
-
-  rollPerception(monster: Monster): void {
-    let roll = getRandomInt(1, 20);
-    monster.notification.perception = `${roll+monster.perceptionBonus}`;
-  }
-
-  rollSenseMotive(monster: Monster): void {
-    let roll = getRandomInt(1, 20);
-    monster.notification.senseMotive = `${roll+monster.senseMotiveBonus}`;
   }
 
   rollPerceptionForEncounter(encounter: Encounter): void {
     for (let monster of encounter.monsters) {
-      this.badges[monster.id] = getRandomInt(1, 20) + monster.perceptionBonus;
-    }
-  }
-
-  rollSMForEncounter(encounter: Encounter): void {
-    for (let monster of encounter.monsters) {
-      this.badges[monster.id] = getRandomInt(1, 20) + monster.senseMotiveBonus;
+      this.badges[monster.id] = getRandomInt(1, 20) + monster.basics.perceptionBonus;
     }
   }
 

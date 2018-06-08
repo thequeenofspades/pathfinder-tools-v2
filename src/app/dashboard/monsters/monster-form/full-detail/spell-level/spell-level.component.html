@@ -1,0 +1,60 @@
+<form [formGroup]="form">
+	<div fxLayout="row" fxLayoutAlign="start center">
+
+		<button mat-icon-button type="button" (click)="removeSpellLevel()"><mat-icon>delete</mat-icon></button>
+
+		<mat-form-field appearance="outline" fxFlex="0 0 auto">
+			<mat-label>Level</mat-label>
+			<input matInput type="number" formControlName="level" required>
+		</mat-form-field>
+
+		<mat-form-field appearance="outline" fxFlex="0 0 auto">
+			<mat-label>Spells per day</mat-label>
+			<input matInput type="number" formControlName="uses" required>
+		</mat-form-field>
+
+		<!-- <mat-form-field style="width:auto">
+			<mat-chip-list formArrayName="spells">
+				<mat-chip *ngFor="let spell of spells.controls">
+					{{spell.get('name').value}}
+				</mat-chip>
+			</mat-chip-list>
+		</mat-form-field> -->
+
+		<mat-form-field appearance="outline">
+			<mat-chip-list formArrayName="spells" #chipList>
+				<mat-chip *ngFor="let spell of spells.controls; let i=index" [formGroupName]="i" [removable]="true" (removed)="removeSpell(i)">
+					{{spell.get('name').value}}
+					<mat-icon matChipRemove>cancel</mat-icon>
+				</mat-chip>
+				<input placeholder="Spells..."
+						[matChipInputFor]="chipList"
+						[matChipInputAddOnBlur]="true"
+						(matChipInputTokenEnd)="addSpellChip($event)">
+			</mat-chip-list>
+		</mat-form-field>
+
+	<!-- <div formArrayName="spells" style="margin-left:20px">
+		<div *ngFor="let spell of spells.controls; let i=index" [formGroupName]="i">
+
+		  <mat-form-field appearance="outline">
+		    <mat-label>Name</mat-label>
+		    <input matInput type="text" formControlName="name" required>
+		  </mat-form-field>
+
+		  <mat-form-field appearance="outline">
+		  	<mat-label>DC</mat-label>
+		  	<input matInput type="text" formControlName="dc">
+		  </mat-form-field>
+
+		  <button mat-button type="button" (click)="removeSpell(i)">Remove</button>
+
+		</div>
+
+		<div>
+			<button mat-button type="button" (click)="addSpell()"><mat-icon svgIcon="plus"></mat-icon> Spell</button>
+		</div>
+
+	</div> -->	
+	</div>
+</form>

@@ -22,7 +22,9 @@ import {  MatInputModule,
           MatSelectModule,
           MatOptionModule,
           MatGridListModule,
-          MatSidenavModule } from '@angular/material';
+          MatSidenavModule,
+          MatSlideToggleModule,
+          MatStepperModule } from '@angular/material';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -51,7 +53,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 	MatSelectModule,
 	MatOptionModule,
 	MatGridListModule,
-	MatSidenavModule
+	MatSidenavModule,
+	MatSlideToggleModule,
+	MatStepperModule
   ],
   exports: [
   	FlexLayoutModule,
@@ -77,7 +81,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 	MatSelectModule,
 	MatOptionModule,
 	MatGridListModule,
-	MatSidenavModule
+	MatSidenavModule,
+	MatSlideToggleModule,
+	MatStepperModule
   ]
 })
 export class MaterialModule { }

@@ -51,12 +51,15 @@ export class InitiativeComponent implements OnInit {
 
   listenArrowKeys: boolean = true;
 
+  selectedCreature: Creature;
+
   selectCreature(creature: Creature): void {
-    this.detailComponent.creature = creature;
-    this.initiativeService.init$.subscribe(_ => {
-        this.initiativeService.get(this.detailComponent.creature.id).subscribe(c => 
-          this.detailComponent.creature = c);
-      });
+    this.selectedCreature = creature;
+    // this.detailComponent.creature = creature;
+    // this.initiativeService.init$.subscribe(_ => {
+    //     this.initiativeService.get(this.detailComponent.creature.id).subscribe(c => 
+    //       this.detailComponent.creature = c);
+    //   });
   }
 
   openDamageFormDialog(creature: Creature): void {

@@ -1,9 +1,9 @@
-import { Monster } from './monster';
+import { MonsterI } from './monster';
 
 export class Encounter {
 	constructor(
 		public name: string,
-		public monsters: Monster[] = [],
+		public monsters: MonsterI[] = [],
 		public id: string = ''
 	) {}
 }

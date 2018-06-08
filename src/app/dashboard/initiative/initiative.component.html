@@ -11,10 +11,16 @@
 		Round: {{init.round}}
 		<button mat-button (click)="initiativeService.reset()">Reset</button>
 
-		<mat-drawer-container [hasBackdrop]="true">
+		<mat-drawer-container autosize>
 
-			<mat-drawer #detailDrawer mode="side">
-				<app-creature-detail #creatureDetail [initService]="initiativeService"></app-creature-detail>
+			<mat-drawer #detailDrawer mode="side" position="end" style="max-width: 40%">
+				<!-- <app-creature-detail #creatureDetail [initService]="initiativeService"></app-creature-detail> -->
+				<div *ngIf="selectedCreature" style="padding:10px">
+					<div class="button-row" fxFlex="row" fxLayoutAlign="end">
+						<button mat-icon-button (click)="detailDrawer.close()"><mat-icon>cancel</mat-icon></button>
+					</div>
+					<app-monster-preview [stats]="selectedCreature"></app-monster-preview>
+				</div>
 			</mat-drawer>
 
 			<mat-drawer-content>
@@ -85,11 +91,12 @@
 							</td>
 						</tr>
 					</table>
-					<app-player-view-options [code]="code" [initService]="initiativeService" fxFlexAlign="center"></app-player-view-options>
 				</div>
 			</mat-drawer-content>
 
 		</mat-drawer-container>
+
+		<app-player-view-options [code]="code" [initService]="initiativeService" fxFlexAlign="center"></app-player-view-options>
 
 	</ng-container>
 </ng-container>

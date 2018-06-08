@@ -3,7 +3,7 @@ import { Subject, Observable } from 'rxjs';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 
 import { Encounter } from './encounter';
-import { Monster } from './monster';
+import { Monster, MonsterI, Creature } from './monster';
 import { MessageService } from '../message.service';
 import { InitiativeService } from './initiative.service';
 
@@ -33,67 +33,11 @@ export class EncounterService {
     });
   }
 
-  newEncounter(name: string, monsters: Monster[] = []): void {
+  newEncounter(name: string, monsters: MonsterI[] = []): void {
     let encounter = new Encounter(name, monsters);
     let id = this.db.createId();
     this.encountersCollection.doc(id).set({...encounter, id: id}).then(_ => {
       this.messageService.add(`Created new encounter ${encounter.name}`);
-    });
-  }
-
-  removeEncounter(encounter: {name: string, id: string}): void {
-    this.encountersCollection.doc(encounter.id).delete().then(_ => {
-      this.messageService.add(`Deleted encounter ${encounter.name}`);
-    });
-  }
-
-  addToEncounter(monster: Monster, encounter: {id: string, name: string}): void {
-    this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
-      let monsters = doc.data().monsters || [];
-      monsters.push({...monster, id: this.db.createId()});
-      this.encountersCollection.doc(encounter.id).update({monsters: monsters}).then(_ => {
-        this.messageService.add(`Added ${monster.name} to ${encounter.name}`);
-      });
-    });
-  }
-
-  addMultipleToEncounter(monsters: Monster[], encounter: {id: string, name: string}): void {
-    this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
-      let ms = doc.data().monsters || [];
-      for (let monster of monsters) {
-        ms.push({...monster, id: this.db.createId()});
-      }
-      this.encountersCollection.doc(encounter.id).update({monsters: ms}).then(_ => {
-        this.messageService.add(`Added ${monsters.length} ${monsters[0].name}s to ${encounter.name}`);
-      });
-    });
-  }
-
-  removeFromEncounter(monster: {id: string, name: string}, encounter: {id: string, name: string}): void {
-    this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
-      let monsters = doc.data().monsters || [];
-      monsters = monsters.filter(m => m.id != monster.id);
-      this.encountersCollection.doc(encounter.id).update({monsters: monsters}).then(_ => {
-        this.messageService.add(`Removed ${monster.name} from ${encounter.name}`);
-      });
-    });
-  }
-
-  update(encounter: {id: string}, monster: {id: string}, updated: {name: string}): void {
-    this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
-      let monsters = doc.data().monsters || [];
-      let monsterref = monsters.find(m => m.id == monster.id);
-      Object.assign(monsterref, updated);
-      this.encountersCollection.doc(encounter.id).update({monsters: monsters}).then(_ => {
-        this.messageService.add(`Updated ${updated.name}`);
-      });
-    });
-  }
-
-  addEncounterToInitiative(encounter: {id: string}): void {
-    this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
-      let monsters = doc.data().monsters || [];
-      this.initiativeService.addMultiple(monsters);
     });
   }
 
@@ -103,24 +47,88 @@ export class EncounterService {
     });
   }
 
-  createMonsters(monster: Monster): Monster[] {
+  removeEncounter(encounter: {name: string, id: string}): void {
+    this.encountersCollection.doc(encounter.id).delete().then(_ => {
+      this.messageService.add(`Deleted encounter ${encounter.name}`);
+    });
+  }
+
+  addToEncounter(monster: MonsterI, encounter: {id: string, name: string}): void {
+    this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
+      let monsters = doc.data().monsters || [];
+      monsters.push({...monster, id: this.db.createId()});
+      this.encountersCollection.doc(encounter.id).update({monsters: monsters}).then(_ => {
+        this.messageService.add(`Added ${monster.basics.name} to ${encounter.name}`);
+      });
+    });
+  }
+
+  addMultipleToEncounter(monsters: MonsterI[], encounter: {id: string, name: string}): void {
+    this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
+      let ms = doc.data().monsters || [];
+      for (let monster of monsters) {
+        ms.push({...monster, id: this.db.createId()});
+      }
+      this.encountersCollection.doc(encounter.id).update({monsters: ms}).then(_ => {
+        this.messageService.add(`Added ${monsters.length} ${monsters[0].basics.name}s to ${encounter.name}`);
+      });
+    });
+  }
+
+  removeFromEncounter(monster: MonsterI, encounter: {id: string, name: string}): void {
+    this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
+      let monsters = doc.data().monsters || [];
+      monsters = monsters.filter(m => m.id != (monster as any).id);  // find a way to fix this
+      this.encountersCollection.doc(encounter.id).update({monsters: monsters}).then(_ => {
+        this.messageService.add(`Removed ${monster.basics.name} from ${encounter.name}`);
+      });
+    });
+  }
+
+  update(encounter: {id: string}, monster: MonsterI, updated: MonsterI): void {
+    this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
+      let monsters = doc.data().monsters || [];
+      let monsterref = monsters.find(m => m.id == (monster as any).id);  // find a way to fix this
+      Object.assign(monsterref, updated);
+      this.encountersCollection.doc(encounter.id).update({monsters: monsters}).then(_ => {
+        this.messageService.add(`Updated ${updated.basics.name}`);
+      });
+    });
+  }
+
+  addEncounterToInitiative(encounter: {id: string}): void {
+    this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
+      let monsters = (doc.data().monsters as MonsterI[]) || [];
+      let preparedMonsters = monsters.map(monster => this.prepareMonsterForInitiative(monster));
+      this.initiativeService.addMultiple(preparedMonsters);
+    });
+  }
+
+  createMonsters(monster: MonsterI): MonsterI[] {
     let monsters = [];
-    for (var i = 0; i < monster.quantity; i++) {
-      let newMonster = this.deepCopyMonster(monster);
-      newMonster.idx = i + 1;
+    for (var i = 0; i < monster.basics.quantity; i++) {
+      let newMonster = JSON.parse(JSON.stringify(monster));
+      newMonster.basics.idx = i + 1;
       monsters.push(newMonster);
     }
     return monsters;
   }
 
-  deepCopyMonster(monster: Monster): Monster {
-    let newMonster = new Monster(monster.name, monster.hp);
-    Object.assign(newMonster, monster);
-    newMonster.conditions = [];
-    newMonster.attributes = [];
-    newMonster.notes = [];
-    newMonster.notification = {};
-    return newMonster;
+  prepareMonsterForInitiative(monster: MonsterI): Creature {
+    let creature = {
+      ...JSON.parse(JSON.stringify(monster)),
+      name: monster.basics.name,
+      initiativeBonus: monster.basics.initiativeBonus,
+      hp: monster.defense.hp,
+      perceptionBonus: monster.basics.perceptionBonus,
+      conScore: monster.statistics.conScore,
+      conditions: [],
+      attributes: [],
+      notes: [],
+      notification: {},
+      currentHp: monster.defense.hp
+    };
+    return creature;
   }
 
 }
