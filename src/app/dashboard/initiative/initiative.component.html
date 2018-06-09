@@ -13,14 +13,14 @@
 
 		<mat-drawer-container autosize>
 
-			<mat-drawer #detailDrawer mode="side" position="end" style="max-width: 40%">
-				<!-- <app-creature-detail #creatureDetail [initService]="initiativeService"></app-creature-detail> -->
-				<div *ngIf="selectedCreature" style="padding:10px">
-					<div class="button-row" fxFlex="row" fxLayoutAlign="end">
-						<button mat-icon-button (click)="detailDrawer.close()"><mat-icon>cancel</mat-icon></button>
-					</div>
-					<app-monster-preview [stats]="selectedCreature"></app-monster-preview>
+			<mat-drawer #detailDrawer
+						mode="side" position="end" style="max-width: 40%"
+						[(opened)]="showDetail"
+						(closed)="showDetail = false">
+				<div class="button-row" fxFlex="row" fxLayoutAlign="end">
+					<button mat-icon-button (click)="showDetail = false"><mat-icon>cancel</mat-icon></button>
 				</div>
+				<app-creature-detail #creatureDetail [initService]="initiativeService"></app-creature-detail>
 			</mat-drawer>
 
 			<mat-drawer-content>
@@ -28,7 +28,7 @@
 					<table class="mat-table initiativeTable">
 						<tr class="mat-row initiativeRow" *ngFor="let creature of init.order; index as i"
 							[class.active-creature-row]="i == init.active"
-							(click)="selectCreature(creature); detailDrawer.open()">
+							(click)="selectCreature(creature)">
 
 							<td class="mat-cell initiativeCell">
 								{{creature.initiative}}
@@ -39,7 +39,7 @@
 										matBadgeColor="accent" matBadgePosition="before" matBadgeOverlap="false">
 									<span *ngIf="!creature.hp"><mat-icon>person</mat-icon></span>
 									<span class="creature-name"> {{creature.name}}</span>
-									<ng-container *ngIf="creature.quantity > 1"> ({{ creature.idx }} of {{ creature.quantity }})</ng-container>
+									<ng-container *ngIf="creature.basics?.quantity > 1"> ({{ creature.basics.idx }} of {{ creature.basics.quantity }})</ng-container>
 								</span>
 							</td>
 

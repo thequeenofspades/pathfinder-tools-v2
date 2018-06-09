@@ -32,8 +32,11 @@ export class InitiativeService {
 
   initDoc: AngularFirestoreDocument<any>;
 
-  init = new Subject<any>();
-  init$ = this.init.asObservable();
+  private init = new Subject<any>();
+  public init$ = this.init.asObservable();
+
+  private active = new Subject<Creature>();
+  public active$ = this.active.asObservable();
 
   setup(sessionId: string): void {
     this.initDoc = this.db.collection('sessions').doc(sessionId);
@@ -154,18 +157,21 @@ export class InitiativeService {
   previous(): void {
     this.initDoc.ref.get().then(doc => {
       let active = (doc.data().active || 0) - 1;
+      let order = (doc.data().order as Creature[]) || [];
       if (active < 0) {
-        active = (doc.data().order || []).length - 1;
+        active = order.length - 1;
         this.initDoc.update({round: (doc.data().round || 1) - 1});
       }
-      this.initDoc.update({active: active});
+      this.initDoc.update({active: active}).then(() => {
+        this.active.next(order[active]);
+      });
     });
   }
 
   advance(): void {
     this.initDoc.ref.get().then(doc => {
       let active = doc.data().active || 0;
-      let order = doc.data().order || [];
+      let order = (doc.data().order as Creature[]) || [];
       let round = doc.data().round || 1;
       this.updateConditions(order[active]);
       active += 1;
@@ -176,6 +182,7 @@ export class InitiativeService {
       order[active].attributes = order[active].attributes.filter(a => a != 'delayed');
       this.initDoc.update({active: active, order: order, round: round}).then(_ => {
         this.messageService.add(`${order[active].name}'s turn`);
+        this.active.next(order[active]);
       });
     });
   }
@@ -276,6 +283,15 @@ export class InitiativeService {
           creature.visible = visible;
         }
       }
+      this.initDoc.update({order: order});
+    });
+  }
+
+  update(creature: Creature): void {
+    this.initDoc.ref.get().then(doc => {
+      let order = (doc.data().order as Creature[]) || [];
+      let crIdx = order.findIndex(c => c.id == creature.id);
+      order[crIdx] = JSON.parse(JSON.stringify(creature));
       this.initDoc.update({order: order});
     });
   }

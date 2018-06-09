@@ -1,0 +1,15 @@
+@import '../../../pf-app-theme.scss';
+
+span.spell-chip.cast {
+	text-decoration: line-through;
+	opacity: 0.6;
+}
+
+span.spell-chip {
+	cursor: pointer;
+}
+
+span.spell-uses {
+	background-color: mat-color($pf-app-accent);
+	color: black;
+}

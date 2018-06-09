@@ -13,18 +13,18 @@
 <p>
 	{{basics.gender}} {{basics.race}}
 	<span *ngFor="let class of basics.classes; last as last">
-		{{class.name}} {{class.level}}<ng-container *ngIf="!last">/</ng-container>
+		{{class.class}} {{class.level}}<ng-container *ngIf="!last">/</ng-container>
 	</span>
 </p>
 <p>
 	{{basics.alignment}} {{basics.size}} {{basics.type}}
 </p>
 <p>
-	<b>Init</b>
-		<ng-container *ngIf="basics.initiativeBonus >= 0"> +</ng-container>{{basics.initiativeBonus}};
+	<b>Init</b> {{basics.initiativeBonus | plus}};
 	<b>Senses</b>
 		<ng-container *ngIf="basics.senses"> {{basics.senses}};</ng-container>
-		Perception <ng-container *ngIf="basics.perceptionBonus >= 0">+</ng-container>{{basics.perceptionBonus}}
+		Perception {{basics.perceptionBonus | plus}}
+		<app-rollable [bonus]="basics.perceptionBonus"></app-rollable>
 </p>
 <p *ngIf="basics.aura.length">
 	<b>Aura</b> {{basics.aura}}
@@ -54,15 +54,15 @@ DEFENSE
 <p>
 	<ng-container *ngIf="defense.fort">
 		<b>Fort </b> 
-		<ng-container *ngIf="defense.fort >= 0">+</ng-container>{{defense.fort}}<ng-container *ngIf="defense.ref || defense.will">, </ng-container>
+		{{defense.fort | plus}}<ng-container *ngIf="defense.ref || defense.will">, </ng-container>
 	</ng-container>
 	<ng-container *ngIf="defense.ref">
 		<b>Ref </b>
-		<ng-container *ngIf="defense.ref >= 0">+</ng-container>{{defense.ref}}<ng-container *ngIf="defense.will">, </ng-container>
+		{{defense.ref | plus}}<ng-container *ngIf="defense.will">, </ng-container>
 	</ng-container>
 	<ng-container *ngIf="defense.will">
 		<b>Will </b>
-		<ng-container *ngIf="defense.will >= 0">+</ng-container>{{defense.will}}
+		{{defense.will | plus}}
 	</ng-container>
 	<ng-container *ngIf="defense.savenotes"> ({{defense.savenotes}})</ng-container>
 </p>
@@ -132,7 +132,12 @@ DEFENSE
 	</p>
 	<p *ngFor="let slaLevel of sortedSlaLevels" style="margin-left:10px">
 		<ng-container *ngIf="slaLevel.limited != 'Limited'">{{slaLevel.limited}}</ng-container><ng-container *ngIf="slaLevel.limited == 'Limited'">{{slaLevel.uses}}/day</ng-container>&mdash;
-		<span *ngFor="let sla of slaLevel.slas; last as last">{{sla.name}}<ng-container *ngIf="!last">, </ng-container></span>
+		<ng-container *ngIf="!live">
+			<span *ngFor="let sla of slaLevel.slas; last as last">{{sla.name}}<ng-container *ngIf="!last">, </ng-container></span>
+		</ng-container>
+		<ng-container *ngIf="live">
+			<app-interactive-sla-list [slas]="slaLevel.slas" [limited]="slaLevel.limited" [monster]="stats"></app-interactive-sla-list>
+		</ng-container>
 	</p>
 	<p *ngIf="spells.spellLevels.length">
 		<b>Spells <ng-container *ngIf="spells.spontaneous">Known </ng-container><ng-container *ngIf="!spells.spontaneous">Prepared </ng-container></b>
@@ -142,8 +147,13 @@ DEFENSE
 		</ng-container>
 	</p>
 	<p *ngFor="let spellLevel of sortedSpellLevels" style="margin-left:10px">
-		{{spellLevel.level}}<ng-container *ngIf="spellLevel.level == 1">st</ng-container><ng-container *ngIf="spellLevel.level == 2">nd</ng-container><ng-container *ngIf="spellLevel.level == 3">rd</ng-container><ng-container *ngIf="spellLevel.level > 3">st</ng-container><ng-container *ngIf="spellLevel.level > 0"> ({{spellLevel.uses}}/day)</ng-container>&mdash;
-		<span *ngFor="let spell of spellLevel.spells; last as last">{{spell.name}}<ng-container *ngIf="!last">, </ng-container></span>
+		{{spellLevel.level}}<ng-container *ngIf="spellLevel.level == 1">st</ng-container><ng-container *ngIf="spellLevel.level == 2">nd</ng-container><ng-container *ngIf="spellLevel.level == 3">rd</ng-container><ng-container *ngIf="spellLevel.level > 3">st</ng-container><ng-container *ngIf="spellLevel.level > 0 && spells.spontaneous"> ({{spellLevel.uses}}/day)</ng-container>&mdash;
+		<ng-container *ngIf="!live">
+			<span *ngFor="let spell of spellLevel.spells; last as last">{{spell.name}}<ng-container *ngIf="!last">, </ng-container></span>
+		</ng-container>
+		<ng-container *ngIf="live">
+			<app-interactive-spell-list [spellLevel]="spellLevel" [monster]="stats"></app-interactive-spell-list>
+		</ng-container>
 	</p>
 
 	<mat-divider></mat-divider>
@@ -171,7 +181,7 @@ STATISTICS
 	<span *ngIf="statistics.chaScore"><b>Cha</b> {{statistics.chaScore}}</span>
 </p>
 <p>
-	<span *ngIf="statistics.bab"><b>Base Atk </b><ng-container *ngIf="statistics.bab >= 0">+</ng-container>{{statistics.bab}}<ng-container *ngIf="statistics.cmb || statistics.cmd">, </ng-container></span>
+	<span *ngIf="statistics.bab"><b>Base Atk</b> {{statistics.bab | plus}}<ng-container *ngIf="statistics.cmb || statistics.cmd">, </ng-container></span>
 	<span *ngIf="statistics.cmb"><b>CMB</b> {{statistics.cmb}}<ng-container *ngIf="statistics.cmd">, </ng-container></span>
 	<span *ngIf="statistics.cmd"><b>CMD</b> {{statistics.cmd}}</span>
 </p>

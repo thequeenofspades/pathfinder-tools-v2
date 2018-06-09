@@ -1,0 +1,9 @@
+<mat-chip-list>
+	<mat-chip *ngFor="let spell of spellLevel.spells; let i=index" (click)="cast(i)">
+		<span matChipAvatar class="spell-uses" *ngIf="showUses">{{spellLevel.uses}}</span>
+		<span class="spell-chip" [ngClass]="{'cast': spell.cast || (showUses && spellLevel.uses <= 0)}">{{spell.name}}</span>
+	</mat-chip>
+	<ng-container *ngIf="showUses">
+		<button mat-button type="button" (click)="addUse()"><mat-icon svgIcon="plus"></mat-icon> Use</button>
+	</ng-container>
+</mat-chip-list>

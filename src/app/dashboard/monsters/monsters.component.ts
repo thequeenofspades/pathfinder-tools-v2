@@ -40,6 +40,10 @@ export class MonstersComponent implements OnInit {
     }
   }
 
+  addToInitiative(monster: MonsterI): void {
+    this.initiativeService.add(this.encounterService.prepareMonsterForInitiative(monster));
+  }
+
   rollPerceptionForEncounter(encounter: Encounter): void {
     for (let monster of encounter.monsters) {
       this.badges[monster.id] = getRandomInt(1, 20) + monster.basics.perceptionBonus;

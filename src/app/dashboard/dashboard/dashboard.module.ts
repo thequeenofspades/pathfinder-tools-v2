@@ -31,6 +31,12 @@ import { SpellLevelComponent } from '../monsters/monster-form/full-detail/spell-
 import { MonsterPreviewComponent } from '../monsters/monster-form/full-detail/monster-preview/monster-preview.component';
 import { SlaLevelComponent } from '../monsters/monster-form/full-detail/sla-level/sla-level.component';
 
+import { PlusPipe } from '../../plus.pipe';
+import { RollableComponent } from '../rollable/rollable.component';
+import { InteractiveSpellListComponent } from '../interactive-spell-list/interactive-spell-list.component';
+import { InteractiveSlaListComponent } from '../interactive-sla-list/interactive-sla-list.component';
+import { InteractiveConditionListComponent } from '../interactive-condition-list/interactive-condition-list.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -61,7 +67,12 @@ import { SlaLevelComponent } from '../monsters/monster-form/full-detail/sla-leve
     FullDetailComponent,
     SpellLevelComponent,
     MonsterPreviewComponent,
-    SlaLevelComponent
+    SlaLevelComponent,
+    PlusPipe,
+    RollableComponent,
+    InteractiveSpellListComponent,
+    InteractiveSlaListComponent,
+    InteractiveConditionListComponent
   ],
   entryComponents: [
     InitiativeFormComponent,

@@ -1,0 +1,7 @@
+<mat-chip-list>
+	<mat-chip *ngFor="let sla of slas; let i=index" (click)="cast(i)">
+		<span matChipAvatar class="sla-uses" *ngIf="showUses">{{sla.uses}}</span>
+		<span class="sla-chip" [ngClass]="{'cast': sla.uses <= 0 && showUses}">{{sla.name}}</span>
+		<mat-icon class="add-use" *ngIf="showUses" appStopClick (click)="addUse(i)" svgIcon="plus"></mat-icon>
+	</mat-chip>
+</mat-chip-list>

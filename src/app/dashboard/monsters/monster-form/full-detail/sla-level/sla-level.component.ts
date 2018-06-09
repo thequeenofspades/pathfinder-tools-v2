@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import {MatChipInputEvent} from '@angular/material';
+import { EncounterService } from '../../../../encounter.service';
 
 @Component({
   selector: 'app-monster-form-sla-level',
@@ -9,7 +10,7 @@ import {MatChipInputEvent} from '@angular/material';
 })
 export class SlaLevelComponent implements OnInit {
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private es: EncounterService) { }
 
   ngOnInit() {
   }
@@ -24,18 +25,17 @@ export class SlaLevelComponent implements OnInit {
   }
 
   addSla() {
-    let newSla = this.fb.group({
-      name: ['', Validators.required]
-    });
-    this.slas.push(newSla);
+    this.slas.push(this.es.buildSlaFormGroup(this.form));
   }
 
   addSlaChip(event: MatChipInputEvent) {
   	if (event.value.trim().length) {
-	  this.slas.push(this.fb.group({name: event.value.trim()}));
-	}
-  	if (event.input) event.input.value = '';
-  }
+      let newSla = this.es.buildSlaFormGroup(this.form);
+      newSla.patchValue({name: event.value.trim()});
+      this.slas.push(newSla);
+  	}
+    	if (event.input) event.input.value = '';
+    }
 
   removeSla(i: number) {
   	this.slas.removeAt(i);

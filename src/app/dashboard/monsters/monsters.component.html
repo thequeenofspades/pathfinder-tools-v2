@@ -52,7 +52,7 @@
 							<app-monster-preview [stats]="monster"></app-monster-preview>
 							<mat-action-row>
 								<button mat-button (click)="edit[monster.id] = true">Edit</button>
-								<button mat-button color="primary" (click)="initiativeService.add(monster)">Add to Initiative</button>
+								<button mat-button color="primary" (click)="addToInitiative(monster)">Add to Initiative</button>
 								<button mat-button color="warn" (click)="encounterService.removeFromEncounter(monster, encounter)">Remove</button>
 							</mat-action-row>
 						</ng-container>

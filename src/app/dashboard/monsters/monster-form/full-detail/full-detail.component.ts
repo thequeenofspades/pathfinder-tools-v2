@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
+import { EncounterService } from '../../../encounter.service';
 
 @Component({
   selector: 'app-monster-form-full-detail',
@@ -8,7 +9,7 @@ import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@ang
 })
 export class FullDetailComponent implements OnInit {
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private es: EncounterService) { }
 
   ngOnInit() {
   }
@@ -54,11 +55,7 @@ export class FullDetailComponent implements OnInit {
   }
 
   addClass() {
-  	let newClass = this.fb.group({
-  		class: ['', Validators.required],
-  		level: ''
-  	});
-  	this.classes.push(newClass);
+  	this.classes.push(this.es.buildClassFormGroup());
   }
 
   removeClass(i: number) {
@@ -66,11 +63,7 @@ export class FullDetailComponent implements OnInit {
   }
 
   addAttack() {
-  	let newAttack = this.fb.group({
-  		attack: ['', Validators.required],
-  		type: ['melee', Validators.required]
-  	});
-  	this.attacks.push(newAttack);
+  	this.attacks.push(this.es.buildAttackFormGroup());
   }
 
   removeAttack(i: number) {
@@ -78,21 +71,7 @@ export class FullDetailComponent implements OnInit {
   }
 
   addSLALevel() {
-    let newSLALevel = this.fb.group({
-      limited: 'Limited',
-      uses: [0, Validators.required],
-      slas: this.fb.array([])
-    });
-    newSLALevel.get('limited').valueChanges.subscribe(limited => {
-      if (limited == 'At will' || limited == 'Constant') {
-        newSLALevel.get('uses').setValidators([]);
-        newSLALevel.get('uses').disable();
-      } else {
-        newSLALevel.get('uses').setValidators([Validators.required]);
-        newSLALevel.get('uses').enable();
-      }
-    });
-    this.slaLevels.push(newSLALevel);
+    this.slaLevels.push(this.es.buildSlaLevelFormGroup());
   }
 
   removeSLALevel(i: number) {
@@ -100,27 +79,7 @@ export class FullDetailComponent implements OnInit {
   }
 
   addSpellLevel() {
-    let newSpellLevel = this.fb.group({
-      level: [this.spellLevels.length, Validators.required],
-      uses: 0,
-      spells: this.fb.array([])
-    });
-    if (!newSpellLevel.get('level') || !this.form.get('spells.spontaneous').value) {
-      newSpellLevel.get('uses').disable();
-    }
-    this.form.get('spells.spontaneous').valueChanges.subscribe(data => this.updateSpellUses(newSpellLevel));
-    newSpellLevel.get('level').valueChanges.subscribe(data => this.updateSpellUses(newSpellLevel));
-    this.spellLevels.push(newSpellLevel);
-  }
-
-  updateSpellUses(spellLevel: FormGroup) {
-  	if (this.form.get('spells.spontaneous').value && spellLevel.get('level').value != 0) {
-  	  spellLevel.get('uses').setValidators([Validators.required]);
-      spellLevel.get('uses').enable();
-    } else {
-	  spellLevel.get('uses').setValidators([]);
-	  spellLevel.get('uses').disable();
-	}
+    this.spellLevels.push(this.es.buildSpellLevelFormGroup(this.form.get('spells') as FormGroup));
   }
 
   removeSpellLevel(i: number) {
@@ -128,12 +87,7 @@ export class FullDetailComponent implements OnInit {
   }
 
   addSpecial() {
-  	let newSpecial = this.fb.group({
-  		name: ['', Validators.required],
-  		type: '',
-  		description: ''
-  	});
-  	this.specials.push(newSpecial);
+  	this.specials.push(this.es.buildSpecialFormGroup());
   }
 
   removeSpecial(i: number) {

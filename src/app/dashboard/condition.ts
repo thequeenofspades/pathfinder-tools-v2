@@ -3,6 +3,8 @@ export class Condition {
 		public duration: number = 0,
 		public permanent: boolean = false,
 		public description: string = '') {};
+
+	id: string;
 };
 
 export const CONDITIONS = [

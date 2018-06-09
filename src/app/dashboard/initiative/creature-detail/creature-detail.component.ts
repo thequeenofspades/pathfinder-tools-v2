@@ -3,12 +3,10 @@ import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material';
 
 import { Player } from '../../player';
-import { Monster } from '../../monster';
+import { Monster, Creature } from '../../monster';
 import { Condition } from '../../condition';
 import { InitiativeService } from '../../initiative.service';
 import { ConditionDetailComponent } from '../condition-detail/condition-detail.component';
-
-type Creature = Player | Monster;
 
 @Component({
   selector: 'app-creature-detail',
@@ -40,10 +38,10 @@ export class CreatureDetailComponent implements OnInit {
     this.perceptionBadges[creature.id] = roll + creature.perceptionBonus;
   }
 
-  rollSenseMotive(creature: Creature): void {
-    let roll = this.getRandomInt(1, 20);
-    this.smBadges[creature.id] = roll + creature.senseMotiveBonus;
-  }
+  // rollSenseMotive(creature: Creature): void {
+  //   let roll = this.getRandomInt(1, 20);
+  //   this.smBadges[creature.id] = roll + creature.senseMotiveBonus;
+  // }
 
   getRandomInt(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;

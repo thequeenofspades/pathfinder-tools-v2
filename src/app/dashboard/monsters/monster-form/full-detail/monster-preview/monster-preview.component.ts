@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { MonsterI } from '../../../../monster';
 
 @Component({
   selector: 'app-monster-preview',
@@ -15,6 +16,7 @@ export class MonsterPreviewComponent implements OnInit {
   }
 
   @Input() stats: Object;
+  @Input() live: boolean;
 
   // public stats: Object;
 
@@ -54,7 +56,9 @@ export class MonsterPreviewComponent implements OnInit {
   }
 
   showOffense(): boolean {
-  	return this.offense['speed'] || this.offense['space'] || this.offense['reach'] || this.offense['attacks'].length;
+  	let offense = this.offense['speed'] || this.offense['space'] || this.offense['reach'] || this.offense['attacks'].length;
+  	let spells = this.spells['slaLevels'].length || this.spells['spellLevels'].length;
+  	return offense || spells;
   }
 
   get meleeAttacks(): Object[] {

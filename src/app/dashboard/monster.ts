@@ -33,7 +33,10 @@ export interface MonsterI {
         idx: number,
         gender: string,
         race: string,
-        classes: {}[],
+        classes: {
+            class: string,
+            level: number
+        }[],
         alignment: string,
         size: string,
         type: string,
@@ -77,21 +80,42 @@ export interface MonsterI {
       },
       offense: {
         speed: string,
-        attacks: {}[],
+        attacks: {
+            attack: string,
+            type: string
+        }[],
         space: string,
         reach: string
       },
       spells: {
-        slaLevels: {}[],
+        slaLevels: {
+            limited: string,
+            uses: number,
+            slas: {
+                name: string,
+                uses: number
+            }[]
+        }[],
         slaCL: string | number,
         slaConcentration: string | number,
         spontaneous: boolean,
-        spellLevels: {}[],
+        spellLevels: {
+            level: number,
+            uses: number,
+            spells: {
+                name: string,
+                cast: boolean
+            }[]
+        }[],
         cl: string | number,
         concentration: string | number
       },
       extras: {
-        specials: {}[],
+        specials: {
+            name: string,
+            type: string,
+            description: string
+        }[],
         gear: string,
         description: string,
         cr: number,

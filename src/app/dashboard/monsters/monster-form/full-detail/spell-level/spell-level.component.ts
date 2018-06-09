@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import {MatChipInputEvent} from '@angular/material';
+import { EncounterService } from '../../../../encounter.service';
 
 @Component({
   selector: 'app-monster-form-spell-level',
@@ -9,7 +10,7 @@ import {MatChipInputEvent} from '@angular/material';
 })
 export class SpellLevelComponent implements OnInit {
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private es: EncounterService) { }
 
   ngOnInit() {
   }
@@ -22,19 +23,17 @@ export class SpellLevelComponent implements OnInit {
   }
 
   addSpell() {
-    let newSpell = this.fb.group({
-      name: ['', Validators.required],
-      dc: ''
-    });
-    this.spells.push(newSpell);
+    this.spells.push(this.es.buildSpellFormGroup(this.form));
   }
 
   addSpellChip(event: MatChipInputEvent) {
   	if (event.value.trim().length) {
-	  this.spells.push(this.fb.group({name: event.value.trim()}));
-	}
-  	if (event.input) event.input.value = '';
-  }
+      let newSpell = this.es.buildSpellFormGroup(this.form);
+      newSpell.patchValue({name: event.value.trim()});
+      this.spells.push(newSpell);
+  	}
+    	if (event.input) event.input.value = '';
+    }
 
   removeSpell(i: number) {
   	this.spells.removeAt(i);

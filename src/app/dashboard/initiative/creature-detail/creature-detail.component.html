@@ -1,70 +1,27 @@
 <!--Workaround to keep the first button from being automatically highlighted; see https://github.com/angular/material2/issues/3215-->
 <a mat-button style="height: 0; position: absolute;"></a>
 <!--End workaround-->
-<ng-container *ngIf="creature">
-	<mat-card>
-		<mat-card-title>
-			{{creature.name}}
-			<ng-container *ngIf="creature.quantity > 1"> ({{ creature.idx }} of {{ creature.quantity }})</ng-container>
-		</mat-card-title>
-		<mat-card-content>
-			<mat-list>
+<div style="padding:10px" *ngIf="creature">
+	<app-interactive-condition-list [creature]="creature"></app-interactive-condition-list>
 
-				<h3 mat-subheader>Basics</h3>
-				<mat-list-item>
-					Initiative: {{creature.initiative - creature.initiativeBonus}} <ng-container *ngIf="creature.initiativeBonus >= 0">+</ng-container> {{creature.initiativeBonus}}
-				</mat-list-item>
-				<mat-list-item *ngIf="creature.hp">
-					HP: {{creature.currentHp}}/{{creature.hp}}
-				</mat-list-item>
-				<mat-list-item *ngIf="creature.conScore">
-					Constitution: {{creature.conScore}}
-				</mat-list-item>
-				<mat-list-item>
-					Perception: <ng-container *ngIf="creature.perceptionBonus >= 0">+</ng-container>{{creature.perceptionBonus}}
-					<span matBadge="{{perceptionBadges[creature.id]}}" matBadgeColor="accent" [matBadgeHidden]="perceptionBadges[creature.id] == undefined">
-						<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollPerception(creature)">
-							<mat-icon svgIcon="dice-d20"></mat-icon>
-						</button>
-					</span>
-				</mat-list-item>
-				<mat-list-item *ngIf="creature.senseMotiveBonus !== undefined">
-					Sense Motive: <ng-container *ngIf="creature.senseMotiveBonus >= 0">+</ng-container>{{creature.senseMotiveBonus}}
-					<span matBadge="{{smBadges[creature.id]}}" matBadgeColor="accent" [matBadgeHidden]="smBadges[creature.id] == undefined">
-						<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollSenseMotive(creature)">
-							<mat-icon svgIcon="dice-d20"></mat-icon>
-						</button>
-					</span>
-				</mat-list-item>
+	<ng-container *ngIf="creature.hp != undefined">
+		<app-monster-preview [stats]="creature" [live]="true"></app-monster-preview>
+	</ng-container>
+	<ng-container *ngIf="creature.hp == undefined">
 
-				<ng-container *ngIf="creature.conditions.length">
-					<mat-divider></mat-divider>
-					<h3 mat-subheader>Conditions</h3>
-					<mat-chip-list>
-						<mat-chip 	*ngFor="let condition of creature.conditions"
-									[removable]="true"
-									(click)="openConditionDetailDialog(condition)">
-							<ng-container *ngIf="!condition.permanent">
-								<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
-							</ng-container>
-							{{condition.name}}
-							<mat-icon matChipRemove appStopClick (click)="initService.removeCondition(creature, condition)">cancel</mat-icon>
-						</mat-chip>
-					</mat-chip-list><br>
-				</ng-container>
+		<div class="creature-name">{{creature.name | uppercase}}</div>
 
-				<ng-container *ngIf="creature.notes.length">
-					<mat-divider></mat-divider>
-					<h3 mat-subheader>Notes</h3>
-					<mat-chip-list>
-						<mat-chip *ngFor="let note of creature.notes" [removable]="true">
-							{{note}}
-							<mat-icon matChipRemove (click)="initService.removeNote(creature, note)">cancel</mat-icon>
-						</mat-chip>
-					</mat-chip-list>
-				</ng-container>
+		<mat-divider></mat-divider>
 
-			</mat-list>
-		</mat-card-content>
-	</mat-card>
-</ng-container>
+		<p>
+			<b>Init</b> {{creature.initiativeBonus | plus}}
+		</p>
+		<p fxFlex="row" fxLayoutAlign="start center">
+			<span><b>Perception</b> {{creature.perceptionBonus | plus}} </span><app-rollable [bonus]="creature.perceptionBonus"></app-rollable>
+		</p>
+		<p fxFlex="row" fxLayoutAlign="start center">
+			<span><b>Sense Motive</b> {{creature.senseMotiveBonus | plus}} </span><app-rollable [bonus]="creature.senseMotiveBonus"></app-rollable>
+		</p>
+
+	</ng-container>
+</div>
