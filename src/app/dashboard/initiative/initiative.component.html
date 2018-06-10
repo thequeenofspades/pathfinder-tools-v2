@@ -52,17 +52,7 @@
 										</span>
 										<mat-progress-bar mode="determinate" color="warn" [value]="100*(creature.currentHp/creature.hp)"></mat-progress-bar>
 									</div>
-									<mat-chip-list>
-										<mat-chip 	*ngFor="let condition of creature.conditions"
-													[removable]="true"
-													(click)="openConditionDetailDialog(condition)">
-											<ng-container *ngIf="!condition.permanent">
-												<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
-											</ng-container>
-											{{condition.name}}
-											<mat-icon matChipRemove appStopClick (click)="initiativeService.removeCondition(creature, condition)">cancel</mat-icon>
-										</mat-chip>
-									</mat-chip-list>
+									<app-interactive-condition-list [creature]="creature" (clickEvent)="openConditionDetailDialog($event)"></app-interactive-condition-list>
 								</div>
 							</td>
 

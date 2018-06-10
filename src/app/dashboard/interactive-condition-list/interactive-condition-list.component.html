@@ -1,6 +1,7 @@
 <mat-chip-list>
 	<mat-chip 	*ngFor="let condition of creature.conditions"
-				[removable]="true">
+				[removable]="true"
+				(click)="click(condition)">
 		<ng-container *ngIf="!condition.permanent">
 			<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
 		</ng-container>

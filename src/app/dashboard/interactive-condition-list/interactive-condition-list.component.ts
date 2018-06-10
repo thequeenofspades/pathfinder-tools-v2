@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Creature } from '../monster';
 import { Condition } from '../condition';
@@ -18,6 +18,11 @@ export class InteractiveConditionListComponent implements OnInit {
 
   @Input() creature: Creature;
   @Input() conditions: Condition[];
+  @Output() clickEvent = new EventEmitter<Condition>();
+
+  click(condition: Condition) {
+  	this.clickEvent.emit(condition);
+  }
 
   removeCondition(creature: Creature, condition: Condition) {
   	this.is.removeCondition(creature, condition);

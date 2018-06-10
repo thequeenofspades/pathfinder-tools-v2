@@ -93,7 +93,7 @@ export class InitiativeService {
       let playerOptions = doc.data().playerOptions || {}
       if (initiative == null) initiative = getRandomInt(1, 20) + creature.initiativeBonus;
       let creatureCopy = {
-        ...creature,
+        ...JSON.parse(JSON.stringify(creature)),
         initiative: initiative,
         id: this.db.createId(),
         visible: (playerOptions.visibleOption == 'visible')
@@ -110,12 +110,15 @@ export class InitiativeService {
   }
 
   addMultiple(creatures: Creature[]): void {
+    if (creatures.length == 1) {
+      return this.add(creatures[0]);
+    }
     this.initDoc.ref.get().then(doc => {
       let order = doc.data().order || [];
       let playerOptions = doc.data().playerOptions || {}
       creatures.forEach((creature, i) => {
         let creatureCopy = {
-          ...creature,
+          ...JSON.parse(JSON.stringify(creature)),
           initiative: getRandomInt(1, 20) + creature.initiativeBonus,
           id: this.db.createId(),
           visible: (playerOptions.visibleOption == 'visible')

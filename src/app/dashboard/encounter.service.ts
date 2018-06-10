@@ -80,7 +80,7 @@ export class EncounterService {
   removeFromEncounter(monster: MonsterI, encounter: {id: string, name: string}): void {
     this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
       let monsters = doc.data().monsters || [];
-      monsters = monsters.filter(m => m.id != (monster as any).id);  // find a way to fix this
+      monsters = monsters.filter(m => m.id != monster.id);
       this.encountersCollection.doc(encounter.id).update({monsters: monsters}).then(_ => {
         this.messageService.add(`Removed ${monster.basics.name} from ${encounter.name}`);
       });
@@ -90,7 +90,7 @@ export class EncounterService {
   update(encounter: {id: string}, monster: MonsterI, updated: MonsterI): void {
     this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
       let monsters = doc.data().monsters || [];
-      let monsterref = monsters.find(m => m.id == (monster as any).id);  // find a way to fix this
+      let monsterref = monsters.find(m => m.id == monster.id);
       Object.assign(monsterref, updated);
       this.encountersCollection.doc(encounter.id).update({monsters: monsters}).then(_ => {
         this.messageService.add(`Updated ${updated.basics.name}`);
@@ -157,7 +157,6 @@ export class EncounterService {
     model.extras.specials.forEach(() => {
       (form.get('extras.specials') as FormArray).push(this.buildSpecialFormGroup());
     });
-    console.log(model);
     form.patchValue(model);
   }
 

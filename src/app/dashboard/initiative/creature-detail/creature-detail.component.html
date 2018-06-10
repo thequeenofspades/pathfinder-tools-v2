@@ -2,8 +2,6 @@
 <a mat-button style="height: 0; position: absolute;"></a>
 <!--End workaround-->
 <div style="padding:10px" *ngIf="creature">
-	<app-interactive-condition-list [creature]="creature"></app-interactive-condition-list>
-
 	<ng-container *ngIf="creature.hp != undefined">
 		<app-monster-preview [stats]="creature" [live]="true"></app-monster-preview>
 	</ng-container>

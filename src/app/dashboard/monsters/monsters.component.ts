@@ -36,7 +36,8 @@ export class MonstersComponent implements OnInit {
     if (encounter != null) {
       this.encounterService.addMultipleToEncounter(monsters, encounter);
     } else {
-      this.initiativeService.addMultiple(monsters.map(monster => this.encounterService.prepareMonsterForInitiative(monster)));
+      let creatures = monsters.map(monster => this.encounterService.prepareMonsterForInitiative(monster));
+      this.initiativeService.addMultiple(creatures);
     }
   }
 
