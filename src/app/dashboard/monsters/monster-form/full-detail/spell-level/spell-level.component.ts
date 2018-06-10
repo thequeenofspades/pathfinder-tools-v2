@@ -23,12 +23,12 @@ export class SpellLevelComponent implements OnInit {
   }
 
   addSpell() {
-    this.spells.push(this.es.buildSpellFormGroup(this.form));
+    this.spells.push(this.es.buildSpellFormGroup());
   }
 
   addSpellChip(event: MatChipInputEvent) {
   	if (event.value.trim().length) {
-      let newSpell = this.es.buildSpellFormGroup(this.form);
+      let newSpell = this.es.buildSpellFormGroup();
       newSpell.patchValue({name: event.value.trim()});
       this.spells.push(newSpell);
   	}

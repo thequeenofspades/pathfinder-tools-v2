@@ -150,7 +150,7 @@ export class EncounterService {
     model.spells.spellLevels.forEach(sl => {
       let spellLevel = this.buildSpellLevelFormGroup(form.get('spells') as FormGroup);
       sl.spells.forEach(() => {
-        (spellLevel.get('spells') as FormArray).push(this.buildSpellFormGroup(form.get('spells') as FormGroup));
+        (spellLevel.get('spells') as FormArray).push(this.buildSpellFormGroup());
       });
       (form.get('spells.spellLevels') as FormArray).push(spellLevel);
     });
@@ -290,20 +290,10 @@ export class EncounterService {
     return newSpellLevel;
   }
 
-  public buildSpellFormGroup(spellsFG: FormGroup): FormGroup {
+  public buildSpellFormGroup(): FormGroup {
     let newSpell = this.fb.group({
       name: ['', Validators.required],
-      timesPrepared: [1, Validators.required],
-      dc: ''
-    });
-    spellsFG.get('spontaneous').valueChanges.subscribe(spontaneous => {
-      if (spontaneous) {
-        newSpell.get('timesPrepared').setValidators([]);
-        newSpell.get('timesPrepared').disable();
-      } else {
-        newSpell.get('timesPrepared').setValidators([Validators.required]);
-        newSpell.get('timesPrepared').enable();
-      }
+      cast: false
     });
     return newSpell;
   }
