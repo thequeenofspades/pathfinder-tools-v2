@@ -29,4 +29,14 @@
 			<mat-icon svgIcon="dice-d20"></mat-icon>
 		</button>
 	</span>
+	<mat-form-field appearance="outline">
+		<mat-label>Roll custom dice</mat-label>
+		<input matInput type="text" [(ngModel)]="model.command">
+	</mat-form-field>
+	<span matBadge="{{dcustom.roll}}" [matBadgeHidden]="!dcustom.roll">
+		<button mat-icon-button #dcustom (click)="rollCustom()">
+			<mat-icon svgIcon="dice-multiple"></mat-icon>
+		</button>
+	</span>
+	{{model.command}}
 </div>
