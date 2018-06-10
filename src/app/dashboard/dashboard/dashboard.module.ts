@@ -26,6 +26,16 @@ import { ConditionDetailComponent } from '../initiative/condition-detail/conditi
 import { CreatureDetailComponent } from '../initiative/creature-detail/creature-detail.component';
 
 import { StopClickDirective } from '../../stop-click.directive';
+import { FullDetailComponent } from '../monsters/monster-form/full-detail/full-detail.component';
+import { SpellLevelComponent } from '../monsters/monster-form/full-detail/spell-level/spell-level.component';
+import { MonsterPreviewComponent } from '../monsters/monster-form/full-detail/monster-preview/monster-preview.component';
+import { SlaLevelComponent } from '../monsters/monster-form/full-detail/sla-level/sla-level.component';
+
+import { PlusPipe } from '../../plus.pipe';
+import { RollableComponent } from '../rollable/rollable.component';
+import { InteractiveSpellListComponent } from '../interactive-spell-list/interactive-spell-list.component';
+import { InteractiveSlaListComponent } from '../interactive-sla-list/interactive-sla-list.component';
+import { InteractiveConditionListComponent } from '../interactive-condition-list/interactive-condition-list.component';
 
 @NgModule({
   imports: [
@@ -53,7 +63,16 @@ import { StopClickDirective } from '../../stop-click.directive';
     PlayerViewOptionsComponent,
     ConditionDetailComponent,
     CreatureDetailComponent,
-    StopClickDirective
+    StopClickDirective,
+    FullDetailComponent,
+    SpellLevelComponent,
+    MonsterPreviewComponent,
+    SlaLevelComponent,
+    PlusPipe,
+    RollableComponent,
+    InteractiveSpellListComponent,
+    InteractiveSlaListComponent,
+    InteractiveConditionListComponent
   ],
   entryComponents: [
     InitiativeFormComponent,

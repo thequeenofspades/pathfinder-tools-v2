@@ -17,6 +17,28 @@ mat-progress-bar {
 	min-width: 30px;
 }
 
+.badge {
+	border-radius: 50%;
+	width: 22px;
+	height: 22px;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 22px;
+	text-align: center;
+	display: block-inline;
+	font-family: Roboto, "Helvetica Neue", sans-serif
+}
+
+.accent-badge {
+	background-color: mat-color($pf-app-accent);
+	color: black;
+}
+
+.primary-badge {
+	background-color: mat-color($pf-app-primary);
+	color: white;
+}
+
 .color-bar {
 	background-color: mat-color($pf-app-primary);
 }

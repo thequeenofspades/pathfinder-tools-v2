@@ -1,7 +1,8 @@
 import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
+import { EncounterService } from '../../encounter.service';
 
-import { Monster } from '../../monster';
+import { Monster, MonsterI } from '../../monster';
 
 @Component({
   selector: 'app-monster-form',
@@ -10,54 +11,49 @@ import { Monster } from '../../monster';
 })
 export class MonsterFormComponent implements OnInit {
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private es: EncounterService) { }
 
   ngOnInit() {
     this.createForm();
   }
 
-  @Input() model: Monster = new Monster('', 100);
-  @Output() onSubmitted = new EventEmitter<Object>();
+  @Input() model: MonsterI;
+  @Output() onSubmitted = new EventEmitter<MonsterI>();
   @Output() onCanceled = new EventEmitter();
 
-  monsterForm : FormGroup;
+  form: FormGroup;
   showQuantity: boolean = true;
+  fullStats: FormControl;
 
   createForm(): void {
-    this.monsterForm = this.fb.group({
-      name: [this.model.name, Validators.required],
-      hp: [this.model.hp, Validators.required],
-      conScore: [this.model.conScore, Validators.required],
-      initiativeBonus: [this.model.initiativeBonus, Validators.required],
-      perceptionBonus: [this.model.perceptionBonus, Validators.required],
-      senseMotiveBonus: [this.model.senseMotiveBonus, Validators.required],
-      quantity: [this.model.quantity, Validators.required],
-      idx: [this.model.idx]
-    });
-    if (this.model.name != '') {
-      this.monsterForm.get('quantity').clearValidators();
-      this.monsterForm.get('idx').setValidators([Validators.required]);
+    this.fullStats = new FormControl();
+    this.resetForm();
+    if (this.model) {
+      this.form.get('basics.quantity').clearValidators();
+      this.form.get('basics.idx').setValidators([Validators.required]);
       this.showQuantity = false;
     };
   }
 
+  resetForm(): void {
+    this.form = this.es.buildMonsterForm();
+    if (this.model) {
+      this.es.setMonsterFormValue(this.model, this.form);
+    }
+  }
+
   onCancel() {
+    this.resetForm();
   	this.onCanceled.emit();
   }
 
   onSubmit() {
-    let form = this.monsterForm;
-    let monster = {
-      name: form.get('name').value,
-      hp: form.get('hp').value,
-      initiativeBonus: form.get('initiativeBonus').value,
-      perceptionBonus: form.get('perceptionBonus').value,
-      senseMotiveBonus: form.get('senseMotiveBonus').value,
-      conScore: form.get('conScore').value,
-      quantity: form.get('quantity').value,
-      idx: form.get('idx').value
-    };
-    this.onSubmitted.emit(monster);
+    this.onSubmitted.emit(this.form.value);
+    this.resetForm();
+  }
+
+  abilityBonus(score: number): number {
+    return Math.floor((score - 10) / 2);
   }
 
 }

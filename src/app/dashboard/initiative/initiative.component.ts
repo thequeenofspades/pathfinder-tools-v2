@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 
 import { Player } from '../player';
-import { Monster } from '../monster';
+import { Monster, Creature } from '../monster';
 import { InitiativeService } from '../initiative.service';
 import { Condition } from '../condition';
 
@@ -12,8 +12,6 @@ import { ConditionFormComponent } from './condition-form.component';
 import { DamageFormComponent } from './damage-form.component';
 import { ConditionDetailComponent } from './condition-detail/condition-detail.component';
 import { CreatureDetailComponent } from './creature-detail/creature-detail.component'
-
-type Creature = Player | Monster;
 
 @Component({
   selector: 'app-initiative',
@@ -36,12 +34,15 @@ export class InitiativeComponent implements OnInit {
     public dialog: MatDialog,
     private route: ActivatedRoute) { }
 
-  @ViewChild(CreatureDetailComponent) private detailComponent: CreatureDetailComponent;
+  @ViewChild(CreatureDetailComponent) public detailComponent: CreatureDetailComponent;
 
   ngOnInit() {
     this.route.data.subscribe((data: {id: string}) => {
       this.code = data.id;
       this.initiativeService.setup(data.id);
+      this.initiativeService.active$.subscribe(active => {
+        this.selectCreature(active);
+      });
     });
   }
 
@@ -51,8 +52,11 @@ export class InitiativeComponent implements OnInit {
 
   listenArrowKeys: boolean = true;
 
+  protected showDetail: boolean = false;
+
   selectCreature(creature: Creature): void {
     this.detailComponent.creature = creature;
+    this.showDetail = true;
     this.initiativeService.init$.subscribe(_ => {
         this.initiativeService.get(this.detailComponent.creature.id).subscribe(c => 
           this.detailComponent.creature = c);

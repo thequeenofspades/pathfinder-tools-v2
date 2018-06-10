@@ -1,0 +1,495 @@
+<form [formGroup]="form">
+
+  <mat-horizontal-stepper>
+
+    <mat-step label="Basics" formGroupName="basics" [stepControl]="form.get('basics')">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" formControlName="name" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" *ngIf="showQuantity">
+        <mat-label>Quantity</mat-label>
+        <input matInput type="number" formControlName="quantity" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" *ngIf="!showQuantity">
+        <mat-label>Index</mat-label>
+        <input matInput type="number" formControlName="idx" required>
+      </mat-form-field>
+
+      <mat-divider></mat-divider>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Gender</mat-label>
+        <input matInput type="text" formControlName="gender">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Race</mat-label>
+        <input matInput type="text" formControlName="race">
+      </mat-form-field>
+
+      <div formArrayName="classes">
+        <div *ngFor="let class of classes.controls; let i=index" [formGroupName]="i">
+
+          <button mat-icon-button type="button" (click)="removeClass(i)"><mat-icon>delete</mat-icon></button>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Class</mat-label>
+            <input matInput type="text" formControlName="class">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Level</mat-label>
+            <input matInput type="number" formControlName="level">
+          </mat-form-field>
+
+        </div>
+
+        <button mat-button type="button" (click)="addClass()"><mat-icon svgIcon="plus"></mat-icon> Class</button>
+
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Alignment</mat-label>
+        <input matInput type="text" formControlName="alignment">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Size</mat-label>
+        <input matInput type="text" formControlName="size">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Creature Type</mat-label>
+        <input matInput type="text" formControlName="type">
+      </mat-form-field>
+
+      <mat-divider></mat-divider>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Initiative Bonus</mat-label>
+        <input matInput type="number" formControlName="initiativeBonus" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Senses</mat-label>
+        <input matInput type="text" formControlName="senses">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Perception Bonus</mat-label>
+        <input matInput type="number" formControlName="perceptionBonus" required>
+      </mat-form-field>
+
+      <mat-divider></mat-divider>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Aura</mat-label>
+        <input matInput type="text" formControlName="aura">
+      </mat-form-field>
+
+      <div class="button-row">
+        <button mat-button type="button" matStepperNext [disabled]="form.get('basics').invalid">Next</button>
+      </div>
+
+    </mat-step>
+
+    <mat-step label="Defense" formGroupName="defense" [stepControl]="form.get('defense')">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Armor Class</mat-label>
+        <input matInput type="text" formControlName="ac">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>AC (touch)</mat-label>
+        <input matInput type="text" formControlName="actouch">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>AC (flat-footed)</mat-label>
+        <input matInput type="text" formControlName="acff">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>AC Notes</mat-label>
+        <input matInput type="text" formControlName="acnotes">
+      </mat-form-field>
+
+      <mat-divider></mat-divider>
+
+      <mat-form-field appearance="outline">
+        <mat-label>HP</mat-label>
+        <input matInput type="number" formControlName="hp" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>HP Notes</mat-label>
+        <input matInput type="text" formControlName="hpnotes">
+      </mat-form-field>
+
+      <mat-divider></mat-divider>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fortitude</mat-label>
+        <input matInput type="number" formControlName="fort">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Reflex</mat-label>
+        <input matInput type="number" formControlName="ref">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Will</mat-label>
+        <input matInput type="number" formControlName="will">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Saving Throw Notes</mat-label>
+        <input matInput type="text" formControlName="savenotes">
+      </mat-form-field>
+
+      <mat-divider></mat-divider>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Defensive Abilities</mat-label>
+        <input matInput type="text" formControlName="defensiveAbilities">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Resistances</mat-label>
+        <input matInput type="text" formControlName="resistances">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Immunities</mat-label>
+        <input matInput type="text" formControlName="immunities">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>DR</mat-label>
+        <input matInput type="text" formControlName="dr">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>SR</mat-label>
+        <input matInput type="text" formControlName="sr">
+      </mat-form-field>
+
+      <mat-divider></mat-divider>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Weaknesses</mat-label>
+        <input matInput type="text" formControlName="weaknesses">
+      </mat-form-field>
+
+      <div class="button-row">
+        <button mat-button type="button" matStepperNext [disabled]="form.get('defense').invalid">Next</button>
+      </div>
+
+    </mat-step>
+
+    <mat-step label="Offense" formGroupName="offense" [stepControl]="form.get('offense')" [optional]="true">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Speed</mat-label>
+        <input matInput type="text" formControlName="speed">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Space</mat-label>
+        <input matInput type="text" formControlName="space">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Reach</mat-label>
+        <input matInput type="text" formControlName="reach">
+      </mat-form-field>
+
+      <mat-divider></mat-divider>
+
+      <div formArrayName="attacks">
+        <div *ngFor="let attack of attacks.controls; let i=index" [formGroupName]="i">
+
+          <button type="button" mat-icon-button (click)="removeAttack(i)"><mat-icon>delete</mat-icon></button>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Attack</mat-label>
+            <input matInput type="text" formControlName="attack" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="type" required>
+              <mat-option *ngFor="let attackType of attackTypes" [value]="attackType">
+                {{attackType}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        </div>
+
+        <button mat-button type="button" (click)="addAttack()"><mat-icon svgIcon="plus"></mat-icon> Attack</button>
+      </div>
+
+      <div class="button-row">
+        <button mat-button type="button" matStepperNext [disabled]="form.get('offense').invalid">Next</button>
+      </div>
+
+    </mat-step>
+
+    <mat-step label="Spells" formGroupName="spells" [stepControl]="form.get('spells')" [optional]="true">
+
+      <ng-container *ngIf="slaLevels.length">
+
+        <mat-form-field appearance="outline">
+          <mat-label>CL</mat-label>
+          <input matInput type="text" formControlName="slaCL">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Concentration Bonus</mat-label>
+          <input matInput type="text" formControlName="slaConcentration">
+        </mat-form-field>
+      
+      </ng-container>
+
+      <div formArrayName="slaLevels">
+        <div *ngFor="let sla of slaLevels.controls; let i=index" [formGroupName]="i">
+          <app-monster-form-sla-level [form]="sla" (remove)="removeSLALevel(i)"></app-monster-form-sla-level>
+        </div>
+        <button mat-button type="button" (click)="addSLALevel()"><mat-icon svgIcon="plus"></mat-icon> Spell-Like Ability</button>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <ng-container *ngIf="spellLevels.length">
+
+        <mat-form-field appearance="outline">
+          <mat-label>CL</mat-label>
+          <input matInput type="text" formControlName="cl">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Concentration Bonus</mat-label>
+          <input matInput type="text" formControlName="concentration">
+        </mat-form-field>
+
+        <mat-checkbox formControlName="spontaneous">Spontaneous Caster</mat-checkbox>
+      
+      </ng-container>
+
+      <div formArrayName="spellLevels">
+        <div *ngFor="let level of spellLevels.controls; let i=index" [formGroupName]="i">
+          <app-monster-form-spell-level [form]="level" (remove)="removeSpellLevel(i)"></app-monster-form-spell-level>
+        </div>
+        <button mat-button type="button" (click)="addSpellLevel()"><mat-icon svgIcon="plus"></mat-icon> Spell Level</button>
+      </div>
+
+      <div class="button-row">
+        <button mat-button type="button" matStepperNext [disabled]="form.get('spells').invalid">Next</button>
+      </div>
+
+    </mat-step>
+
+    <mat-step label="Statistics" formGroupName="statistics" [stepControl]="form.get('statistics')">
+
+      <mat-form-field appearance="outline">
+        <mat-label>
+          Strength Score <ng-container *ngIf="form.get('statistics').get('strScore') as score">
+            <ng-container *ngIf="score.value != undefined">
+              (<ng-container *ngIf="score.value >= 10">+</ng-container>{{abilityBonus(score.value)}})
+            </ng-container>
+          </ng-container>
+        </mat-label>
+        <input matInput type="number" formControlName="strScore">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>
+          Dexterity Score <ng-container *ngIf="form.get('statistics').get('dexScore') as score">
+            <ng-container *ngIf="score.value != undefined">
+              (<ng-container *ngIf="score.value >= 10">+</ng-container>{{abilityBonus(score.value)}})
+            </ng-container>
+          </ng-container>
+        </mat-label>
+        <input matInput type="number" formControlName="dexScore">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>
+          Constitution Score <ng-container *ngIf="form.get('statistics').get('conScore') as score">
+            <ng-container *ngIf="score.value != undefined">
+              (<ng-container *ngIf="score.value >= 10">+</ng-container>{{abilityBonus(score.value)}})
+            </ng-container>
+          </ng-container>
+        </mat-label>
+        <input matInput type="number" formControlName="conScore" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>
+          Intelligence Score <ng-container *ngIf="form.get('statistics').get('intScore') as score">
+            <ng-container *ngIf="score.value != undefined">
+              (<ng-container *ngIf="score.value >= 10">+</ng-container>{{abilityBonus(score.value)}})
+            </ng-container>
+          </ng-container>
+        </mat-label>
+        <input matInput type="number" formControlName="intScore">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>
+          Wisdom Score <ng-container *ngIf="form.get('statistics').get('wisScore') as score">
+            <ng-container *ngIf="score.value != undefined">
+              (<ng-container *ngIf="score.value >= 10">+</ng-container>{{abilityBonus(score.value)}})
+            </ng-container>
+          </ng-container>
+        </mat-label>
+        <input matInput type="number" formControlName="wisScore">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>
+          Charisma Score <ng-container *ngIf="form.get('statistics').get('chaScore') as score">
+            <ng-container *ngIf="score.value != undefined">
+              (<ng-container *ngIf="score.value >= 10">+</ng-container>{{abilityBonus(score.value)}})
+            </ng-container>
+          </ng-container>
+        </mat-label>
+        <input matInput type="number" formControlName="chaScore">
+      </mat-form-field>
+
+      <mat-divider></mat-divider>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Base Attack Bonus</mat-label>
+        <input matInput type="number" formControlName="bab">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Combat Maneuver Bonus</mat-label>
+        <input matInput type="text" formControlName="cmb"
+                placeholder="{{form.get('statistics').get('bab').value + abilityBonus(form.get('statistics').get('strScore').value)}}">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Combat Maneuver Defense</mat-label>
+        <input matInput type="text" formControlName="cmd"
+                placeholder="{{10 + form.get('statistics').get('bab').value + abilityBonus(form.get('statistics').get('strScore').value) + abilityBonus(form.get('statistics').get('dexScore').value)}}">
+      </mat-form-field>
+
+      <mat-divider></mat-divider>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Feats</mat-label>
+        <textarea matInput type="text" formControlName="feats"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Skills</mat-label>
+        <textarea matInput type="text" formControlName="skills"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Languages</mat-label>
+        <textarea matInput type="text" formControlName="languages"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Special Qualities</mat-label>
+        <textarea matInput type="text" formControlName="sq"></textarea>
+      </mat-form-field>
+
+      <div class="button-row">
+        <button mat-button type="button" matStepperNext [disabled]="form.get('statistics').invalid">Next</button>
+      </div>
+
+    </mat-step>
+
+    <mat-step label="Extras" formGroupName="extras" [stepControl]="form.get('extras')" [optional]="true">
+
+      <mat-form-field appearance="outline">
+        <mat-label>CR</mat-label>
+        <input matInput type="number" formControlName="cr">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>XP</mat-label>
+        <input matInput type="number" formControlName="xp">
+      </mat-form-field>
+
+      <mat-divider></mat-divider>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput type="text" formControlName="description"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Tactics</mat-label>
+        <textarea matInput type="text" formControlName="tactics"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Gear</mat-label>
+        <textarea matInput type="text" formControlName="gear"></textarea>
+      </mat-form-field>
+
+      <mat-divider></mat-divider>
+
+      <div formArrayName="specials">
+        <div *ngFor="let special of specials.controls; let i=index" [formGroupName]="i">
+
+          <button type="button" mat-icon-button (click)="removeSLA(i)"><mat-icon>delete</mat-icon></button>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input matInput type="text" formControlName="name" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="type" required>
+              <mat-option *ngFor="let specialType of specialTypes" [value]="specialType">
+                {{specialType}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Description</mat-label>
+            <textarea matInput type="text" formControlName="description"></textarea>
+          </mat-form-field>
+
+        </div>
+
+        <button mat-button type="button" (click)="addSpecial()"><mat-icon svgIcon="plus"></mat-icon> Special Ability</button>
+
+      </div>
+
+      <div class="button-row">
+        <button mat-button type="button" matStepperNext [disabled]="form.get('extras').invalid">Next</button>
+      </div>
+
+    </mat-step>
+
+    <mat-step label="Done">
+
+      <app-monster-preview [stats]="form.value" [live]="false"></app-monster-preview>
+
+      <div class="button-row">
+        <button mat-raised-button type="button" (click)="onCancel()">Cancel</button>
+        <button mat-raised-button type="button" color="primary" [disabled]="form.invalid" (click)="onSubmit()">Submit</button>
+      </div>
+    </mat-step>
+
+  </mat-horizontal-stepper>
+
+</form>

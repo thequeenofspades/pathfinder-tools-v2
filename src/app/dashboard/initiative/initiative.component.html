@@ -11,9 +11,15 @@
 		Round: {{init.round}}
 		<button mat-button (click)="initiativeService.reset()">Reset</button>
 
-		<mat-drawer-container [hasBackdrop]="true">
+		<mat-drawer-container autosize>
 
-			<mat-drawer #detailDrawer mode="side">
+			<mat-drawer #detailDrawer
+						mode="side" position="end" style="max-width: 40%"
+						[(opened)]="showDetail"
+						(closed)="showDetail = false">
+				<div class="button-row" fxFlex="row" fxLayoutAlign="end">
+					<button mat-icon-button (click)="showDetail = false"><mat-icon>cancel</mat-icon></button>
+				</div>
 				<app-creature-detail #creatureDetail [initService]="initiativeService"></app-creature-detail>
 			</mat-drawer>
 
@@ -22,7 +28,7 @@
 					<table class="mat-table initiativeTable">
 						<tr class="mat-row initiativeRow" *ngFor="let creature of init.order; index as i"
 							[class.active-creature-row]="i == init.active"
-							(click)="selectCreature(creature); detailDrawer.open()">
+							(click)="selectCreature(creature)">
 
 							<td class="mat-cell initiativeCell">
 								{{creature.initiative}}
@@ -33,7 +39,7 @@
 										matBadgeColor="accent" matBadgePosition="before" matBadgeOverlap="false">
 									<span *ngIf="!creature.hp"><mat-icon>person</mat-icon></span>
 									<span class="creature-name"> {{creature.name}}</span>
-									<ng-container *ngIf="creature.quantity > 1"> ({{ creature.idx }} of {{ creature.quantity }})</ng-container>
+									<ng-container *ngIf="creature.basics?.quantity > 1"> ({{ creature.basics.idx }} of {{ creature.basics.quantity }})</ng-container>
 								</span>
 							</td>
 
@@ -46,17 +52,7 @@
 										</span>
 										<mat-progress-bar mode="determinate" color="warn" [value]="100*(creature.currentHp/creature.hp)"></mat-progress-bar>
 									</div>
-									<mat-chip-list>
-										<mat-chip 	*ngFor="let condition of creature.conditions"
-													[removable]="true"
-													(click)="openConditionDetailDialog(condition)">
-											<ng-container *ngIf="!condition.permanent">
-												<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
-											</ng-container>
-											{{condition.name}}
-											<mat-icon matChipRemove appStopClick (click)="initiativeService.removeCondition(creature, condition)">cancel</mat-icon>
-										</mat-chip>
-									</mat-chip-list>
+									<app-interactive-condition-list [creature]="creature" (clickEvent)="openConditionDetailDialog($event)"></app-interactive-condition-list>
 								</div>
 							</td>
 
@@ -85,11 +81,12 @@
 							</td>
 						</tr>
 					</table>
-					<app-player-view-options [code]="code" [initService]="initiativeService" fxFlexAlign="center"></app-player-view-options>
 				</div>
 			</mat-drawer-content>
 
 		</mat-drawer-container>
+
+		<app-player-view-options [code]="code" [initService]="initiativeService" fxFlexAlign="center"></app-player-view-options>
 
 	</ng-container>
 </ng-container>

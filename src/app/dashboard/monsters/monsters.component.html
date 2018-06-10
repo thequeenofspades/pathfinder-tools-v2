@@ -42,39 +42,25 @@
 					<mat-expansion-panel *ngFor="let monster of encounter.monsters">
 						<mat-expansion-panel-header matBadge="{{badges[monster.id]}}" [matBadgeHidden]="badges[monster.id] == undefined" matBadgeColor="accent" matBadgePosition="before">
 							<mat-panel-title>
-								{{monster.name}} <ng-container *ngIf="monster.quantity > 1">({{ monster.idx }} of {{ monster.quantity }})</ng-container>
+								{{monster.basics.name}} <ng-container *ngIf="monster.basics.quantity > 1">({{ monster.basics.idx }} of {{ monster.basics.quantity }})</ng-container>
 							</mat-panel-title>
 							<mat-panel-description>
 								Details
 							</mat-panel-description>
 						</mat-expansion-panel-header>
-						<ng-container *ngIf="!monster.edit">
-							HP: {{monster.hp}}<br>
-							Constitution: {{monster.conScore}}<br>
-							Initiative: <ng-container *ngIf="monster.initiativeBonus >= 0">+</ng-container>{{monster.initiativeBonus}}<br>
-							Perception: <ng-container *ngIf="monster.perceptionBonus >= 0">+</ng-container>{{monster.perceptionBonus}}
-							<span matBadge="{{monster.notification.perception}}" matBadgeColor="accent" [matBadgeHidden]="monster.notification.perception == undefined">
-								<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollPerception(monster)">
-									<mat-icon svgIcon="dice-d20"></mat-icon>
-								</button>
-							</span><br>
-							Sense Motive: <ng-container *ngIf="monster.senseMotiveBonus >= 0">+</ng-container>{{monster.senseMotiveBonus}}
-							<span matBadge="{{monster.notification.senseMotive}}" matBadgeColor="accent" [matBadgeHidden]="monster.notification.senseMotive == undefined">
-								<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollSenseMotive(monster)">
-									<mat-icon svgIcon="dice-d20"></mat-icon>
-								</button>
-							</span>
+						<ng-container *ngIf="!edit[monster.id]">
+							<app-monster-preview [stats]="monster"></app-monster-preview>
 							<mat-action-row>
-								<button mat-button (click)="monster.edit=true">Edit</button>
-								<button mat-button color="primary" (click)="initiativeService.add(monster)">Add to Initiative</button>
+								<button mat-button (click)="edit[monster.id] = true">Edit</button>
+								<button mat-button color="primary" (click)="addToInitiative(monster)">Add to Initiative</button>
 								<button mat-button color="warn" (click)="encounterService.removeFromEncounter(monster, encounter)">Remove</button>
 							</mat-action-row>
 						</ng-container>
-						<ng-container *ngIf="monster.edit">
+						<ng-container *ngIf="edit[monster.id]">
 							<app-monster-form
 								[model]="monster"
-								(onSubmitted)="encounterService.update(encounter, monster, $event); monster.edit=false"
-								(onCanceled)="monster.edit=false">
+								(onSubmitted)="encounterService.update(encounter, monster, $event); edit[monster.id] = false"
+								(onCanceled)="edit[monster.id] = false">
 							</app-monster-form>
 						</ng-container>
 					</mat-expansion-panel>
@@ -96,7 +82,6 @@
 		<mat-card-actions *ngIf="!encounter.new && !encounter.edit">
 			<button mat-button color="primary" (click)="encounterService.addEncounterToInitiative(encounter)" [disabled]="!encounter.monsters.length">Add to Initiative</button>
 			<button mat-button color="accent" (click)="rollPerceptionForEncounter(encounter)" [disabled]="!encounter.monsters.length">Roll Perception</button>
-			<button mat-button color="accent" (click)="rollSMForEncounter(encounter)" [disabled]="!encounter.monsters.length">Roll Sense Motive</button>
 		</mat-card-actions>
 	</mat-card>
 </div>
