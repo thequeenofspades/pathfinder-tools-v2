@@ -15,71 +15,64 @@ export class MonsterPreviewComponent implements OnInit {
   	// this.updatePreview();
   }
 
-  @Input() stats: Object;
+  @Input() stats: MonsterI;
   @Input() live: boolean;
 
   // public stats: Object;
 
-  get basics(): Object {
-  	return this.stats['basics'];
+  get basics() {
+  	return this.stats.basics;
   }
 
-  get defense(): Object {
-  	return this.stats['defense'];
+  get defense() {
+  	return this.stats.defense;
   }
 
-  get offense(): Object {
-  	return this.stats['offense'];
+  get offense() {
+  	return this.stats.offense;
   }
 
-  get spells(): Object {
-  	return this.stats['spells'];
+  get spells() {
+  	return this.stats.spells;
   }
 
-  get statistics(): Object {
-  	return this.stats['statistics'];
+  get statistics() {
+  	return this.stats.statistics;
   }
 
-  get extras(): Object {
-  	return this.stats['extras'];
+  get extras() {
+  	return this.stats.extras;
   }
 
-  // updatePreview() {
-  // 	this.stats = this.form.value;
-  // 	this.form.valueChanges.subscribe(() => {
-  // 		this.stats = this.form.value;
-  // 	});
-  // }
-
-  showAC(): boolean {
-  	return this.defense['ac'] || this.defense['acff'] || this.defense['actouch'] || this.defense['acnotes'];
+  showAC() {
+  	return this.defense.ac || this.defense.acff || this.defense.actouch || this.defense.acnotes;
   }
 
-  showOffense(): boolean {
-  	let offense = this.offense['speed'] || this.offense['space'] || this.offense['reach'] || this.offense['attacks'].length;
-  	let spells = this.spells['slaLevels'].length || this.spells['spellLevels'].length;
+  showOffense() {
+  	let offense = this.offense.speed || this.offense.space || this.offense.reach || this.offense.attacks.length;
+  	let spells = this.spells.slaLevels.length || this.spells.spellLevels.length;
   	return offense || spells;
   }
 
   get meleeAttacks(): Object[] {
-  	return this.offense['attacks'].filter(attack => attack.type == 'melee');
+  	return this.offense.attacks.filter(attack => attack.type == 'melee');
   }
 
   get rangedAttacks(): Object[] {
-  	return this.offense['attacks'].filter(attack => attack.type == 'ranged');
+  	return this.offense.attacks.filter(attack => attack.type == 'ranged');
   }
 
   get specialAttacks(): Object[] {
-  	return this.offense['attacks'].filter(attack => attack.type == 'special');
+  	return this.offense.attacks.filter(attack => attack.type == 'special');
   }
 
   get sortedSlaLevels(): Object[] {
-  	return (this.spells['slaLevels'] as Object[]).sort((a, b) => {
-  		if (a['limited'] == 'Constant') return -1;
-  		if (b['limited'] == 'Constant') return 1;
-  		if (a['limited'] == 'At will') return -1;
-  		if (b['limited'] == 'At will') return 1;
-  		return b['uses'] - a['uses'];
+  	return this.spells.slaLevels.sort((a, b) => {
+  		if (a.limited == 'Constant') return -1;
+  		if (b.limited == 'Constant') return 1;
+  		if (a.limited == 'At will') return -1;
+  		if (b.limited == 'At will') return 1;
+  		return b.uses - a.uses;
   	});
   }
 

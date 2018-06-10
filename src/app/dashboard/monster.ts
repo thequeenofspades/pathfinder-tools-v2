@@ -61,9 +61,9 @@ export interface MonsterI {
         sq: string
       },
       defense: {
-        ac: string | number,
-        acff: string | number,
-        actouch: string | number,
+        ac: string,
+        acff: string,
+        actouch: string,
         acnotes: string,
         hp: number,
         hpnotes: string,
