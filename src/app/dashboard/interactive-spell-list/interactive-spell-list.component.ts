@@ -16,6 +16,7 @@ export class InteractiveSpellListComponent implements OnInit {
 
   @Input() spellLevel: {
     uses: number,
+    level: number,
     spells: {
       name: string,
       cast: boolean
@@ -28,10 +29,10 @@ export class InteractiveSpellListComponent implements OnInit {
   }
 
   cast(i: number) {
-  	if (this.spellLevel.uses == undefined) {
+  	if (this.spellLevel.uses == undefined && this.spellLevel.level > 0) {
 	  	this.spellLevel.spells[i].cast = !this.spellLevel.spells[i].cast;
       this.is.update(this.monster);
-  	} else {
+  	} else if (this.spellLevel.level > 0) {
   		this.spellLevel.uses -= 1;
       this.is.update(this.monster);
   	}
