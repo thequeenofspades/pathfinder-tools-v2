@@ -31,7 +31,7 @@
 	</span>
 	<mat-form-field appearance="outline">
 		<mat-label>Roll custom dice</mat-label>
-		<input matInput type="text" [(ngModel)]="model.command" placeholder="Ex: 2d8+4">
+		<input matInput type="text" [(ngModel)]="model.command" placeholder="Ex: 2d8+4" (keyup.enter)="rollCustom()">
 	</mat-form-field>
 	<button mat-icon-button type="button" (click)="rollCustom()" [disabled]="!valid()">
 		<mat-icon svgIcon="dice-multiple"></mat-icon>
