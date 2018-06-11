@@ -21,6 +21,7 @@ export class DiceRollerComponent implements OnInit {
   model: {command: string, result: string};
 
   rollCustom(): void {
+    if (!this.valid()) return;
   	this.model.result = '';
   	let dieGroups = [];
   	while (true) {
