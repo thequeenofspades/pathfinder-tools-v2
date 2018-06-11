@@ -1,0 +1,87 @@
+<ng-container *ngIf="init.order?.length">
+	<div class="button-row">
+		<button mat-button (click)="initiativeService.clear()" color="warn">Clear</button>
+		<button mat-button (click)="initiativeService.previous()"><mat-icon svgIcon="arrow-left-bold-box-outline"></mat-icon>Previous</button>
+		<button mat-button (click)="initiativeService.advance()" color="primary">Advance<mat-icon svgIcon="arrow-right-bold-box-outline"></mat-icon></button>
+		<button mat-button (click)="rollPerception(init.order)" color="accent">Roll Perception</button>
+	</div>
+
+	Round: {{init.round}}
+	<button mat-button (click)="initiativeService.reset()">Reset</button>
+
+	<mat-drawer-container autosize>
+
+		<mat-drawer #detailDrawer
+					mode="side" position="end" style="max-width: 40%"
+					[(opened)]="showDetail"
+					(closed)="showDetail = false">
+			<div class="button-row" fxFlex="row" fxLayoutAlign="end">
+				<button mat-icon-button (click)="showDetail = false"><mat-icon>cancel</mat-icon></button>
+			</div>
+			<app-creature-detail #creatureDetail [initService]="initiativeService"></app-creature-detail>
+		</mat-drawer>
+
+		<mat-drawer-content>
+			<div fxLayout="column" fxLayoutGap="10px" fxFlex="2 1 auto">
+				<table class="mat-table initiativeTable">
+					<tr class="mat-row initiativeRow" *ngFor="let creature of init.order; index as i"
+						[class.active-creature-row]="i == init.active"
+						(click)="selectCreature(creature)">
+
+						<td class="mat-cell initiativeCell">
+							{{creature.initiative}}
+						</td>
+
+						<td class="mat-cell initiativeCell">
+							<span 	matBadge="{{badges[creature.id]}}" [matBadgeHidden]="badges[creature.id] == undefined"
+									matBadgeColor="accent" matBadgePosition="before" matBadgeOverlap="false">
+								<span *ngIf="!creature.hp"><mat-icon>person</mat-icon></span>
+								<span class="creature-name"> {{creature.name}}</span>
+								<ng-container *ngIf="creature.basics?.quantity > 1"> ({{ creature.basics.idx }} of {{ creature.basics.quantity }})</ng-container>
+							</span>
+						</td>
+
+						<td class="mat-cell initiativeCell">
+							<div fxLayout="row" fxLayoutAlign="start center">
+								<div *ngIf="creature.hp" fxLayout="column" fxLayoutAlign="center center">
+									<span>
+										{{creature.currentHp}}/{{creature.hp}}
+										<button mat-icon-button appStopClick (click)="openDamageFormDialog(creature)" matTooltip="Damage"><mat-icon svgIcon="sword"></mat-icon></button>
+									</span>
+									<mat-progress-bar mode="determinate" color="warn" [value]="100*(creature.currentHp/creature.hp)"></mat-progress-bar>
+								</div>
+								<app-interactive-condition-list [creature]="creature" (clickEvent)="openConditionDetailDialog($event)"></app-interactive-condition-list>
+							</div>
+						</td>
+
+						<td class="mat-cell initiativeCell">
+							<button mat-icon-button appStopClick (click)="openConditionFormDialog(creature)" matTooltip="Add Condition"><mat-icon svgIcon="skull"></mat-icon></button>
+							<button mat-icon-button appStopClick (click)="openNoteFormDialog(creature)" type="button" matTooltip="Add Note"><mat-icon>note_add</mat-icon></button>
+							<ng-container *ngIf="!delayed(creature)">
+								<button mat-icon-button appStopClick (click)="initiativeService.delay(creature)" matTooltip="Delay"><mat-icon>snooze</mat-icon></button>
+							</ng-container>
+							<ng-container *ngIf="delayed(creature)">
+								<button mat-icon-button appStopClick (click)="initiativeService.undelay(creature)" color="primary" matTooltip="Undelay">
+									<mat-icon>alarm_on</mat-icon>
+								</button>
+							</ng-container>
+							<button mat-icon-button appStopClick (click)="initiativeService.moveUp(creature)" matTooltip="Move Up">
+								<mat-icon>arrow_upward</mat-icon>
+							</button>
+							<button mat-icon-button appStopClick (click)="initiativeService.moveDown(creature)" matTooltip="Move Down"><mat-icon>arrow_downward</mat-icon></button>
+							<button mat-icon-button appStopClick matTooltip="Make Invisible to Players" *ngIf="creature.hp && creature.visible" (click)="initiativeService.toggleVisible(creature)">
+								<mat-icon svgIcon="eye"></mat-icon>
+							</button>
+							<button mat-icon-button appStopClick matTooltip="Make Visible to Players" *ngIf="creature.hp && !creature.visible" (click)="initiativeService.toggleVisible(creature)">
+								<mat-icon svgIcon="eye-off"></mat-icon>
+							</button>
+							<button mat-icon-button appStopClick (click)="initiativeService.remove(creature)" matTooltip="Remove"><mat-icon>delete</mat-icon></button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</mat-drawer-content>
+
+	</mat-drawer-container>
+
+</ng-container>

@@ -36,6 +36,7 @@ import { RollableComponent } from '../rollable/rollable.component';
 import { InteractiveSpellListComponent } from '../interactive-spell-list/interactive-spell-list.component';
 import { InteractiveSlaListComponent } from '../interactive-sla-list/interactive-sla-list.component';
 import { InteractiveConditionListComponent } from '../interactive-condition-list/interactive-condition-list.component';
+import { InitiativeTableComponent } from '../initiative/initiative-table/initiative-table.component';
 
 @NgModule({
   imports: [
@@ -72,7 +73,8 @@ import { InteractiveConditionListComponent } from '../interactive-condition-list
     RollableComponent,
     InteractiveSpellListComponent,
     InteractiveSlaListComponent,
-    InteractiveConditionListComponent
+    InteractiveConditionListComponent,
+    InitiativeTableComponent
   ],
   entryComponents: [
     InitiativeFormComponent,
