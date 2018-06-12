@@ -250,12 +250,12 @@
 
         <mat-form-field appearance="outline">
           <mat-label>CL</mat-label>
-          <input matInput type="text" formControlName="slaCL">
+          <input matInput type="number" formControlName="slaCL">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Concentration Bonus</mat-label>
-          <input matInput type="text" formControlName="slaConcentration">
+          <input matInput type="number" formControlName="slaConcentration">
         </mat-form-field>
       
       </ng-container>
@@ -273,12 +273,12 @@
 
         <mat-form-field appearance="outline">
           <mat-label>CL</mat-label>
-          <input matInput type="text" formControlName="cl">
+          <input matInput type="number" formControlName="cl">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Concentration Bonus</mat-label>
-          <input matInput type="text" formControlName="concentration">
+          <input matInput type="number" formControlName="concentration">
         </mat-form-field>
 
         <mat-checkbox formControlName="spontaneous">Spontaneous Caster</mat-checkbox>
@@ -433,21 +433,39 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Tactics</mat-label>
-        <textarea matInput type="text" formControlName="tactics"></textarea>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
         <mat-label>Gear</mat-label>
         <textarea matInput type="text" formControlName="gear"></textarea>
       </mat-form-field>
 
       <mat-divider></mat-divider>
 
+      <div formArrayName="tactics">
+        <div *ngFor="let tactic of tactics.controls; let i=index" [formGroupName]="i">
+
+          <button type="button" mat-icon-button (click)="removeTactic(i)"><mat-icon>delete</mat-icon></button>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input matInput type="text" formControlName="name" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Tactic</mat-label>
+            <textarea matInput type="text" formControlName="tactic"></textarea>
+          </mat-form-field>
+
+        </div>
+
+        <button mat-button type="button" (click)="addTactic()"><mat-icon svgIcon="plus"></mat-icon> Tactic</button>
+
+      </div>
+
+      <mat-divider></mat-divider>
+
       <div formArrayName="specials">
         <div *ngFor="let special of specials.controls; let i=index" [formGroupName]="i">
 
-          <button type="button" mat-icon-button (click)="removeSLA(i)"><mat-icon>delete</mat-icon></button>
+          <button type="button" mat-icon-button (click)="removeSpecial(i)"><mat-icon>delete</mat-icon></button>
 
           <mat-form-field appearance="outline">
             <mat-label>Name</mat-label>

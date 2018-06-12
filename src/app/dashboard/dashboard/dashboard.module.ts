@@ -37,6 +37,7 @@ import { InteractiveSpellListComponent } from '../interactive-spell-list/interac
 import { InteractiveSlaListComponent } from '../interactive-sla-list/interactive-sla-list.component';
 import { InteractiveConditionListComponent } from '../interactive-condition-list/interactive-condition-list.component';
 import { InitiativeTableComponent } from '../initiative/initiative-table/initiative-table.component';
+import { ImportMonsterComponent } from '../monsters/monster-form/import-monster/import-monster.component';
 
 @NgModule({
   imports: [
@@ -74,7 +75,8 @@ import { InitiativeTableComponent } from '../initiative/initiative-table/initiat
     InteractiveSpellListComponent,
     InteractiveSlaListComponent,
     InteractiveConditionListComponent,
-    InitiativeTableComponent
+    InitiativeTableComponent,
+    ImportMonsterComponent
   ],
   entryComponents: [
     InitiativeFormComponent,

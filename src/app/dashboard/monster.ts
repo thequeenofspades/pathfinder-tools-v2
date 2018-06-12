@@ -120,6 +120,9 @@ export interface MonsterI {
         description: string,
         cr: number,
         xp: string | number,
-        tactics: string
+        tactics: {
+            name: string,
+            tactic: string
+        }[]
       }
 }

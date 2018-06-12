@@ -54,6 +54,10 @@ export class FullDetailComponent implements OnInit {
   	return this.form.get('extras.specials') as FormArray;
   }
 
+  get tactics(): FormArray {
+    return this.form.get('extras.tactics') as FormArray;
+  }
+
   addClass() {
   	this.classes.push(this.es.buildClassFormGroup());
   }
@@ -92,6 +96,14 @@ export class FullDetailComponent implements OnInit {
 
   removeSpecial(i: number) {
   	this.specials.removeAt(i);
+  }
+
+  addTactic() {
+    this.tactics.push(this.es.buildTacticFormGroup());
+  }
+
+  removeTactic(i: number) {
+    this.tactics.removeAt(i);
   }
 
 }
