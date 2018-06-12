@@ -23,10 +23,8 @@ export class MonsterFormComponent implements OnInit {
 
   form: FormGroup;
   showQuantity: boolean = true;
-  fullStats: FormControl;
 
   createForm(): void {
-    this.fullStats = new FormControl();
     this.resetForm();
     if (this.model) {
       this.form.get('basics.quantity').clearValidators();

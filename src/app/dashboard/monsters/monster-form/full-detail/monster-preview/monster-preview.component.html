@@ -24,9 +24,9 @@
 	<b>Senses</b>
 		<ng-container *ngIf="basics.senses"> {{basics.senses}};</ng-container>
 		Perception {{basics.perceptionBonus | plus}}
-		<app-rollable [bonus]="basics.perceptionBonus"></app-rollable>
+		<app-rollable *ngIf="live" [bonus]="basics.perceptionBonus"></app-rollable>
 </p>
-<p *ngIf="basics.aura.length">
+<p *ngIf="basics.aura?.length">
 	<b>Aura</b> {{basics.aura}}
 </p>
 
@@ -45,11 +45,11 @@ DEFENSE
 	<ng-container *ngIf="defense.actouch">
 		<b>touch</b> {{defense.actouch}}
 	</ng-container>
-	<ng-container *ngIf="defense.acnotes"> ({{defense.acnotes}})</ng-container>
+	<ng-container *ngIf="defense.acnotes"> {{defense.acnotes}}</ng-container>
 </p>
 <p>
 	<b>hp</b> {{defense.hp}}
-	<ng-container *ngIf="defense.hpnotes">({{defense.hpnotes}})</ng-container>
+	<ng-container *ngIf="defense.hpnotes">{{defense.hpnotes}}</ng-container>
 </p>
 <p>
 	<ng-container *ngIf="defense.fort">
@@ -64,7 +64,7 @@ DEFENSE
 		<b>Will </b>
 		{{defense.will | plus}}
 	</ng-container>
-	<ng-container *ngIf="defense.savenotes"> ({{defense.savenotes}})</ng-container>
+	<ng-container *ngIf="defense.savenotes"> {{defense.savenotes}}</ng-container>
 </p>
 <p>
 	<ng-container *ngIf="defense.defensiveAbilities">
@@ -77,7 +77,7 @@ DEFENSE
 		<b>Immunities</b> {{defense.immunities}}<ng-container *ngIf="defense.resistances || defense.sr">; </ng-container>
 	</ng-container>
 	<ng-container *ngIf="defense.resistances">
-		<b>Resist</b> {{defense.resist}}<ng-container *ngIf="defense.sr">; </ng-container>
+		<b>Resist</b> {{defense.resistances}}<ng-container *ngIf="defense.sr">; </ng-container>
 	</ng-container>
 	<ng-container *ngIf="defense.sr">
 		<b>SR</b> {{defense.sr}}
@@ -127,7 +127,7 @@ DEFENSE
 		<b>Spell-Like Abilities </b>
 		<ng-container *ngIf="spells.slaCL || spells.slaConcentration">
 			(<ng-container *ngIf="spells.slaCL">CL {{spells.slaCL}}<ng-container *ngIf="spells.slaConcentration">; </ng-container></ng-container>
-			<ng-container *ngIf="spells.slaConcentration">concentration {{spells.slaConcentration}}</ng-container>)
+			<ng-container *ngIf="spells.slaConcentration">concentration {{spells.slaConcentration | plus}}</ng-container>)
 		</ng-container>
 	</p>
 	<p *ngFor="let slaLevel of sortedSlaLevels" style="margin-left:10px">
@@ -143,7 +143,7 @@ DEFENSE
 		<b>Spells <ng-container *ngIf="spells.spontaneous">Known </ng-container><ng-container *ngIf="!spells.spontaneous">Prepared </ng-container></b>
 		<ng-container *ngIf="spells.cl || spells.concentration">
 			(<ng-container *ngIf="spells.cl">CL {{spells.cl}}<ng-container *ngIf="spells.concentration">; </ng-container></ng-container>
-			<ng-container *ngIf="spells.concentration">concentration {{spells.concentration}}</ng-container>)
+			<ng-container *ngIf="spells.concentration">concentration {{spells.concentration | plus}}</ng-container>)
 		</ng-container>
 	</p>
 	<p *ngFor="let spellLevel of sortedSpellLevels" style="margin-left:10px">
@@ -159,11 +159,11 @@ DEFENSE
 	<mat-divider></mat-divider>
 </ng-container>
 
-<ng-container *ngIf="extras.tactics">
+<ng-container *ngIf="extras.tactics.length">
 	TACTICS
 	<mat-divider></mat-divider>
-	<p>
-		<b>Tactics</b> {{extras.tactics}}
+	<p *ngFor="let tactic of extras.tactics">
+		<b>{{tactic.name}}</b> {{tactic.tactic}}
 	</p>
 
 	<mat-divider></mat-divider>
@@ -211,7 +211,7 @@ STATISTICS
 	</p>
 </ng-container>
 
-<ng-container *ngIf="extras.description.length">
+<ng-container *ngIf="extras.description?.length">
 	<mat-divider></mat-divider>
 	DESCRIPTION
 	<mat-divider></mat-divider>

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
+import { take, map } from 'rxjs/operators';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 
@@ -24,8 +25,11 @@ export class EncounterService {
   encounters = new Subject();
   encounters$ = this.encounters.asObservable();
 
+  monsters$: Observable<{name: string, cr: number}[]>;
+
   setup(sessionId: string): void {
     this.encountersCollection = this.db.collection('sessions').doc(sessionId).collection('encounters');
+    this.importMonsters();
     this.refresh();
   }
 
@@ -157,7 +161,20 @@ export class EncounterService {
     model.extras.specials.forEach(() => {
       (form.get('extras.specials') as FormArray).push(this.buildSpecialFormGroup());
     });
+    model.extras.tactics.forEach(() => {
+      (form.get('extras.tactics') as FormArray).push(this.buildTacticFormGroup());
+    });
     form.patchValue(model);
+  }
+
+  public resetMonsterForm(form: FormGroup): void {
+    (form.get('basics') as FormGroup).setControl('classes', new FormArray([]));
+    (form.get('offense') as FormGroup).setControl('attacks', new FormArray([]));
+    (form.get('spells') as FormGroup).setControl('slaLevels', new FormArray([]));
+    (form.get('spells') as FormGroup).setControl('spellLevels', new FormArray([]));
+    (form.get('extras') as FormGroup).setControl('specials', new FormArray([]));
+    (form.get('extras') as FormGroup).setControl('tactics', new FormArray([]));
+    form.reset();
   }
 
   public buildMonsterForm(): FormGroup {
@@ -232,7 +249,7 @@ export class EncounterService {
         description: '',
         cr: '',
         xp: '',
-        tactics: ''
+        tactics: this.fb.array([])
       })
     });
   }
@@ -314,6 +331,26 @@ export class EncounterService {
       type: '',
       description: ''
     });
+  }
+
+  public buildTacticFormGroup(): FormGroup {
+    return this.fb.group({
+      name: ['', Validators.required],
+      tactic: ''
+    });
+  }
+
+  public importMonsters(): void {
+    this.monsters$ = Observable.fromPromise(this.db.collection('monsters_converted').doc('index').ref.get()).pipe(
+      take(1),
+      map(doc => doc.data()['index'] as {name: string, cr: number}[]));
+  }
+
+  public importMonster(id: string): Observable<MonsterI> {
+    return Observable.fromPromise(this.db.collection('monsters_converted').doc(id).ref.get()).pipe(
+      take(1),
+      map(doc => doc.data() as MonsterI)
+    );
   }
 
 }
