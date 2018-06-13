@@ -52,29 +52,6 @@ mat-progress-bar {
 	font-size: large;
 }
 
-.initiativeTable {
-	border-collapse: collapse;
-}
-
-.initiativeRow:hover {
-	background: rgba(black, 0.04);
-	cursor: pointer;
-}
-
-.active-creature-row {
-	background: mat-color($pf-app-primary);
-}
-
-.active-creature-row:hover {
-	background: mat-color($pf-app-primary, darker);
-}
-
-.initiativeCell {
-	text-align: center;
-	vertical-align: middle;
-	padding: 5px;
-}
-
 .health-good {
 	color: mat-color(mat-palette($mat-green));
 }

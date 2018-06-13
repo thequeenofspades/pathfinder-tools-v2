@@ -21,4 +21,6 @@ export class InitiativeComponent implements OnInit {
     });
   }
 
+  public code: string;
+
 }

@@ -14,7 +14,7 @@ import { CreatureDetailComponent } from '../creature-detail/creature-detail.comp
 @Component({
   selector: 'app-initiative-table',
   templateUrl: './initiative-table.component.html',
-  styleUrls: ['./initiative-table.component.css']
+  styleUrls: ['./initiative-table.component.scss']
 })
 export class InitiativeTableComponent implements OnInit {
 

@@ -1,0 +1,34 @@
+@import '../../../../pf-app-theme.scss';
+
+.selected-creature-row {
+	border: 1px solid mat-color($pf-app-accent);
+	margin: -1px;
+}
+
+.selected-creature-drawer {
+	max-width: 40%;
+}
+
+.initiativeTable {
+	border-collapse: collapse;
+	margin-right: 1px;
+}
+
+.initiativeRow:hover {
+	background: rgba(black, 0.04);
+	cursor: pointer;
+}
+
+.active-creature-row {
+	background: mat-color($pf-app-primary);
+}
+
+.active-creature-row:hover {
+	background: mat-color($pf-app-primary, darker);
+}
+
+.initiativeCell {
+	text-align: center;
+	vertical-align: middle;
+	padding: 5px;
+}

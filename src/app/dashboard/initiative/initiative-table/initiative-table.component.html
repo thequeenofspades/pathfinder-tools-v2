@@ -12,7 +12,7 @@
 	<mat-drawer-container autosize>
 
 		<mat-drawer #detailDrawer
-					mode="side" position="end" style="max-width: 40%"
+					mode="side" position="end" class="selected-creature-drawer"
 					[(opened)]="showDetail"
 					(closed)="showDetail = false">
 			<div class="button-row" fxFlex="row" fxLayoutAlign="end">
@@ -26,6 +26,7 @@
 				<table class="mat-table initiativeTable">
 					<tr class="mat-row initiativeRow" *ngFor="let creature of init.order; index as i"
 						[class.active-creature-row]="i == init.active"
+						[class.selected-creature-row]="creature.id == detailComponent?.creature?.id"
 						(click)="selectCreature(creature)">
 
 						<td class="mat-cell initiativeCell">
