@@ -64,6 +64,11 @@ export class InitiativeTableComponent implements OnInit {
       });
   }
 
+  unselect(): void {
+    this.detailComponent.creature = null;
+    this.showDetail = false;
+  }
+
   openDamageFormDialog(creature: Creature): void {
     this.listenArrowKeys = false;
     let dialogRef = this.dialog.open(DamageFormComponent, {
