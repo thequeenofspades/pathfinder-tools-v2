@@ -40,7 +40,7 @@ export class PlayerViewComponent implements OnInit {
     return (buffs || []).filter(buff => {
       let prev = i - 1;
       if (prev < 0) {
-        if (order[i].initiative < buff.initiative) {
+        if (order[i].initiative <= buff.initiative) {
           return true;
         }
       } else if (order[prev].initiative > buff.initiative && order[i].initiative <= buff.initiative) {

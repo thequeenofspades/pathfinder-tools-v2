@@ -56,26 +56,57 @@
 						</td>
 
 						<td class="mat-cell initiativeCell">
-							<button mat-icon-button appStopClick (click)="openConditionFormDialog(creature)" matTooltip="Add Condition"><mat-icon svgIcon="skull"></mat-icon></button>
-							<ng-container *ngIf="!delayed(creature)">
+							<!-- <button mat-icon-button appStopClick (click)="openConditionFormDialog(creature)" matTooltip="Add Condition"><mat-icon svgIcon="skull"></mat-icon></button> -->
+							<!-- <ng-container *ngIf="!delayed(creature)">
 								<button mat-icon-button appStopClick (click)="initiativeService.delay(creature)" matTooltip="Delay"><mat-icon>snooze</mat-icon></button>
 							</ng-container>
 							<ng-container *ngIf="delayed(creature)">
 								<button mat-icon-button appStopClick (click)="initiativeService.undelay(creature)" color="primary" matTooltip="Undelay">
 									<mat-icon>alarm_on</mat-icon>
 								</button>
-							</ng-container>
+							</ng-container> -->
 							<button mat-icon-button appStopClick (click)="initiativeService.moveUp(creature)" matTooltip="Move Up">
 								<mat-icon>arrow_upward</mat-icon>
 							</button>
 							<button mat-icon-button appStopClick (click)="initiativeService.moveDown(creature)" matTooltip="Move Down"><mat-icon>arrow_downward</mat-icon></button>
-							<button mat-icon-button appStopClick matTooltip="Make Invisible to Players" *ngIf="creature.hp && creature.visible" (click)="initiativeService.toggleVisible(creature)">
+							<!-- <button mat-icon-button appStopClick matTooltip="Make Invisible to Players" *ngIf="creature.hp && creature.visible" (click)="initiativeService.toggleVisible(creature)">
 								<mat-icon svgIcon="eye"></mat-icon>
 							</button>
 							<button mat-icon-button appStopClick matTooltip="Make Visible to Players" *ngIf="creature.hp && !creature.visible" (click)="initiativeService.toggleVisible(creature)">
 								<mat-icon svgIcon="eye-off"></mat-icon>
+							</button> -->
+							<!-- <button mat-icon-button appStopClick (click)="initiativeService.remove(creature)" matTooltip="Remove"><mat-icon>delete</mat-icon></button> -->
+							<button mat-icon-button appStopClick [matMenuTriggerFor]="menu">
+								<mat-icon>more_vert</mat-icon>
 							</button>
-							<button mat-icon-button appStopClick (click)="initiativeService.remove(creature)" matTooltip="Remove"><mat-icon>delete</mat-icon></button>
+							<mat-menu #menu="matMenu">
+								<button mat-menu-item (click)="openConditionFormDialog(creature)">
+									<mat-icon svgIcon="skull"></mat-icon>
+									<span>Add Condition</span>
+								</button>
+								<button mat-menu-item *ngIf="!delayed(creature)" (click)="initiativeService.delay(creature)">
+									<mat-icon>snooze</mat-icon>
+									<span>Delay</span>
+								</button>
+								<button mat-menu-item *ngIf="delayed(creature)" (click)="initiativeService.undelay(creature)">
+									<mat-icon>alarm_on</mat-icon>
+									<span>Undelay</span>
+								</button>
+								<button mat-menu-item *ngIf="creature.hp" (click)="initiativeService.toggleVisible(creature)">
+									<ng-container *ngIf="creature.visible">
+										<mat-icon svgIcon="eye"></mat-icon>
+										<span>Make Invisible</span>
+									</ng-container>
+									<ng-container *ngIf="!creature.visible">
+										<mat-icon svgIcon="eye-off"></mat-icon>
+										<span>Make Visible</span>
+									</ng-container>
+								</button>
+								<button mat-menu-item (click)="initiativeService.remove(creature)">
+									<mat-icon>delete</mat-icon>
+									<span>Remove</span>
+								</button>
+							</mat-menu>
 						</td>
 					</tr>
 				</table>
