@@ -7,7 +7,9 @@ export interface Creature {
 	id: string,
 	conditions: Condition[],
 	attributes: string[],
-	notes: string[]
+	notes: string[],
+    initiative?: number,
+    hp?: number
 }
 
 export interface Monster {

@@ -29,7 +29,7 @@ export class PlayerViewComponent implements OnInit {
   }
 
   getBuffs(creature: Creature, buffs: Buff[]): {color: string, name: string}[] {
-    return buffs.filter(buff => {
+    return (buffs || []).filter(buff => {
       return (buff.affected || []).find(cr => cr.id == creature.id);
     }).map(buff => {
       return {name: buff.name, color: buff.color};
@@ -37,7 +37,7 @@ export class PlayerViewComponent implements OnInit {
   }
 
   getBuffDecrements(order: {initiative: number}[], i: number, buffs: Buff[]): {color: string, name: string}[] {
-    return buffs.filter(buff => {
+    return (buffs || []).filter(buff => {
       let prev = i - 1;
       if (prev < 0) {
         if (order[i].initiative < buff.initiative) {
