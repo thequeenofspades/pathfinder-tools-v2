@@ -22,7 +22,9 @@ export class InitiativeTableComponent implements OnInit {
 
   ngOnInit() {
   	this.initiativeService.active$.subscribe(active => {
-  		this.selectCreature(active);
+      if (active.hp != undefined) {
+        this.selectCreature(active);
+      }
   	})
   }
 

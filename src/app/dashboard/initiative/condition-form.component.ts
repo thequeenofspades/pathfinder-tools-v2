@@ -4,9 +4,9 @@ import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
-import { Condition, CONDITIONS } from '../condition';
+import { CONDITIONS } from '../condition';
 
-class MockCondition {
+interface MockCondition {
   name: string;
   description: string
 }

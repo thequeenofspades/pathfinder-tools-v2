@@ -2,11 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { InitiativeService } from '../dashboard/initiative.service';
+import { Creature } from '../dashboard/monster';
+
+interface Buff {
+  name: string,
+  color: string,
+  affected: Creature[],
+  initiative: number
+};
 
 @Component({
   selector: 'app-player-view',
   templateUrl: './player-view.component.html',
-  styleUrls: ['./player-view.component.css'],
+  styleUrls: ['./player-view.component.scss'],
   providers: [ InitiativeService ]
 })
 export class PlayerViewComponent implements OnInit {
@@ -18,6 +26,34 @@ export class PlayerViewComponent implements OnInit {
     this.route.data.subscribe((data: {id: string}) => {
       this.initiativeService.setup(data.id);
     });
+  }
+
+  getBuffs(creature: Creature, buffs: Buff[]): {color: string, name: string}[] {
+    return buffs.filter(buff => {
+      return (buff.affected || []).find(cr => cr.id == creature.id);
+    }).map(buff => {
+      return {name: buff.name, color: buff.color};
+    });
+  }
+
+  getBuffDecrements(order: {initiative: number}[], i: number, buffs: Buff[]): {color: string, name: string}[] {
+    return buffs.filter(buff => {
+      let prev = i - 1;
+      if (prev < 0) {
+        if (order[i].initiative < buff.initiative) {
+          return true;
+        }
+      } else if (order[prev].initiative > buff.initiative && order[i].initiative <= buff.initiative) {
+        return true;
+      }
+      return false;
+    }).map(buff => {
+      return {name: buff.name, color: buff.color};
+    });
+  }
+
+  buffTrackByFn(index, buff) {
+    return buff.color;
   }
 
   adjusted(creature: any): boolean {

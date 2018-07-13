@@ -57,7 +57,6 @@
 
 						<td class="mat-cell initiativeCell">
 							<button mat-icon-button appStopClick (click)="openConditionFormDialog(creature)" matTooltip="Add Condition"><mat-icon svgIcon="skull"></mat-icon></button>
-							<button mat-icon-button appStopClick (click)="openNoteFormDialog(creature)" type="button" matTooltip="Add Note"><mat-icon>note_add</mat-icon></button>
 							<ng-container *ngIf="!delayed(creature)">
 								<button mat-icon-button appStopClick (click)="initiativeService.delay(creature)" matTooltip="Delay"><mat-icon>snooze</mat-icon></button>
 							</ng-container>

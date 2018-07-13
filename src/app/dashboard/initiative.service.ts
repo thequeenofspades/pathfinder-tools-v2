@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject, Observable, of } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
+import { randomColor } from 'randomcolor';
 
 import { Player } from './player';
 import { Monster, Creature } from './monster';
@@ -175,15 +176,19 @@ export class InitiativeService {
     this.initDoc.ref.get().then(doc => {
       let active = doc.data().active || 0;
       let order = (doc.data().order as Creature[]) || [];
+      let buffs = doc.data().buffs || [];
       let round = doc.data().round || 1;
+      let prev = (order[active] as any).initiative;
       this.updateConditions(order[active]);
       active += 1;
       if (active >= order.length) {
         active = 0;
         round += 1;
       }
+      let curr = (order[active] as any).initiative;
+      buffs = this.updateBuffs(prev, curr, buffs);
       order[active].attributes = order[active].attributes.filter(a => a != 'delayed');
-      this.initDoc.update({active: active, order: order, round: round}).then(_ => {
+      this.initDoc.update({active: active, order: order, round: round, buffs: buffs}).then(_ => {
         this.messageService.add(`${order[active].name}'s turn`);
         this.active.next(order[active]);
       });
@@ -202,6 +207,24 @@ export class InitiativeService {
     creature.conditions = creature.conditions.filter(c => c.duration > 0 || c.permanent);
   }
 
+  updateBuffs(prev: number, curr: number, buffs: {duration: number, initiative: number}[]): {}[] {
+    return buffs.map(buff => {
+      let duration = buff.duration;
+      if (prev < curr && curr < buff.initiative) {  // we're at the top of a new round
+        duration -= 1;
+      } else if (prev > buff.initiative && curr <= buff.initiative) {
+        duration -= 1;
+      }
+      let buffCopy = {
+        ...buff,
+        duration: duration
+      };
+      return buffCopy;
+    }).filter(buff => {
+      return buff.duration > 0;
+    });
+  }
+
   moveUp(creature: Creature): void {
     this.initDoc.ref.get().then(doc => {
       let order = doc.data().order || [];
@@ -209,7 +232,12 @@ export class InitiativeService {
       let originalIdx: number = order.findIndex(c => c.id == creature.id);
       order.splice(originalIdx, 1);
       let newIdx: number = originalIdx - 1;
-      if (originalIdx == 0) newIdx = order.length;
+      if (originalIdx == 0) {
+        newIdx = order.length;
+        creature.initiative = order[newIdx - 1].initiative;
+      } else {
+        creature.initiative = order[newIdx].initiative;
+      }
       order.splice(newIdx, 0, creature);
       this.initDoc.update({order: order}).then(_ => {
         this.messageService.add(`Moved ${creature.name} up in initiative order`);
@@ -224,7 +252,12 @@ export class InitiativeService {
       let originalIdx: number = order.findIndex(c => c.id == creature.id);
       order.splice(originalIdx, 1);
       let newIdx: number = originalIdx + 1;
-      if (originalIdx == order.length) newIdx = 0;
+      if (originalIdx == order.length) {
+        newIdx = 0;
+        creature.initiative = order[0].initiative;
+      } else {
+        creature.initiative = order[newIdx - 1].initiative;
+      }
       order.splice(newIdx, 0, creature);
       this.initDoc.update({order: order}).then(_ => {
         this.messageService.add(`Moved ${creature.name} down in initiative order`);
@@ -257,6 +290,7 @@ export class InitiativeService {
       let order = doc.data().order || [];
       let active = doc.data().active || 0;
       let crIdx = order.findIndex(c => c.id == creature.id);
+      creature.initiative = order[active].initiative;
       if (crIdx < active) active -= 1;
       creature.attributes = creature.attributes.filter(a => a != 'delayed');
       order.splice(crIdx, 1);
@@ -319,7 +353,7 @@ export class InitiativeService {
     });
   }
 
-  removeCondition(creature: Creature, condition: {id: string}): void {
+  removeCondition(creature: Creature, condition: Condition): void {
     this.initDoc.ref.get().then(doc => {
       let order = doc.data().order || [];
       let cr = order.find(c => c.id == creature.id);
@@ -346,22 +380,76 @@ export class InitiativeService {
     });
   }
 
+  addBuff(buff: {}): void {
+    this.initDoc.ref.get().then(doc => {
+      let buffs = doc.data().buffs || [];
+      let buffCopy = {
+        ...buff,
+        id: this.db.createId(),
+        color: randomColor({luminosity: 'light'})
+      };
+      buffs.push(buffCopy);
+      this.initDoc.update({buffs: buffs});
+    });
+  }
+
+  updateBuff(buff: {id: string}): void {
+    this.initDoc.ref.get().then(doc => {
+      let buffs = doc.data().buffs || [];
+      let buffIdx = buffs.findIndex(b => b.id == buff.id);
+      buffs[buffIdx] = buff;
+      this.initDoc.update({buffs: buffs});
+    });
+  }
+
+  removeBuff(buff: {id: string}): void {
+    this.initDoc.ref.get().then(doc => {
+      let buffs = doc.data().buffs || [];
+      buffs = buffs.filter(b => b.id != buff.id);
+      this.initDoc.update({buffs: buffs});
+    });
+  }
+
+  changeBuffColor(buff: {id: string}): void {
+    this.initDoc.ref.get().then(doc => {
+      let buffs = doc.data().buffs || [];
+      let buffIndex = buffs.findIndex(b => b.id == buff.id);
+      buffs[buffIndex].color = randomColor();
+      this.initDoc.update({buffs: buffs});
+    });
+  }
+
   checkHpStatus(monster: Monster, amount: number): void {
     this.removeConditionsByName(monster, ['dead', 'dying', 'disabled', 'bloodied']);
     if (monster.currentHp - amount <= -1 * monster.conScore) {
       this.messageService.add(`${monster.name} died!`);
       monster.attributes.push('dead');
-      let deadCondition = new Condition('dead', 0, true, CONDITIONS.find(c => c.name == 'dead').description);
+      let deadCondition = {
+        name: 'dead',
+        duration: 0,
+        permanent: true,
+        description: CONDITIONS.find(c => c.name == 'dead').description
+      };
       this.addConditionSync(monster, deadCondition, false);
     } else if (monster.currentHp - amount < 0 && monster.currentHp - amount > -1 * monster.conScore) {
       this.messageService.add(`${monster.name} is dying!`);
       monster.attributes.push('dying');
-      let dyingCondition = new Condition('dying', 0, true, CONDITIONS.find(c => c.name == 'dying').description);
+      let dyingCondition = {
+        name: 'dying',
+        duration: 0,
+        permanent: true,
+        description: CONDITIONS.find(c => c.name == 'dying').description
+      };
       this.addConditionSync(monster, dyingCondition, false);
     } else if (monster.currentHp - amount == 0) {
       this.messageService.add(`${monster.name} is at 0 hp and disabled`);
       monster.attributes.push('disabled');
-      let disabledCondition = new Condition('disabled', 0, true, CONDITIONS.find(c => c.name == 'disabled').description);
+      let disabledCondition = {
+        name: 'disabled',
+        duration: 0,
+        permanent: true,
+        description: CONDITIONS.find(c => c.name == 'disabled').description
+      };
       this.addConditionSync(monster, disabledCondition, false);
     } else if (monster.currentHp - amount <= monster.hp / 2 && !(monster.currentHp > monster.hp / 2)) {
       this.messageService.add(`${monster.name} became bloodied`);
@@ -374,11 +462,13 @@ export class InitiativeService {
     monster.attributes = monster.attributes.filter(a => !conditions.find(name => name == a));
   };
 
-  addConditionSync(creature: Creature, condition: Condition, log: boolean = true): void {
-    if (log) {
+  addConditionSync(creature: Creature, condition: any, log: boolean = true): void {
+    if (log && !condition.permanent) {
       this.messageService.add(`${creature.name} became ${condition.name} for ${condition.duration} rounds`);
+    } else if (log && condition.permanent) {
+      this.messageService.add(`${creature.name} became ${condition.name}`);
     }
-    let conditionCopy = {...condition, id: this.db.createId()};
+    let conditionCopy: Condition = {...condition, id: this.db.createId()};
     creature.conditions.push(conditionCopy);
   }
 

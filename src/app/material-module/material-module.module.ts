@@ -24,7 +24,8 @@ import {  MatInputModule,
           MatGridListModule,
           MatSidenavModule,
           MatSlideToggleModule,
-          MatStepperModule } from '@angular/material';
+          MatStepperModule,
+          MatMenuModule } from '@angular/material';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -55,7 +56,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 	MatGridListModule,
 	MatSidenavModule,
 	MatSlideToggleModule,
-	MatStepperModule
+	MatStepperModule,
+	MatMenuModule
   ],
   exports: [
   	FlexLayoutModule,
@@ -83,7 +85,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 	MatGridListModule,
 	MatSidenavModule,
 	MatSlideToggleModule,
-	MatStepperModule
+	MatStepperModule,
+	MatMenuModule
   ]
 })
 export class MaterialModule { }

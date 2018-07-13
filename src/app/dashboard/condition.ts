@@ -1,11 +1,10 @@
-export class Condition {
-	constructor(public name: string,
-		public duration: number = 0,
-		public permanent: boolean = false,
-		public description: string = '') {};
-
-	id: string;
-};
+export interface Condition {
+	id: string,
+	name: string,
+	duration: number,
+	permanent: boolean,
+	description: string
+}
 
 export const CONDITIONS = [
 	{	name: 'bleeding',

@@ -30,6 +30,7 @@
     "firebase-admin": "^5.12.1",
     "hammerjs": "^2.0.8",
     "ngx-moment": "^2.0.0",
+    "randomcolor": "^0.5.3",
     "rxjs": "^6.1.0",
     "rxjs-compat": "^6.1.0",
     "zone.js": "^0.8.26"

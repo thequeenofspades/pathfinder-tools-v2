@@ -1,4 +1,4 @@
-@import '../../../../pf-app-theme.scss';
+@import '../../pf-app-theme.scss';
 
 mat-icon {
 	vertical-align: middle;
@@ -9,7 +9,7 @@ mat-icon {
 	box-sizing: border-box;
 }
 
-.selected-creature-drawer {
+.drawer {
 	max-width: 40%;
 }
 
@@ -34,9 +34,25 @@ mat-icon {
 .initiativeCell {
 	text-align: center;
 	vertical-align: middle;
-	padding-bottom: 2px;
-	padding-left: 5px;
-	padding-right: 5px;
+	padding: 5px;
+}
+
+.left-aligned-cell {
+	text-align: left;
+}
+
+.buff-icon {
+	font-size: 10px;
+	height: 10px;
+	width: 10px;
+	padding: 1px;
+}
+
+.decrease-icon {
+	font-size: 20px;
+	height: 20px;
+	width: 20px;
+	padding: 1px;
 }
 
 .creature-name {
