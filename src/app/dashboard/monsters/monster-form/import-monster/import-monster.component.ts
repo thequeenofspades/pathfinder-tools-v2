@@ -28,6 +28,10 @@ export class ImportMonsterComponent implements OnInit {
   	).subscribe(val => {
   		this.filteredMonsters$ = this.filter(val);
   	});
+    this.quantityControl = this.fb.control(1, Validators.required);
+    this.quantityControl.valueChanges.subscribe(() => {
+      this.form.get('basics.quantity').setValue(this.quantityControl.value);
+    });
   }
 
   @Input() public es: EncounterService;
@@ -37,6 +41,7 @@ export class ImportMonsterComponent implements OnInit {
   @Output() public submit = new EventEmitter();
 
   monsterControl: FormControl;
+  quantityControl: FormControl;
   monsters$: Observable<MonsterOp[]>;
   filteredMonsters$: Observable<MonsterOp[]>;
 
@@ -65,10 +70,11 @@ export class ImportMonsterComponent implements OnInit {
   }
 
   protected importMonster(): void {
-  	if (this.monsterControl.invalid) return;
+  	if (this.monsterControl.invalid || this.quantityControl.invalid) return;
   	let monster = this.monsterControl.value;
   	this.es.resetMonsterForm(this.form);
   	this.es.importMonster(monster).subscribe(m => {
+      m.basics.quantity = this.quantityControl.value;
   		this.es.setMonsterFormValue(m, this.form);
   	});
   }
