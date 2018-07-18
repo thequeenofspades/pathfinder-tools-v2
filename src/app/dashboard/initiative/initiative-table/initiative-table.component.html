@@ -40,6 +40,12 @@
 								<span class="creature-name"> {{creature.name}}</span>
 								<ng-container *ngIf="creature.basics?.quantity > 1"> ({{ creature.basics.idx }} of {{ creature.basics.quantity }})</ng-container>
 							</span>
+							<ng-container *ngIf="delayed(creature)">
+								<mat-icon class="small-icon">snooze</mat-icon>
+							</ng-container>
+							<ng-container *ngIf="creature.hp && !creature.visible">
+								<mat-icon class="small-icon">visibility_off</mat-icon>
+							</ng-container>
 						</td>
 
 						<td class="mat-cell initiativeCell">
@@ -94,11 +100,11 @@
 								</button>
 								<button mat-menu-item *ngIf="creature.hp" (click)="initiativeService.toggleVisible(creature)">
 									<ng-container *ngIf="creature.visible">
-										<mat-icon svgIcon="eye"></mat-icon>
+										<mat-icon svgIcon="eye-off"></mat-icon>
 										<span>Make Invisible</span>
 									</ng-container>
 									<ng-container *ngIf="!creature.visible">
-										<mat-icon svgIcon="eye-off"></mat-icon>
+										<mat-icon svgIcon="eye"></mat-icon>
 										<span>Make Visible</span>
 									</ng-container>
 								</button>
