@@ -1,21 +1,10 @@
 <ng-container *ngIf="initiativeService.init$ | async as init">
 	<ng-container *ngIf="init.order?.length; else noEncounterMsg">
 		<h2>Round: {{init.round}}</h2>
-		<mat-drawer-container autosize>
-
-		<mat-drawer mode="side" position="end" opened class="drawer">
-			<app-buff-view
-				[initiativeService]="initiativeService"
-				[buffs]="init.buffs"
-				[order]="init.order"
-				[active]="init.active"
-				[showNames]="init.playerOptions.nameOption == 'Show names'"></app-buff-view>
-		</mat-drawer>
-
-		<mat-drawer-content fxLayout="row">
+		<div fxLayout="row">
 			<table class="mat-table initiativeTable" fxFlex="2 1 auto">
 				<tr class="mat-row initiativeRow" *ngFor="let creature of init.order; index as i"
-					[class.active-creature-row]="i == init.active">
+					[class.active-creature-row]="i == getActive(init.order, init.active)">
 					<ng-container *ngIf="!creature.hp || creature.visible">
 						<td class="mat-cell initiativeCell left-aligned-cell">
 							{{creature.initiative}}
@@ -31,14 +20,14 @@
 							</ng-container>
 							<ng-container *ngIf="creature.hp">
 								<span class="creature-name">
-									<ng-container *ngIf="!init.playerOptions || init.playerOptions.nameOption == 'Show names'">
+									<ng-container *ngIf="!init.playerOptions || init.playerOptions.nameOption != 'Don\'t show'">
 										 {{creature.name}}
 									</ng-container>
 									<ng-container *ngIf="init.playerOptions?.nameOption == 'Don\'t show'">
 										 Monster
 									</ng-container>
 								</span>
-								<ng-container *ngIf="creature.basics?.quantity > 1"> ({{ creature.basics.idx }} of {{ creature.basics.quantity }})</ng-container>
+								<ng-container *ngIf="creature.basics?.quantity > 1 && init.playerOptions?.nameOption == 'Show names and numbers'"> ({{ creature.basics.idx }})</ng-container>
 							</ng-container>
 							<ng-container *ngFor="let buff of getBuffs(creature, init.buffs); trackBy: buffTrackByFn">
 								<mat-icon [ngStyle]="{'color': buff.color}" class="buff-icon" matTooltip="{{buff.name}}">brightness_1</mat-icon>
@@ -77,75 +66,16 @@
 					</ng-container>
 				</tr>
 			</table>
-		</mat-drawer-content>
 
-		</mat-drawer-container>
-		<!-- <div fxLayout="row">
-			<table class="mat-table initiativeTable" fxFlex="2 1 70%">
-				<tr class="mat-row initiativeRow" *ngFor="let creature of init.order; index as i"
-					[class.active-creature-row]="i == init.active">
-					<ng-container *ngIf="!creature.hp || creature.visible">
-						<td class="mat-cell initiativeCell">
-							{{creature.initiative}}
-						</td>
-
-						<td class="mat-cell initiativeCell">
-							<ng-container *ngIf="!creature.hp">
-								<mat-icon>person</mat-icon>
-								<span class="creature-name"> {{creature.name}}</span>
-							</ng-container>
-							<ng-container *ngIf="creature.hp">
-								<span class="creature-name">
-									<ng-container *ngIf="!init.playerOptions || init.playerOptions.nameOption == 'Show names'">
-										 {{creature.name}}
-									</ng-container>
-									<ng-container *ngIf="init.playerOptions?.nameOption == 'Don\'t show'">
-										 Monster
-									</ng-container>
-								</span>
-								<ng-container *ngIf="creature.basics?.quantity > 1"> ({{ creature.basics.idx }} of {{ creature.basics.quantity }})</ng-container>
-							</ng-container>
-						</td>
-
-						<td class="mat-cell initiativeCell">
-							<ng-container *ngIf="creature.hp">
-								<div *ngIf="init.playerOptions?.healthOption == 'Health bar'">
-									<mat-progress-bar mode="determinate" color="warn" [value]="100*(creature.currentHp/creature.hp)"></mat-progress-bar>
-								</div>
-								<div *ngIf="init.playerOptions?.healthOption == 'Detailed'">
-									<div>{{ healthCategory(100*(creature.currentHp/creature.hp)) }}</div>
-								</div>
-								<div *ngIf="init.playerOptions?.healthOption == 'Vague'">
-									<div>{{ bloodied(100*(creature.currentHp/creature.hp)) }}</div>
-								</div>
-							</ng-container>
-						</td>
-
-						<td class="mat-cell initiativeCell">
-							<ng-container *ngIf="init.playerOptions?.conditionOption != 'None'">
-								<mat-chip-list>
-									<mat-chip *ngIf="delayed(creature)">
-										delayed
-									</mat-chip>
-									<mat-chip *ngFor="let condition of creature.conditions">
-										<ng-container *ngIf="init.playerOptions?.conditionOption == 'Condition and duration' && !condition.permanent">
-											<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
-										</ng-container>
-										{{condition.name}}
-									</mat-chip>
-								</mat-chip-list>
-							</ng-container>
-						</td>
-					</ng-container>
-				</tr>
-			</table>
 			<app-buff-view
+				class="drawer" fxFlex="0 1 auto"
 				[initiativeService]="initiativeService"
 				[buffs]="init.buffs"
 				[order]="init.order"
 				[active]="init.active"
-				[showNames]="init.playerOptions.nameOption == 'Show names'" fxFlex="1 1 30%"></app-buff-view>
-		</div> -->
+				[showNames]="init.playerOptions.nameOption == 'Show names'"></app-buff-view>
+
+		</div>
 	</ng-container>
 	<ng-template #noEncounterMsg>
 		The encounter hasn't started yet.

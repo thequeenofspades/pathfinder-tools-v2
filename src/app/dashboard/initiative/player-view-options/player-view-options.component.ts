@@ -30,7 +30,7 @@ export class PlayerViewOptionsComponent implements OnInit {
 
   optionsForm: FormGroup;
 
-  nameOptions: string[] = ['Show names', "Don't show"];
+  nameOptions: string[] = ['Show names and numbers', 'Show names', "Don't show"];
   healthOptions: string[] = ['Health bar', 'Detailed', 'Vague', 'None'];
   conditionOptions: string[] = ['Condition and duration', 'Condition only', 'None'];
   visibleOptions: string[] = ['visible', 'invisible'];

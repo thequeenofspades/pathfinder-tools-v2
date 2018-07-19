@@ -103,7 +103,8 @@ export class InitiativeService {
       if (insertIndex < 0) {
         insertIndex = order.length;
       }
-      order.splice(insertIndex, 0, creatureCopy);
+      order = this.insertCreature(order, insertIndex, creatureCopy);
+      // order.splice(insertIndex, 0, creatureCopy);
       this.initDoc.update({order: order}).then(_ => {
         this.messageService.add(`Added ${creature.name} to initiative order`);
       });
@@ -126,7 +127,8 @@ export class InitiativeService {
         };
         let insertIndex = order.findIndex(c => this.goesBefore(creatureCopy, c));
         if (insertIndex < 0) insertIndex = order.length;
-        order.splice(insertIndex, 0, creatureCopy);
+        order = this.insertCreature(order, insertIndex, creatureCopy);
+        // order.splice(insertIndex, 0, creatureCopy);
       });
       this.initDoc.update({order: order}).then(_ => {
         this.messageService.add(`Added ${creatures.length} creatures to initiative order`);
@@ -225,20 +227,30 @@ export class InitiativeService {
     });
   }
 
+  insertCreature(order: Creature[], index: number, creature: Creature): Creature[] {
+    // Insert creature at the given position in initiative, adjusting its
+    // initiative value as necessary
+    creature.initiative = this.getNewInitiative(order, index, creature.initiative);
+    order.splice(index, 0, creature);
+    return order;
+  }
+
   moveUp(creature: Creature): void {
     this.initDoc.ref.get().then(doc => {
       let order = doc.data().order || [];
-      creature.attributes.push('moved');
+      //creature.attributes.push('moved');
       let originalIdx: number = order.findIndex(c => c.id == creature.id);
       order.splice(originalIdx, 1);
       let newIdx: number = originalIdx - 1;
-      if (originalIdx == 0) {
-        newIdx = order.length;
-        creature.initiative = order[newIdx - 1].initiative;
-      } else {
-        creature.initiative = order[newIdx].initiative;
-      }
-      order.splice(newIdx, 0, creature);
+      if (originalIdx == 0) newIdx = order.length;
+      // if (originalIdx == 0) {
+      //   newIdx = order.length;
+      //   creature.initiative = order[newIdx - 1].initiative;
+      // } else {
+      //   creature.initiative = order[newIdx].initiative;
+      // }
+      order = this.insertCreature(order, newIdx, creature);
+      //order.splice(newIdx, 0, creature);
       this.initDoc.update({order: order}).then(_ => {
         this.messageService.add(`Moved ${creature.name} up in initiative order`);
       });
@@ -248,17 +260,19 @@ export class InitiativeService {
   moveDown(creature: Creature): void {
     this.initDoc.ref.get().then(doc => {
       let order = doc.data().order || [];
-      creature.attributes.push('moved');
+      //creature.attributes.push('moved');
       let originalIdx: number = order.findIndex(c => c.id == creature.id);
       order.splice(originalIdx, 1);
       let newIdx: number = originalIdx + 1;
-      if (originalIdx == order.length) {
-        newIdx = 0;
-        creature.initiative = order[0].initiative;
-      } else {
-        creature.initiative = order[newIdx - 1].initiative;
-      }
-      order.splice(newIdx, 0, creature);
+      // if (originalIdx == order.length) {
+      //   newIdx = 0;
+      //   creature.initiative = order[0].initiative;
+      // } else {
+      //   creature.initiative = order[newIdx - 1].initiative;
+      // }
+      if (originalIdx == order.length) newIdx = 0;
+      order = this.insertCreature(order, newIdx, creature);
+      // order.splice(newIdx, 0, creature);
       this.initDoc.update({order: order}).then(_ => {
         this.messageService.add(`Moved ${creature.name} down in initiative order`);
       });
@@ -290,13 +304,14 @@ export class InitiativeService {
       let order = doc.data().order || [];
       let active = doc.data().active || 0;
       let crIdx = order.findIndex(c => c.id == creature.id);
-      creature.initiative = order[active].initiative;
+      // creature.initiative = order[active].initiative;
       if (crIdx < active) active -= 1;
       creature.attributes = creature.attributes.filter(a => a != 'delayed');
       order.splice(crIdx, 1);
       let newIdx = active + 1;
       if (newIdx > order.length) newIdx = order.length;
-      order.splice(newIdx, 0, creature);
+      order = this.insertCreature(order, newIdx, creature);
+      // order.splice(newIdx, 0, creature);
       this.initDoc.update({order: order, active: active}).then(_ => {
         this.messageService.add(`${creature.name} undelayed`);
       });
@@ -410,6 +425,10 @@ export class InitiativeService {
     });
   }
 
+  clearBuffs(): void {
+    this.initDoc.update({buffs: []});
+  }
+
   changeBuffColor(buff: {id: string}): void {
     this.initDoc.ref.get().then(doc => {
       let buffs = doc.data().buffs || [];
@@ -474,9 +493,10 @@ export class InitiativeService {
 
   goesBefore(c1: any, c2: any) : boolean {
   	// Should c1 go before c2 in initiative?
-    if (c2.attributes.indexOf('moved') > -1) {
-      return false;
-    } else if (c1.initiative < c2.initiative) {
+    // if (c2.attributes.indexOf('moved') > -1) {
+    //   return false;
+    // }
+    if (c1.initiative < c2.initiative) {
       return false;
     } else if (c1.initiative > c2.initiative) {
       return true;
@@ -484,6 +504,43 @@ export class InitiativeService {
       return true;
     } else {
       return false;
+    }
+  }
+
+  getNewInitiative(order: Creature[], index: number, initiative?: number): number {
+    // If a new creature is to be inserted into the order, calculate its new initiative
+    // or return its old one if it's still valid in the new position
+    if (index == 0) {
+      // Edge case: new position is at the top of initiative order
+      if (order.length && initiative != undefined && initiative > order[0].initiative) {
+        return initiative;
+      } else if (order.length) {
+        return order[0].initiative + 1;
+      } else {
+        return initiative != undefined ? initiative : 0;
+      }
+    } else if (index == order.length) {
+      // Edge case: new position is at the bottom of initiative order
+      if (order.length && initiative != undefined && initiative < order[order.length - 1].initiative) {
+        return initiative;
+      } else if (order.length) {
+        return order[order.length - 1].initiative - 1;
+      } else {
+        return initiative != undefined ? initiative : 0;
+      }
+    } else {
+      // Normal case: new position is between two existing creatures
+      let above = order[index - 1].initiative;
+      let below = order[index].initiative;
+      if (initiative != undefined && initiative < above && initiative > below) {
+        return initiative;
+      } else {
+        let delta = (above - below) / 2;
+        if (delta >= 1) {
+          delta = Math.round(delta);
+        }
+        return below + delta;
+      }
     }
   }
 }

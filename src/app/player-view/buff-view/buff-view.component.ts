@@ -48,12 +48,26 @@ export class BuffViewComponent implements OnInit {
     });
   }
 
+  clearBuffs(): void {
+    this.initiativeService.clearBuffs();
+  }
+
   removeBuff(buff: Buff): void {
   	this.initiativeService.removeBuff(buff);
   }
 
   rerollColor(buff: Buff): void {
   	this.initiativeService.changeBuffColor(buff);
+  }
+
+  buffTrackByFn(index, buff) {
+    return buff.color;
+  }
+
+  sortedBuffs(buffs: Buff[]): Buff[] {
+    return buffs.sort((a, b) => {
+      return a.duration - b.duration;
+    });
   }
 
 }

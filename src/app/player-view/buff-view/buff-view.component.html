@@ -1,13 +1,14 @@
-<mat-list>
-	<h3 mat-subheader>Buffs</h3>
-	<mat-list-item *ngFor="let buff of buffs">
+<div class="buffs-container">
+
+	<div *ngFor="let buff of sortedBuffs(buffs)">
 		<button mat-icon-button (click)="rerollColor(buff)">
 			<mat-icon [ngStyle]="{'color': buff.color}" matTooltip="Change color">brightness_1</mat-icon>
 		</button>
-		{{buff.name}} for {{buff.duration}} rounds<ng-container *ngIf="buff.effect.length">: {{buff.effect}}</ng-container>
+		<span>{{buff.name}} for {{buff.duration}} rounds</span>
 		<button mat-icon-button [matMenuTriggerFor]="menu">
 			<mat-icon>more_vert</mat-icon>
 		</button>
+
 		<mat-menu #menu="matMenu">
 			<button mat-menu-item (click)="openBuffFormDialog(buff)">
 				<mat-icon>edit</mat-icon>
@@ -18,7 +19,11 @@
 				<span>Remove</span>
 			</button>
 		</mat-menu>
-	</mat-list-item>
-</mat-list>
 
-<button mat-button (click)="openBuffFormDialog()"><mat-icon svgIcon="plus"></mat-icon> Buff</button>
+		<div *ngIf="buff.effect.length" class="buff-effect">{{buff.effect}}</div>
+	</div>
+
+	<button mat-button (click)="openBuffFormDialog()"><mat-icon svgIcon="plus"></mat-icon> Effect</button>
+	<button mat-button *ngIf="buffs.length" (click)="clearBuffs()">Clear</button>
+
+</div>

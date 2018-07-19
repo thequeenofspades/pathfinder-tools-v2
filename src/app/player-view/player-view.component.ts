@@ -28,6 +28,14 @@ export class PlayerViewComponent implements OnInit {
     });
   }
 
+  getActive(order: Creature[], active: number): number {
+    let init = order[active].initiative;
+    let filteredOrder = order.filter(c => c.hp == undefined || c.visible);
+    let idx = filteredOrder.findIndex(c => c.initiative < init) - 1;
+    if (idx < 0) idx = filteredOrder.length - 1;
+    return order.findIndex(c => c.id == filteredOrder[idx].id);
+  }
+
   getBuffs(creature: Creature, buffs: Buff[]): {color: string, name: string}[] {
     return (buffs || []).filter(buff => {
       return (buff.affected || []).find(cr => cr.id == creature.id);
@@ -36,7 +44,10 @@ export class PlayerViewComponent implements OnInit {
     });
   }
 
-  getBuffDecrements(order: {initiative: number}[], i: number, buffs: Buff[]): {color: string, name: string}[] {
+  getBuffDecrements(order: {initiative: number, id: string}[], i: number, buffs: Buff[]): {color: string, name: string}[] {
+    let id = order[i].id;
+    order = order.filter(c => c.hp == undefined || c.visible);
+    i = order.findIndex(c => c.id == id);
     return (buffs || []).filter(buff => {
       let prev = i - 1;
       if (prev < 0) {

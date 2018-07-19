@@ -1,13 +1,13 @@
 <h1 mat-dialog-title>
-	<ng-container *ngIf="this.data.buff">Edit Buff</ng-container>
-	<ng-container *ngIf="!this.data.buff">Add Buff</ng-container>
+	<ng-container *ngIf="this.data.buff">Edit Effect</ng-container>
+	<ng-container *ngIf="!this.data.buff">Add Effect</ng-container>
 </h1>
 <div mat-dialog-content>
   <form [formGroup]="form" (ngSubmit)="trySubmit()">
     <div fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="10px">
       <div fxLayout="column">
         <mat-form-field appearance="outline">
-          <mat-label>Buff</mat-label>
+          <mat-label>Name</mat-label>
           <input type="text" matInput formControlName="name" required (keyup.enter)="trySubmit()">
         </mat-form-field>
 
