@@ -28,7 +28,8 @@ export class PlayerViewComponent implements OnInit {
     });
   }
 
-  getActive(order: Creature[], active: number): number {
+  getActive(order: {id: string, initiative: number, hp: number, visible: boolean}[],
+            active: number): number {
     let init = order[active].initiative;
     let filteredOrder = order.filter(c => c.hp == undefined || c.visible);
     let idx = filteredOrder.findIndex(c => c.initiative < init) - 1;
@@ -44,7 +45,9 @@ export class PlayerViewComponent implements OnInit {
     });
   }
 
-  getBuffDecrements(order: {initiative: number, id: string}[], i: number, buffs: Buff[]): {color: string, name: string}[] {
+  getBuffDecrements(order: {initiative: number, id: string, hp: number, visible: boolean}[],
+                    i: number,
+                    buffs: Buff[]): {color: string, name: string}[] {
     let id = order[i].id;
     order = order.filter(c => c.hp == undefined || c.visible);
     i = order.findIndex(c => c.id == id);

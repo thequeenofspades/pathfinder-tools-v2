@@ -104,7 +104,6 @@ export class InitiativeService {
         insertIndex = order.length;
       }
       order = this.insertCreature(order, insertIndex, creatureCopy);
-      // order.splice(insertIndex, 0, creatureCopy);
       this.initDoc.update({order: order}).then(_ => {
         this.messageService.add(`Added ${creature.name} to initiative order`);
       });
@@ -128,7 +127,6 @@ export class InitiativeService {
         let insertIndex = order.findIndex(c => this.goesBefore(creatureCopy, c));
         if (insertIndex < 0) insertIndex = order.length;
         order = this.insertCreature(order, insertIndex, creatureCopy);
-        // order.splice(insertIndex, 0, creatureCopy);
       });
       this.initDoc.update({order: order}).then(_ => {
         this.messageService.add(`Added ${creatures.length} creatures to initiative order`);
@@ -191,7 +189,6 @@ export class InitiativeService {
       buffs = this.updateBuffs(prev, curr, buffs);
       order[active].attributes = order[active].attributes.filter(a => a != 'delayed');
       this.initDoc.update({active: active, order: order, round: round, buffs: buffs}).then(_ => {
-        this.messageService.add(`${order[active].name}'s turn`);
         this.active.next(order[active]);
       });
     });
@@ -238,44 +235,24 @@ export class InitiativeService {
   moveUp(creature: Creature): void {
     this.initDoc.ref.get().then(doc => {
       let order = doc.data().order || [];
-      //creature.attributes.push('moved');
       let originalIdx: number = order.findIndex(c => c.id == creature.id);
       order.splice(originalIdx, 1);
       let newIdx: number = originalIdx - 1;
       if (originalIdx == 0) newIdx = order.length;
-      // if (originalIdx == 0) {
-      //   newIdx = order.length;
-      //   creature.initiative = order[newIdx - 1].initiative;
-      // } else {
-      //   creature.initiative = order[newIdx].initiative;
-      // }
       order = this.insertCreature(order, newIdx, creature);
-      //order.splice(newIdx, 0, creature);
-      this.initDoc.update({order: order}).then(_ => {
-        this.messageService.add(`Moved ${creature.name} up in initiative order`);
-      });
+      this.initDoc.update({order: order});
     });
   }
 
   moveDown(creature: Creature): void {
     this.initDoc.ref.get().then(doc => {
       let order = doc.data().order || [];
-      //creature.attributes.push('moved');
       let originalIdx: number = order.findIndex(c => c.id == creature.id);
       order.splice(originalIdx, 1);
       let newIdx: number = originalIdx + 1;
-      // if (originalIdx == order.length) {
-      //   newIdx = 0;
-      //   creature.initiative = order[0].initiative;
-      // } else {
-      //   creature.initiative = order[newIdx - 1].initiative;
-      // }
       if (originalIdx == order.length) newIdx = 0;
       order = this.insertCreature(order, newIdx, creature);
-      // order.splice(newIdx, 0, creature);
-      this.initDoc.update({order: order}).then(_ => {
-        this.messageService.add(`Moved ${creature.name} down in initiative order`);
-      });
+      this.initDoc.update({order: order});
     });
   }
 
@@ -304,14 +281,12 @@ export class InitiativeService {
       let order = doc.data().order || [];
       let active = doc.data().active || 0;
       let crIdx = order.findIndex(c => c.id == creature.id);
-      // creature.initiative = order[active].initiative;
       if (crIdx < active) active -= 1;
       creature.attributes = creature.attributes.filter(a => a != 'delayed');
       order.splice(crIdx, 1);
       let newIdx = active + 1;
       if (newIdx > order.length) newIdx = order.length;
       order = this.insertCreature(order, newIdx, creature);
-      // order.splice(newIdx, 0, creature);
       this.initDoc.update({order: order, active: active}).then(_ => {
         this.messageService.add(`${creature.name} undelayed`);
       });
