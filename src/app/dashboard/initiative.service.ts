@@ -194,6 +194,23 @@ export class InitiativeService {
     });
   }
 
+  rerollInitiativeForAll(): void {
+    this.initDoc.ref.get().then(doc => {
+      let order : Creature[] = doc.data().order || [];
+      let newOrder = [];
+      order.forEach(creature => {
+        creature.initiative = getRandomInt(1, 20) + creature.initiativeBonus;
+        let idx = newOrder.findIndex(cr => cr.initiative <= creature.initiative);
+        idx = idx == -1 ? newOrder.length : idx;
+        this.insertCreature(newOrder, idx, creature);
+      });
+      this.initDoc.update({order: newOrder, active: 0}).then(_ => {
+        this.active.next(newOrder[0]);
+        this.messageService.add('Rerolled initiative for all creatures');
+      });
+    });
+  }
+
   updateConditions(creature: Creature): void {
     for (let condition of creature.conditions) {
       if (!condition.permanent) {

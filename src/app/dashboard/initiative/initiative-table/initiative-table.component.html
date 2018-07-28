@@ -4,6 +4,7 @@
 		<button mat-button (click)="initiativeService.previous()"><mat-icon svgIcon="arrow-left-bold-box-outline"></mat-icon>Previous</button>
 		<button mat-button (click)="initiativeService.advance()" color="primary">Advance<mat-icon svgIcon="arrow-right-bold-box-outline"></mat-icon></button>
 		<button mat-button (click)="rollPerception(init.order)" color="accent">Roll Perception</button>
+		<button mat-button (click)="initiativeService.rerollInitiativeForAll()" color="accent">Reroll Initiative</button>
 	</div>
 
 	Round: {{init.round}}

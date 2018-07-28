@@ -38,6 +38,7 @@ export class PlayerFormComponent implements OnInit {
 
   onSubmit() {
     let player = new Player(this.playerForm.get('name').value);
+    player.id = this.model.id;
     player.initiativeBonus = this.playerForm.get('initiativeBonus').value;
     player.perceptionBonus = this.playerForm.get('perceptionBonus').value;
     player.senseMotiveBonus = this.playerForm.get('senseMotiveBonus').value;
