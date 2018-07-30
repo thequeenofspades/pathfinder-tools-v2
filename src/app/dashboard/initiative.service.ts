@@ -16,8 +16,8 @@ class Initiative {
 }
 
 const defaultPlayerOptions = {
-  nameOption: 'Show names',
-  healthOption: 'Health bar',
+  nameOption: 'Show names and numbers',
+  healthOption: 'Detailed',
   conditionOption: 'Condition only',
   visibleOption: 'invisible'
 }
