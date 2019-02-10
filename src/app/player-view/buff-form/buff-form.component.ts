@@ -28,7 +28,7 @@ export class BuffFormComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<BuffFormComponent>,
   	private fb: FormBuilder,
-  	@Inject(MAT_DIALOG_DATA) public data: {buff: Buff, order: Creature[], active: number, showNames: boolean}) { }
+  	@Inject(MAT_DIALOG_DATA) public data: {buff: Buff, order: Creature[], active: number, showNames: string}) { }
 
   ngOnInit() {
   	this.createForm();

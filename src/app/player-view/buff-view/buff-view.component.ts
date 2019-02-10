@@ -31,7 +31,7 @@ export class BuffViewComponent implements OnInit {
   @Input() buffs: Buff[];
   @Input() order: Creature[];
   @Input() active: number;
-  @Input() showNames: boolean;
+  @Input() showNames: string;
 
   openBuffFormDialog(buff?: Buff): void {
     let dialogRef = this.dialog.open(BuffFormComponent, {

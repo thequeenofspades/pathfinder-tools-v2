@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable, of, from } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { LocalStorage } from '@ngx-pwa/local-storage';
@@ -16,12 +16,12 @@ export class SessionResolverService implements Resolve<string> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<string> {
   	let id = route.paramMap.get('id');
-  	return Observable.fromPromise(this.db.collection('sessions').doc(id).ref.get()).pipe(
+  	return from(this.db.collection('sessions').doc(id).ref.get()).pipe(
   		take(1),
   		map(doc => {
   			if (doc.data()) {
           this.localStorage.getItem<string[]>('sessionCodes').subscribe(codes => {
-            let sessionCodes = codes || {};
+            let sessionCodes: string[] = codes as string[] || [];
             sessionCodes[id] = Date.now();
             this.localStorage.setItemSubscribe('sessionCodes', sessionCodes);
           });

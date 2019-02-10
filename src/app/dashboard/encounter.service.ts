@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, from } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
@@ -341,13 +341,13 @@ export class EncounterService {
   }
 
   public importMonsters(): void {
-    this.monsters$ = Observable.fromPromise(this.db.collection('monsters_converted').doc('index').ref.get()).pipe(
+    this.monsters$ = from(this.db.collection('monsters_converted').doc('index').ref.get()).pipe(
       take(1),
       map(doc => doc.data()['index'] as {name: string, cr: number}[]));
   }
 
   public importMonster(id: string): Observable<MonsterI> {
-    return Observable.fromPromise(this.db.collection('monsters_converted').doc(id).ref.get()).pipe(
+    return from(this.db.collection('monsters_converted').doc(id).ref.get()).pipe(
       take(1),
       map(doc => doc.data() as MonsterI)
     );

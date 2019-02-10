@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject, Observable, of } from 'rxjs';
+import { Subject, Observable, of, from } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { randomColor } from 'randomcolor';
@@ -46,6 +46,7 @@ export class InitiativeService {
         this.initDoc.set({
           order: [],
           active: 0,
+          buffs: [],
           round: 1,
           playerOptions: defaultPlayerOptions,
           timestamp: Date.now()});
@@ -67,7 +68,7 @@ export class InitiativeService {
   }
 
   getPlayerOptions(): Observable<Object> {
-    return Observable.fromPromise(this.initDoc.ref.get()).pipe(
+    return from(this.initDoc.ref.get()).pipe(
       take(1),
       map(doc => {
         return doc.data().playerOptions ? doc.data().playerOptions : defaultPlayerOptions;
@@ -81,7 +82,7 @@ export class InitiativeService {
   }
 
   get(id: string): Observable<Creature> {
-    return Observable.fromPromise(this.initDoc.ref.get()).pipe(
+    return from(this.initDoc.ref.get()).pipe(
       map(doc => {
         let order = doc.data().order || [];
         return order.find(c => c.id == id);

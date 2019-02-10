@@ -54,19 +54,19 @@ export class ImportMonsterComponent implements OnInit {
   }
 
   private filter(val: string): Observable<MonsterOp[]> {
-  	return this.monsters$.map(monsters => {
+  	return this.monsters$.pipe(map(monsters => {
   		return monsters.filter(m => {
   			return m.name.toLowerCase().includes(val.toLowerCase());
   		});
-  	});
+  	}));
   }
 
   private monsterValidator(control: AbstractControl): Observable<ValidationErrors | null> {
-  	return this.monsters$.map(monsters => {
+  	return this.monsters$.pipe(map(monsters => {
   		return monsters.find(m => m.name == control.value) != undefined;
-  	}).map(res => {
+  	}), map(res => {
   		return res ? null : { 'dne': true };
-  	});
+  	}));
   }
 
   protected importMonster(): void {

@@ -32,9 +32,9 @@
           	</mat-optgroup>
           	<mat-optgroup [label]="'Monsters'">
           		<mat-option *ngFor="let creature of monsterGroup" [value]="creature">
-          			<ng-container *ngIf="data.showNames">{{creature.name}}</ng-container>
-          			<ng-container *ngIf="!data.showNames">Monster</ng-container>
-          			<ng-container *ngIf="creature.basics?.quantity > 1"> ({{ creature.basics.idx }} of {{ creature.basics.quantity }})</ng-container>
+          			<ng-container *ngIf="data.showNames != 'Don\'t show'">{{creature.name}}</ng-container>
+          			<ng-container *ngIf="data.showNames == 'Don\'t show'">Monster</ng-container>
+          			<ng-container *ngIf="data.showNames == 'Show names and numbers' && creature.basics?.quantity > 1"> ({{ creature.basics.idx }} of {{ creature.basics.quantity }})</ng-container>
           		</mat-option>
           	</mat-optgroup>
           </mat-select>

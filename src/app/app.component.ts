@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
-import { AngularFirestore } from 'angularfire2/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-root',
@@ -15,8 +15,5 @@ export class AppComponent {
     private domSanitizer: DomSanitizer,
     private db: AngularFirestore) {
       matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl('assets/mdi.svg'));
-      db.firestore.settings({
-      	timestampsInSnapshots: true
-      });
   }
 }

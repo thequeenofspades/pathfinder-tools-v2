@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { AngularFireModule } from 'angularfire2';
-import { AngularFirebaseModule } from './angular-fire/angular-fire.module';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './/app-routing.module';
@@ -28,7 +28,7 @@ import { MessageService } from './message.service';
     BrowserAnimationsModule,
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase, 'pf-tools'),
-    AngularFirebaseModule,
+    AngularFirestoreModule,
     DashboardModule,
     PlayerViewModule,
     AppRoutingModule
