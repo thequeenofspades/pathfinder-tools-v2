@@ -16,10 +16,12 @@
 					mode="side" position="end" class="selected-creature-drawer"
 					[(opened)]="showDetail"
 					(closed)="showDetail = false">
-			<div class="button-row" fxFlex="row" fxLayoutAlign="end">
-				<button mat-icon-button (click)="unselect()"><mat-icon>cancel</mat-icon></button>
+			<div fxLayout="column">
+				<div class="button-row" fxLayout="row" fxLayoutAlign="end">
+					<button mat-icon-button (click)="unselect()"><mat-icon>cancel</mat-icon></button>
+				</div>
+				<app-creature-detail #creatureDetail [initService]="initiativeService"></app-creature-detail>
 			</div>
-			<app-creature-detail #creatureDetail [initService]="initiativeService"></app-creature-detail>
 		</mat-drawer>
 
 		<mat-drawer-content>

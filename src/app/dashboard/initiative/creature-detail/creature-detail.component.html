@@ -7,19 +7,23 @@
 	</ng-container>
 	<ng-container *ngIf="creature.hp == undefined">
 
-		<div class="creature-name">{{creature.name | uppercase}}</div>
+		<div fxLayout="column">
 
-		<mat-divider></mat-divider>
+			<div class="creature-name">{{creature.name | uppercase}}</div>
 
-		<p>
-			<b>Init</b> {{creature.initiativeBonus | plus}}
-		</p>
-		<p fxFlex="row" fxLayoutAlign="start center">
-			<span><b>Perception</b> {{creature.perceptionBonus | plus}} </span><app-rollable [bonus]="creature.perceptionBonus"></app-rollable>
-		</p>
-		<p fxFlex="row" fxLayoutAlign="start center">
-			<span><b>Sense Motive</b> {{creature.senseMotiveBonus | plus}} </span><app-rollable [bonus]="creature.senseMotiveBonus"></app-rollable>
-		</p>
+			<mat-divider></mat-divider>
+
+			<p>
+				<b>Init</b> {{creature.initiativeBonus | plus}}
+			</p>
+			<p fxFlex="row" fxLayoutAlign="start center">
+				<span><b>Perception</b> {{creature.perceptionBonus | plus}} </span><app-rollable [bonus]="creature.perceptionBonus"></app-rollable>
+			</p>
+			<p fxFlex="row" fxLayoutAlign="start center">
+				<span><b>Sense Motive</b> {{creature.senseMotiveBonus | plus}} </span><app-rollable [bonus]="creature.senseMotiveBonus"></app-rollable>
+			</p>
+
+		</div>
 
 	</ng-container>
 </div>

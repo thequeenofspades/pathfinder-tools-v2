@@ -1,0 +1,24 @@
+[debug] [2019-02-11T00:28:55.896Z] ----------------------------------------------------------------------
+[debug] [2019-02-11T00:28:55.898Z] Command:       /Users/shalinmehta/.nvm/versions/node/v10.0.0/bin/node /Users/shalinmehta/.nvm/versions/node/v10.0.0/bin/firebase deploy
+[debug] [2019-02-11T00:28:55.898Z] CLI Version:   6.3.1
+[debug] [2019-02-11T00:28:55.899Z] Platform:      darwin
+[debug] [2019-02-11T00:28:55.899Z] Node Version:  v10.0.0
+[debug] [2019-02-11T00:28:55.899Z] Time:          Sun Feb 10 2019 16:28:55 GMT-0800 (PST)
+[debug] [2019-02-11T00:28:55.899Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-02-11T00:28:55.915Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-02-11T00:28:55.917Z] > authorizing via signed-in user
+[debug] [2019-02-11T00:28:55.917Z] [iam] checking project pf-tools for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2019-02-11T00:28:55.919Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/pf-tools:testIamPermissions  
+
+[debug] [2019-02-11T00:28:56.571Z] <<< HTTP RESPONSE 200
+[debug] [2019-02-11T00:28:56.573Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/pf-tools  
+ 
+[debug] [2019-02-11T00:28:56.762Z] <<< HTTP RESPONSE 200
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions.
+ Please upgrade using npm install --save firebase-functions@latest in your functions directory.
+[info] 
+[info] === Deploying to 'pf-tools'...
+[info] 
+[info] i  deploying functions, hosting
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint

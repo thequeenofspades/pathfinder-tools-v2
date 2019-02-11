@@ -1,222 +1,224 @@
-<div fxFlex="row" fxLayoutAlign="space-between">
-	<span class="creature-name" fxFlex="3 0 auto">{{basics.name | uppercase}}</span>
-	<span fxFlex="0 0 auto" *ngIf="extras.cr">
-		<b>CR</b> {{extras.cr}}
-	</span>
-	<span fxFlex="0 0 auto" *ngIf="extras.xp" style="margin-left: 10px">
-		<b>XP</b> {{extras.xp}}
-	</span>
+<div fxLayout="column" fxLayoutAlign="start">
+	<div fxLayout="row" fxLayoutAlign="space-between">
+		<span class="creature-name" fxFlex="3 0 auto">{{basics.name | uppercase}}</span>
+		<span fxFlex="0 0 auto" *ngIf="extras.cr">
+			<b>CR</b> {{extras.cr}}
+		</span>
+		<span fxFlex="0 0 auto" *ngIf="extras.xp" style="margin-left: 10px">
+			<b>XP</b> {{extras.xp}}
+		</span>
+	</div>
+
+	<mat-divider></mat-divider>
+
+	<p>
+		{{basics.gender}} {{basics.race}}
+		<span *ngFor="let class of basics.classes; last as last">
+			{{class.class}} {{class.level}}<ng-container *ngIf="!last">/</ng-container>
+		</span>
+	</p>
+	<p>
+		{{basics.alignment}} {{basics.size}} {{basics.type}}
+	</p>
+	<p>
+		<b>Init</b> {{basics.initiativeBonus | plus}};
+		<b>Senses</b>
+			<ng-container *ngIf="basics.senses"> {{basics.senses}};</ng-container>
+			Perception {{basics.perceptionBonus | plus}}
+			<app-rollable *ngIf="live" [bonus]="basics.perceptionBonus"></app-rollable>
+	</p>
+	<p *ngIf="basics.aura?.length">
+		<b>Aura</b> {{basics.aura}}
+	</p>
+
+	<mat-divider></mat-divider>
+	DEFENSE
+	<mat-divider></mat-divider>
+
+	<p *ngIf="showAC()">
+		<b>AC </b>
+		<ng-container *ngIf="defense.ac">
+			{{defense.ac}}<ng-container *ngIf="defense.acff || defense.actouch">, </ng-container>
+		</ng-container>
+		<ng-container *ngIf="defense.acff">
+			<b>flat-footed</b> {{defense.acff}}<ng-container *ngIf="defense.actouch">, </ng-container>
+		</ng-container>
+		<ng-container *ngIf="defense.actouch">
+			<b>touch</b> {{defense.actouch}}
+		</ng-container>
+		<ng-container *ngIf="defense.acnotes"> {{defense.acnotes}}</ng-container>
+	</p>
+	<p>
+		<b>hp</b> {{defense.hp}}
+		<ng-container *ngIf="defense.hpnotes">{{defense.hpnotes}}</ng-container>
+	</p>
+	<p>
+		<ng-container *ngIf="defense.fort">
+			<b>Fort </b> 
+			{{defense.fort | plus}}<ng-container *ngIf="defense.ref || defense.will">, </ng-container>
+		</ng-container>
+		<ng-container *ngIf="defense.ref">
+			<b>Ref </b>
+			{{defense.ref | plus}}<ng-container *ngIf="defense.will">, </ng-container>
+		</ng-container>
+		<ng-container *ngIf="defense.will">
+			<b>Will </b>
+			{{defense.will | plus}}
+		</ng-container>
+		<ng-container *ngIf="defense.savenotes"> {{defense.savenotes}}</ng-container>
+	</p>
+	<p>
+		<ng-container *ngIf="defense.defensiveAbilities">
+			<b>Defensive Abilities</b> {{defense.defensiveAbilities}}<ng-container *ngIf="defense.dr || defense.immunities || defense.resistances || defense.sr">; </ng-container>
+		</ng-container>
+		<ng-container *ngIf="defense.dr">
+			<b>DR</b> {{defense.dr}}<ng-container *ngIf="defense.immunities || defense.resistances || defense.sr">; </ng-container>
+		</ng-container>
+		<ng-container *ngIf="defense.immunities">
+			<b>Immunities</b> {{defense.immunities}}<ng-container *ngIf="defense.resistances || defense.sr">; </ng-container>
+		</ng-container>
+		<ng-container *ngIf="defense.resistances">
+			<b>Resist</b> {{defense.resistances}}<ng-container *ngIf="defense.sr">; </ng-container>
+		</ng-container>
+		<ng-container *ngIf="defense.sr">
+			<b>SR</b> {{defense.sr}}
+		</ng-container>
+	</p>
+	<p *ngIf="defense.weaknesses">
+		<b>Weaknesses</b> {{defense.weaknesses}}
+	</p>
+
+	<mat-divider></mat-divider>
+
+	<ng-container *ngIf="showOffense()">
+		OFFENSE
+		<mat-divider></mat-divider>
+
+		<p *ngIf="offense.speed">
+			<b>Speed</b> {{offense.speed}}
+		</p>
+
+		<p *ngIf="meleeAttacks.length">
+			<b>Melee </b>
+			<span *ngFor="let attack of meleeAttacks; last as last">
+				{{attack.attack}}<ng-container *ngIf="!last">, </ng-container>
+			</span>
+		</p>
+		<p *ngIf="rangedAttacks.length">
+			<b>Ranged </b>
+			<span *ngFor="let attack of rangedAttacks; last as last">
+				{{attack.attack}}<ng-container *ngIf="!last">, </ng-container>
+			</span>
+		</p>
+		<p>
+			<ng-container *ngIf="offense.space">
+				<b>Space</b> {{offense.space}}<ng-container *ngIf="offense.reach">; </ng-container>
+			</ng-container>
+			<ng-container *ngIf="offense.reach">
+				<b>Reach</b> {{offense.reach}}
+			</ng-container>
+		</p>
+		<p *ngIf="specialAttacks.length">
+			<b>Special Attacks </b>
+			<span *ngFor="let attack of specialAttacks; last as last">
+				{{attack.attack}}<ng-container *ngIf="!last">, </ng-container>
+			</span>
+		</p>
+		<p *ngIf="spells.slaLevels.length">
+			<b>Spell-Like Abilities </b>
+			<ng-container *ngIf="spells.slaCL || spells.slaConcentration">
+				(<ng-container *ngIf="spells.slaCL">CL {{spells.slaCL}}<ng-container *ngIf="spells.slaConcentration">; </ng-container></ng-container>
+				<ng-container *ngIf="spells.slaConcentration">concentration {{spells.slaConcentration | plus}}</ng-container>)
+			</ng-container>
+		</p>
+		<p *ngFor="let slaLevel of sortedSlaLevels" style="margin-left:10px">
+			<ng-container *ngIf="slaLevel.limited != 'Limited'">{{slaLevel.limited}}</ng-container><ng-container *ngIf="slaLevel.limited == 'Limited'">{{slaLevel.uses}}/day</ng-container>&mdash;
+			<ng-container *ngIf="!live">
+				<span *ngFor="let sla of slaLevel.slas; last as last">{{sla.name}}<ng-container *ngIf="!last">, </ng-container></span>
+			</ng-container>
+			<ng-container *ngIf="live">
+				<app-interactive-sla-list [slas]="slaLevel.slas" [limited]="slaLevel.limited" [monster]="stats"></app-interactive-sla-list>
+			</ng-container>
+		</p>
+		<p *ngIf="spells.spellLevels.length">
+			<b>Spells <ng-container *ngIf="spells.spontaneous">Known </ng-container><ng-container *ngIf="!spells.spontaneous">Prepared </ng-container></b>
+			<ng-container *ngIf="spells.cl || spells.concentration">
+				(<ng-container *ngIf="spells.cl">CL {{spells.cl}}<ng-container *ngIf="spells.concentration">; </ng-container></ng-container>
+				<ng-container *ngIf="spells.concentration">concentration {{spells.concentration | plus}}</ng-container>)
+			</ng-container>
+		</p>
+		<p *ngFor="let spellLevel of sortedSpellLevels" style="margin-left:10px">
+			{{spellLevel.level}}<ng-container *ngIf="spellLevel.level == 1">st</ng-container><ng-container *ngIf="spellLevel.level == 2">nd</ng-container><ng-container *ngIf="spellLevel.level == 3">rd</ng-container><ng-container *ngIf="spellLevel.level > 3">st</ng-container><ng-container *ngIf="spellLevel.level > 0 && spells.spontaneous"> ({{spellLevel.uses}}/day)</ng-container>&mdash;
+			<ng-container *ngIf="!live">
+				<span *ngFor="let spell of spellLevel.spells; last as last">{{spell.name}}<ng-container *ngIf="!last">, </ng-container></span>
+			</ng-container>
+			<ng-container *ngIf="live">
+				<app-interactive-spell-list [spellLevel]="spellLevel" [monster]="stats"></app-interactive-spell-list>
+			</ng-container>
+		</p>
+
+		<mat-divider></mat-divider>
+	</ng-container>
+
+	<ng-container *ngIf="extras.tactics.length">
+		TACTICS
+		<mat-divider></mat-divider>
+		<p *ngFor="let tactic of extras.tactics">
+			<b>{{tactic.name}}</b> {{tactic.tactic}}
+		</p>
+
+		<mat-divider></mat-divider>
+	</ng-container>
+
+	STATISTICS
+	<mat-divider></mat-divider>
+
+	<p>
+		<span *ngIf="statistics.strScore"><b>Str</b> {{statistics.strScore}}, </span>
+		<span *ngIf="statistics.dexScore"><b>Dex</b> {{statistics.dexScore}}, </span>
+		<span *ngIf="statistics.conScore"><b>Con</b> {{statistics.conScore}}<ng-container *ngIf="statistics.intScore || statistics.wisScore || statistics.chaScore">, </ng-container></span>
+		<span *ngIf="statistics.intScore"><b>Int</b> {{statistics.intScore}}<ng-container *ngIf="statistics.wisScore || statistics.chaScore">, </ng-container></span>
+		<span *ngIf="statistics.wisScore"><b>Wis</b> {{statistics.wisScore}}<ng-container *ngIf="statistics.chaScore">, </ng-container></span>
+		<span *ngIf="statistics.chaScore"><b>Cha</b> {{statistics.chaScore}}</span>
+	</p>
+	<p>
+		<span *ngIf="statistics.bab"><b>Base Atk</b> {{statistics.bab | plus}}<ng-container *ngIf="statistics.cmb || statistics.cmd">, </ng-container></span>
+		<span *ngIf="statistics.cmb"><b>CMB</b> {{statistics.cmb}}<ng-container *ngIf="statistics.cmd">, </ng-container></span>
+		<span *ngIf="statistics.cmd"><b>CMD</b> {{statistics.cmd}}</span>
+	</p>
+	<p *ngIf="statistics.feats">
+		<b>Feats</b> {{statistics.feats}}
+	</p>
+	<p *ngIf="statistics.skills">
+		<b>Skills</b> {{statistics.skills}}
+	</p>
+	<p *ngIf="statistics.languages">
+		<b>Languages</b> {{statistics.languages}}
+	</p>
+	<p *ngIf="statistics.sq">
+		<b>SQ</b> {{statistics.sq}}
+	</p>
+	<p *ngIf="extras.gear">
+		<b>Gear</b> {{extras.gear}}
+	</p>
+
+	<ng-container *ngIf="extras.specials.length">
+		<mat-divider></mat-divider>
+		SPECIAL ABILITIES
+		<mat-divider></mat-divider>
+
+		<p *ngFor="let special of extras.specials">
+			<b>{{special.name}} ({{special.type}})</b> {{special.description}}
+		</p>
+	</ng-container>
+
+	<ng-container *ngIf="extras.description?.length">
+		<mat-divider></mat-divider>
+		DESCRIPTION
+		<mat-divider></mat-divider>
+
+		<p>
+			<b>Description</b> {{extras.description}}
+		</p>
+	</ng-container>
 </div>
-
-<mat-divider></mat-divider>
-
-<p>
-	{{basics.gender}} {{basics.race}}
-	<span *ngFor="let class of basics.classes; last as last">
-		{{class.class}} {{class.level}}<ng-container *ngIf="!last">/</ng-container>
-	</span>
-</p>
-<p>
-	{{basics.alignment}} {{basics.size}} {{basics.type}}
-</p>
-<p>
-	<b>Init</b> {{basics.initiativeBonus | plus}};
-	<b>Senses</b>
-		<ng-container *ngIf="basics.senses"> {{basics.senses}};</ng-container>
-		Perception {{basics.perceptionBonus | plus}}
-		<app-rollable *ngIf="live" [bonus]="basics.perceptionBonus"></app-rollable>
-</p>
-<p *ngIf="basics.aura?.length">
-	<b>Aura</b> {{basics.aura}}
-</p>
-
-<mat-divider></mat-divider>
-DEFENSE
-<mat-divider></mat-divider>
-
-<p *ngIf="showAC()">
-	<b>AC </b>
-	<ng-container *ngIf="defense.ac">
-		{{defense.ac}}<ng-container *ngIf="defense.acff || defense.actouch">, </ng-container>
-	</ng-container>
-	<ng-container *ngIf="defense.acff">
-		<b>flat-footed</b> {{defense.acff}}<ng-container *ngIf="defense.actouch">, </ng-container>
-	</ng-container>
-	<ng-container *ngIf="defense.actouch">
-		<b>touch</b> {{defense.actouch}}
-	</ng-container>
-	<ng-container *ngIf="defense.acnotes"> {{defense.acnotes}}</ng-container>
-</p>
-<p>
-	<b>hp</b> {{defense.hp}}
-	<ng-container *ngIf="defense.hpnotes">{{defense.hpnotes}}</ng-container>
-</p>
-<p>
-	<ng-container *ngIf="defense.fort">
-		<b>Fort </b> 
-		{{defense.fort | plus}}<ng-container *ngIf="defense.ref || defense.will">, </ng-container>
-	</ng-container>
-	<ng-container *ngIf="defense.ref">
-		<b>Ref </b>
-		{{defense.ref | plus}}<ng-container *ngIf="defense.will">, </ng-container>
-	</ng-container>
-	<ng-container *ngIf="defense.will">
-		<b>Will </b>
-		{{defense.will | plus}}
-	</ng-container>
-	<ng-container *ngIf="defense.savenotes"> {{defense.savenotes}}</ng-container>
-</p>
-<p>
-	<ng-container *ngIf="defense.defensiveAbilities">
-		<b>Defensive Abilities</b> {{defense.defensiveAbilities}}<ng-container *ngIf="defense.dr || defense.immunities || defense.resistances || defense.sr">; </ng-container>
-	</ng-container>
-	<ng-container *ngIf="defense.dr">
-		<b>DR</b> {{defense.dr}}<ng-container *ngIf="defense.immunities || defense.resistances || defense.sr">; </ng-container>
-	</ng-container>
-	<ng-container *ngIf="defense.immunities">
-		<b>Immunities</b> {{defense.immunities}}<ng-container *ngIf="defense.resistances || defense.sr">; </ng-container>
-	</ng-container>
-	<ng-container *ngIf="defense.resistances">
-		<b>Resist</b> {{defense.resistances}}<ng-container *ngIf="defense.sr">; </ng-container>
-	</ng-container>
-	<ng-container *ngIf="defense.sr">
-		<b>SR</b> {{defense.sr}}
-	</ng-container>
-</p>
-<p *ngIf="defense.weaknesses">
-	<b>Weaknesses</b> {{defense.weaknesses}}
-</p>
-
-<mat-divider></mat-divider>
-
-<ng-container *ngIf="showOffense()">
-	OFFENSE
-	<mat-divider></mat-divider>
-
-	<p *ngIf="offense.speed">
-		<b>Speed</b> {{offense.speed}}
-	</p>
-
-	<p *ngIf="meleeAttacks.length">
-		<b>Melee </b>
-		<span *ngFor="let attack of meleeAttacks; last as last">
-			{{attack.attack}}<ng-container *ngIf="!last">, </ng-container>
-		</span>
-	</p>
-	<p *ngIf="rangedAttacks.length">
-		<b>Ranged </b>
-		<span *ngFor="let attack of rangedAttacks; last as last">
-			{{attack.attack}}<ng-container *ngIf="!last">, </ng-container>
-		</span>
-	</p>
-	<p>
-		<ng-container *ngIf="offense.space">
-			<b>Space</b> {{offense.space}}<ng-container *ngIf="offense.reach">; </ng-container>
-		</ng-container>
-		<ng-container *ngIf="offense.reach">
-			<b>Reach</b> {{offense.reach}}
-		</ng-container>
-	</p>
-	<p *ngIf="specialAttacks.length">
-		<b>Special Attacks </b>
-		<span *ngFor="let attack of specialAttacks; last as last">
-			{{attack.attack}}<ng-container *ngIf="!last">, </ng-container>
-		</span>
-	</p>
-	<p *ngIf="spells.slaLevels.length">
-		<b>Spell-Like Abilities </b>
-		<ng-container *ngIf="spells.slaCL || spells.slaConcentration">
-			(<ng-container *ngIf="spells.slaCL">CL {{spells.slaCL}}<ng-container *ngIf="spells.slaConcentration">; </ng-container></ng-container>
-			<ng-container *ngIf="spells.slaConcentration">concentration {{spells.slaConcentration | plus}}</ng-container>)
-		</ng-container>
-	</p>
-	<p *ngFor="let slaLevel of sortedSlaLevels" style="margin-left:10px">
-		<ng-container *ngIf="slaLevel.limited != 'Limited'">{{slaLevel.limited}}</ng-container><ng-container *ngIf="slaLevel.limited == 'Limited'">{{slaLevel.uses}}/day</ng-container>&mdash;
-		<ng-container *ngIf="!live">
-			<span *ngFor="let sla of slaLevel.slas; last as last">{{sla.name}}<ng-container *ngIf="!last">, </ng-container></span>
-		</ng-container>
-		<ng-container *ngIf="live">
-			<app-interactive-sla-list [slas]="slaLevel.slas" [limited]="slaLevel.limited" [monster]="stats"></app-interactive-sla-list>
-		</ng-container>
-	</p>
-	<p *ngIf="spells.spellLevels.length">
-		<b>Spells <ng-container *ngIf="spells.spontaneous">Known </ng-container><ng-container *ngIf="!spells.spontaneous">Prepared </ng-container></b>
-		<ng-container *ngIf="spells.cl || spells.concentration">
-			(<ng-container *ngIf="spells.cl">CL {{spells.cl}}<ng-container *ngIf="spells.concentration">; </ng-container></ng-container>
-			<ng-container *ngIf="spells.concentration">concentration {{spells.concentration | plus}}</ng-container>)
-		</ng-container>
-	</p>
-	<p *ngFor="let spellLevel of sortedSpellLevels" style="margin-left:10px">
-		{{spellLevel.level}}<ng-container *ngIf="spellLevel.level == 1">st</ng-container><ng-container *ngIf="spellLevel.level == 2">nd</ng-container><ng-container *ngIf="spellLevel.level == 3">rd</ng-container><ng-container *ngIf="spellLevel.level > 3">st</ng-container><ng-container *ngIf="spellLevel.level > 0 && spells.spontaneous"> ({{spellLevel.uses}}/day)</ng-container>&mdash;
-		<ng-container *ngIf="!live">
-			<span *ngFor="let spell of spellLevel.spells; last as last">{{spell.name}}<ng-container *ngIf="!last">, </ng-container></span>
-		</ng-container>
-		<ng-container *ngIf="live">
-			<app-interactive-spell-list [spellLevel]="spellLevel" [monster]="stats"></app-interactive-spell-list>
-		</ng-container>
-	</p>
-
-	<mat-divider></mat-divider>
-</ng-container>
-
-<ng-container *ngIf="extras.tactics.length">
-	TACTICS
-	<mat-divider></mat-divider>
-	<p *ngFor="let tactic of extras.tactics">
-		<b>{{tactic.name}}</b> {{tactic.tactic}}
-	</p>
-
-	<mat-divider></mat-divider>
-</ng-container>
-
-STATISTICS
-<mat-divider></mat-divider>
-
-<p>
-	<span *ngIf="statistics.strScore"><b>Str</b> {{statistics.strScore}}, </span>
-	<span *ngIf="statistics.dexScore"><b>Dex</b> {{statistics.dexScore}}, </span>
-	<span *ngIf="statistics.conScore"><b>Con</b> {{statistics.conScore}}<ng-container *ngIf="statistics.intScore || statistics.wisScore || statistics.chaScore">, </ng-container></span>
-	<span *ngIf="statistics.intScore"><b>Int</b> {{statistics.intScore}}<ng-container *ngIf="statistics.wisScore || statistics.chaScore">, </ng-container></span>
-	<span *ngIf="statistics.wisScore"><b>Wis</b> {{statistics.wisScore}}<ng-container *ngIf="statistics.chaScore">, </ng-container></span>
-	<span *ngIf="statistics.chaScore"><b>Cha</b> {{statistics.chaScore}}</span>
-</p>
-<p>
-	<span *ngIf="statistics.bab"><b>Base Atk</b> {{statistics.bab | plus}}<ng-container *ngIf="statistics.cmb || statistics.cmd">, </ng-container></span>
-	<span *ngIf="statistics.cmb"><b>CMB</b> {{statistics.cmb}}<ng-container *ngIf="statistics.cmd">, </ng-container></span>
-	<span *ngIf="statistics.cmd"><b>CMD</b> {{statistics.cmd}}</span>
-</p>
-<p *ngIf="statistics.feats">
-	<b>Feats</b> {{statistics.feats}}
-</p>
-<p *ngIf="statistics.skills">
-	<b>Skills</b> {{statistics.skills}}
-</p>
-<p *ngIf="statistics.languages">
-	<b>Languages</b> {{statistics.languages}}
-</p>
-<p *ngIf="statistics.sq">
-	<b>SQ</b> {{statistics.sq}}
-</p>
-<p *ngIf="extras.gear">
-	<b>Gear</b> {{extras.gear}}
-</p>
-
-<ng-container *ngIf="extras.specials.length">
-	<mat-divider></mat-divider>
-	SPECIAL ABILITIES
-	<mat-divider></mat-divider>
-
-	<p *ngFor="let special of extras.specials">
-		<b>{{special.name}} ({{special.type}})</b> {{special.description}}
-	</p>
-</ng-container>
-
-<ng-container *ngIf="extras.description?.length">
-	<mat-divider></mat-divider>
-	DESCRIPTION
-	<mat-divider></mat-divider>
-
-	<p>
-		<b>Description</b> {{extras.description}}
-	</p>
-</ng-container>
