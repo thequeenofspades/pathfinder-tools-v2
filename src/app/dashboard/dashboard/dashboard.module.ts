@@ -24,6 +24,7 @@ import { MaterialModule } from '../../material-module/material-module.module';
 import { DashboardRoutingModule } from '../dashboard-routing/dashboard-routing.module';
 import { ConditionDetailComponent } from '../initiative/condition-detail/condition-detail.component';
 import { CreatureDetailComponent } from '../initiative/creature-detail/creature-detail.component';
+import { CreaturePopoutComponent } from '../initiative/creature-detail/creature-popout.component';
 
 import { StopClickDirective } from '../../stop-click.directive';
 import { FullDetailComponent } from '../monsters/monster-form/full-detail/full-detail.component';
@@ -76,14 +77,16 @@ import { ImportMonsterComponent } from '../monsters/monster-form/import-monster/
     InteractiveSlaListComponent,
     InteractiveConditionListComponent,
     InitiativeTableComponent,
-    ImportMonsterComponent
+    ImportMonsterComponent,
+    CreaturePopoutComponent
   ],
   entryComponents: [
     InitiativeFormComponent,
     NoteFormComponent,
     ConditionFormComponent,
     DamageFormComponent,
-    ConditionDetailComponent
+    ConditionDetailComponent,
+    CreaturePopoutComponent
   ]
 })
 export class DashboardModule { }

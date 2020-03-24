@@ -18,6 +18,9 @@
 					(closed)="showDetail = false">
 			<div fxLayout="column">
 				<div class="button-row" fxLayout="row" fxLayoutAlign="end">
+					<ng-container *ngIf="showDetail && detailComponent.creature.hp != undefined">
+						<button mat-icon-button (click)="openCreaturePreview()"><mat-icon>open_in_new</mat-icon></button>
+					</ng-container>
 					<button mat-icon-button (click)="unselect()"><mat-icon>cancel</mat-icon></button>
 				</div>
 				<app-creature-detail #creatureDetail [initService]="initiativeService"></app-creature-detail>

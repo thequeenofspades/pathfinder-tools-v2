@@ -9,7 +9,8 @@ import { NoteFormComponent } from '../note-form.component';
 import { ConditionFormComponent } from '../condition-form.component';
 import { DamageFormComponent } from '../damage-form.component';
 import { ConditionDetailComponent } from '../condition-detail/condition-detail.component';
-import { CreatureDetailComponent } from '../creature-detail/creature-detail.component'
+import { CreatureDetailComponent } from '../creature-detail/creature-detail.component';
+import { CreaturePopoutComponent } from '../creature-detail/creature-popout.component';
 
 @Component({
   selector: 'app-initiative-table',
@@ -69,6 +70,18 @@ export class InitiativeTableComponent implements OnInit {
   unselect(): void {
     this.detailComponent.creature = null;
     this.showDetail = false;
+  }
+
+  openCreaturePreview(): void {
+    this.listenArrowKeys = false;
+    let dialogRef = this.dialog.open(CreaturePopoutComponent, {
+      height: '100vh',
+      width: '500px',
+      data: this.detailComponent.creature
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      this.listenArrowKeys = true;
+    });
   }
 
   openDamageFormDialog(creature: Creature): void {
