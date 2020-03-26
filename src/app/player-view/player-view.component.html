@@ -1,7 +1,10 @@
 <ng-container *ngIf="initiativeService.init$ | async as init">
 	<ng-container *ngIf="init.order?.length; else noEncounterMsg">
 		<h2>Round: {{init.round}}</h2>
-		<div fxLayout="row">
+		<div fxLayout="row" fxLayoutGap="10px">
+			<ng-container *ngIf="activeImageUrl">
+				<img [src]="activeImageUrl" style="max-width: 30vw">
+			</ng-container>
 			<table class="mat-table initiativeTable" fxFlex="2 1 auto">
 				<tr class="mat-row initiativeRow" *ngFor="let creature of init.order; index as i"
 					[class.active-creature-row]="i == getActive(init.order, init.active)">

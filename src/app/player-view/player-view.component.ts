@@ -19,6 +19,8 @@ interface Buff {
 })
 export class PlayerViewComponent implements OnInit {
 
+  private activeImageUrl : string;
+
   constructor(public initiativeService: InitiativeService,
     private route: ActivatedRoute) { }
 
@@ -32,13 +34,14 @@ export class PlayerViewComponent implements OnInit {
    * If there are no creatures currently visible, return 0.
    * If the active creature is invisible, return the closest visible creature in the initiative.
    */
-  getActive(order: {id: string, initiative: number, hp: number, visible: boolean}[],
+  getActive(order: {id: string, initiative: number, hp: number, visible: boolean, imageUrl: string}[],
             active: number): number {
     let init = order[active].initiative;
     let filteredOrder = order.filter(c => c.hp == undefined || c.visible);
     if (filteredOrder.length == 0) return 0;
     let idx = filteredOrder.findIndex(c => c.initiative < init) - 1;
     if (idx < 0) idx = filteredOrder.length - 1;
+    this.activeImageUrl = filteredOrder[idx].imageUrl;
     return order.findIndex(c => c.id == filteredOrder[idx].id);
   }
 

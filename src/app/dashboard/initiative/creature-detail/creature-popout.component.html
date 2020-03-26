@@ -1,3 +1,8 @@
-<mat-dialog-content style="max-height: 100vh">
-	<app-monster-preview [stats]="creature" [live]="true"></app-monster-preview>
-</mat-dialog-content>
+<div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center">
+	<ng-container *ngIf="previewImageUrl">
+		<img [src]="previewImageUrl" style="max-width: 30vw">
+	</ng-container>
+	<div style="max-height: none; max-width: 80vw">
+		<app-monster-preview [stats]="creature" [live]="true"></app-monster-preview>
+	</div>
+</div>

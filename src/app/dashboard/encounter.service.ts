@@ -132,7 +132,8 @@ export class EncounterService {
       attributes: [],
       notes: [],
       notification: {},
-      currentHp: monster.defense.hp
+      currentHp: monster.defense.hp,
+      imageUrl: monster.extras.imageUrl
     };
     return creature;
   }
@@ -249,7 +250,8 @@ export class EncounterService {
         description: '',
         cr: '',
         xp: '',
-        tactics: this.fb.array([])
+        tactics: this.fb.array([]),
+        imageUrl: ''
       })
     });
   }

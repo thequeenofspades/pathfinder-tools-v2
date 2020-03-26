@@ -22,6 +22,7 @@ export class CreatureDetailComponent implements OnInit {
 
   @Input() initService: InitiativeService;
   creature: any;
+  imageUrl: string;
 
   perceptionBadges = {};
   smBadges = {};

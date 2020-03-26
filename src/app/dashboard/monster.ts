@@ -9,7 +9,8 @@ export interface Creature {
 	attributes: string[],
 	notes: string[],
     initiative?: number,
-    hp?: number
+    hp?: number,
+    imageUrl?: string
 }
 
 export interface Monster {
@@ -125,6 +126,7 @@ export interface MonsterI {
         tactics: {
             name: string,
             tactic: string
-        }[]
+        }[],
+        imageUrl: string
       }
 }

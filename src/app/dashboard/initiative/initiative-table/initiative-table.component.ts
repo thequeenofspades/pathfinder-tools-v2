@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, ViewChild, HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 import { InitiativeService } from '../../initiative.service';
 import { Creature } from '../../monster';
@@ -18,8 +19,7 @@ import { CreaturePopoutComponent } from '../creature-detail/creature-popout.comp
   styleUrls: ['./initiative-table.component.scss']
 })
 export class InitiativeTableComponent implements OnInit {
-
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog, private storage: AngularFireStorage) { }
 
   ngOnInit() {
   	this.initiativeService.active$.subscribe(active => {
@@ -75,8 +75,8 @@ export class InitiativeTableComponent implements OnInit {
   openCreaturePreview(): void {
     this.listenArrowKeys = false;
     let dialogRef = this.dialog.open(CreaturePopoutComponent, {
-      height: '100vh',
-      width: '500px',
+      height: 'auto',
+      width: 'auto',
       data: this.detailComponent.creature
     });
     dialogRef.afterClosed().subscribe(() => {

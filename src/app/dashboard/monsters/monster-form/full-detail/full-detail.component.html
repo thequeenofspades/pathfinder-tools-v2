@@ -492,6 +492,13 @@
 
       </div>
 
+      <mat-divider></mat-divider>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Image URL</mat-label>
+        <input matInput type="text" formControlName="imageUrl">
+      </mat-form-field>
+
       <div class="button-row">
         <button mat-button type="button" matStepperNext [disabled]="form.get('extras').invalid">Next</button>
       </div>

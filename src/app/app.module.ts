@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireStorageModule } from '@angular/fire/storage';
 import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './/app-routing.module';
@@ -29,6 +30,7 @@ import { MessageService } from './message.service';
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase, 'pf-tools'),
     AngularFirestoreModule,
+    AngularFireStorageModule,
     DashboardModule,
     PlayerViewModule,
     AppRoutingModule
