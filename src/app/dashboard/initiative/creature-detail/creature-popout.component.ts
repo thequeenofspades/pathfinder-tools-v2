@@ -16,7 +16,7 @@ export class CreaturePopoutComponent implements OnInit {
     private storage : AngularFireStorage,
     @Inject(MAT_DIALOG_DATA) public creature: Creature) { }
 
-  protected previewImageUrl: string;
+  public previewImageUrl: string;
 
   ngOnInit() {
     if (this.creature.imageUrl) {
