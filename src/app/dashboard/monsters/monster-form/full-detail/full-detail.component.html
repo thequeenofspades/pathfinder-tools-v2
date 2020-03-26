@@ -498,6 +498,10 @@
         <mat-label>Image URL</mat-label>
         <input matInput type="text" formControlName="imageUrl">
       </mat-form-field>
+      <div>
+        <input type="file" (change)="uploadImage($event)" placeholder="Upload file" accept=".jpg,.png">
+        <ng-container *ngIf="uploadingMsg"><br>{{uploadingMsg}}</ng-container>
+      </div>
 
       <div class="button-row">
         <button mat-button type="button" matStepperNext [disabled]="form.get('extras').invalid">Next</button>

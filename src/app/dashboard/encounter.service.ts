@@ -27,7 +27,10 @@ export class EncounterService {
 
   monsters$: Observable<{name: string, cr: number}[]>;
 
+  sessionId: string;
+
   setup(sessionId: string): void {
+    this.sessionId = sessionId;
     this.encountersCollection = this.db.collection('sessions').doc(sessionId).collection('encounters');
     this.importMonsters();
     this.refresh();

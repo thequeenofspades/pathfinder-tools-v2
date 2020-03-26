@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { EncounterService } from '../../../encounter.service';
+import { AngularFireStorage, AngularFireStorageReference } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-monster-form-full-detail',
@@ -9,7 +10,7 @@ import { EncounterService } from '../../../encounter.service';
 })
 export class FullDetailComponent implements OnInit {
 
-  constructor(private fb: FormBuilder, private es: EncounterService) { }
+  constructor(private fb: FormBuilder, private es: EncounterService, private storage: AngularFireStorage) { }
 
   ngOnInit() {
   }
@@ -21,6 +22,7 @@ export class FullDetailComponent implements OnInit {
 
   public attackTypes = ['melee', 'ranged', 'special'];
   public specialTypes = ['Ex', 'Su', 'Sp'];
+  public uploadingMsg: string;
 
   onCancel() {
   	this.cancel.emit();
@@ -104,6 +106,24 @@ export class FullDetailComponent implements OnInit {
 
   removeTactic(i: number) {
     this.tactics.removeAt(i);
+  }
+
+  uploadImage(event) {
+    this.uploadingMsg = 'Uploading...';
+    let fileList: FileList = event.target.files;
+    if (fileList.length == 0) {
+      return;
+    }
+    let file: File = fileList[0];
+    let storageRef: AngularFireStorageReference = this.storage.ref('images').child(this.es.sessionId).child(file.name);
+    storageRef.put(file).then(snapshot => {
+      this.uploadingMsg = 'Done!';
+      snapshot.ref.getDownloadURL().then(url => {
+        this.form.get('extras.imageUrl').setValue(url);
+      })
+    }, error => {
+      this.uploadingMsg = 'Error: ' + error.message;
+    });
   }
 
 }
