@@ -15,7 +15,7 @@
 
 		<mat-divider></mat-divider>
 
-		<p>
+		<p *ngIf="basics.gender || basics.race || basics.classes.length > 0">
 			{{basics.gender}} {{basics.race}}
 			<span *ngFor="let class of basics.classes; last as last">
 				{{class.class}} {{class.level}}<ng-container *ngIf="!last">/</ng-container>
@@ -152,7 +152,7 @@
 				</ng-container>
 			</p>
 			<p *ngFor="let spellLevel of sortedSpellLevels" style="margin-left:10px">
-				{{spellLevel.level}}<ng-container *ngIf="spellLevel.level == 1">st</ng-container><ng-container *ngIf="spellLevel.level == 2">nd</ng-container><ng-container *ngIf="spellLevel.level == 3">rd</ng-container><ng-container *ngIf="spellLevel.level > 3">st</ng-container><ng-container *ngIf="spellLevel.level > 0 && spells.spontaneous"> ({{spellLevel.uses}}/day)</ng-container>&mdash;
+				{{spellLevel.level}}<ng-container *ngIf="spellLevel.level == 1">st</ng-container><ng-container *ngIf="spellLevel.level == 2">nd</ng-container><ng-container *ngIf="spellLevel.level == 3">rd</ng-container><ng-container *ngIf="spellLevel.level > 3">th</ng-container><ng-container *ngIf="spellLevel.level > 0 && spells.spontaneous"> ({{spellLevel.uses}}/day)</ng-container>&mdash;
 				<ng-container *ngIf="!live">
 					<span *ngFor="let spell of spellLevel.spells; last as last">{{spell.name}}<ng-container *ngIf="!last">, </ng-container></span>
 				</ng-container>

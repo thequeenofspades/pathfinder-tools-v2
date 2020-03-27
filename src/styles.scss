@@ -72,3 +72,11 @@ mat-progress-bar {
 	background-color: mat-color($pf-app-accent);
 	color: black;
 }
+
+.creature-popout-pane {
+    overflow-y: scroll;
+}
+
+span {
+	text-indent: 0em
+}

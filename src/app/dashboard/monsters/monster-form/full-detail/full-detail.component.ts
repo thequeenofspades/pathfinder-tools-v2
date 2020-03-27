@@ -120,7 +120,7 @@ export class FullDetailComponent implements OnInit {
       this.uploadingMsg = 'Done!';
       snapshot.ref.getDownloadURL().then(url => {
         this.form.get('extras.imageUrl').setValue(url);
-      })
+      });
     }, error => {
       this.uploadingMsg = 'Error: ' + error.message;
     });

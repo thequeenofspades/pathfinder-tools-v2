@@ -77,6 +77,7 @@ export class InitiativeTableComponent implements OnInit {
     let dialogRef = this.dialog.open(CreaturePopoutComponent, {
       height: 'auto',
       width: 'auto',
+      panelClass: 'creature-popout-pane',
       data: this.detailComponent.creature
     });
     dialogRef.afterClosed().subscribe(() => {
