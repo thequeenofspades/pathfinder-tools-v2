@@ -10,7 +10,7 @@ import * as functions from 'firebase-functions';
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-exports.deleteOldSessions = functions.firestore
+exports.purgeSessions = functions.firestore
 	.document('sessions/{sessionId}')
 	.onCreate((snap, context) => {
 		let cutoff = Date.now();
@@ -25,4 +25,15 @@ exports.deleteOldSessions = functions.firestore
 						.delete();
 				});
 			}).catch(err => console.log(err));
+	});
+
+exports.purgeStorage = functions.firestore
+	.document('sessions/{sessionId}')
+	.onDelete((snap, context) => {
+		const { sessionId } = context.params;
+		const bucket = admin.storage().bucket();
+		return bucket.deleteFiles({
+			force: true,
+			prefix: `sessions/${sessionId}`
+		});
 	});
