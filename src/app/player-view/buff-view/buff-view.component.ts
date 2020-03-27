@@ -18,7 +18,7 @@ interface Buff {
 @Component({
   selector: 'app-buff-view',
   templateUrl: './buff-view.component.html',
-  styleUrls: ['./buff-view.component.css']
+  styleUrls: ['./buff-view.component.scss']
 })
 export class BuffViewComponent implements OnInit {
 
@@ -32,6 +32,8 @@ export class BuffViewComponent implements OnInit {
   @Input() order: Creature[];
   @Input() active: number;
   @Input() showNames: string;
+
+  public focusedBuffId : string;
 
   openBuffFormDialog(buff?: Buff): void {
     let dialogRef = this.dialog.open(BuffFormComponent, {
@@ -68,6 +70,14 @@ export class BuffViewComponent implements OnInit {
     return buffs.sort((a, b) => {
       return a.duration - b.duration;
     });
+  }
+
+  mouseoverBuff(buff: Buff) {
+    this.focusedBuffId = buff.id;
+  }
+
+  mouseoutBuff() {
+    this.focusedBuffId = undefined;
   }
 
 }

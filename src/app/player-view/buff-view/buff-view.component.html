@@ -1,8 +1,14 @@
 <div class="buffs-container">
 
-	<div *ngFor="let buff of sortedBuffs(buffs)">
+	<div	*ngFor="let buff of sortedBuffs(buffs)" 
+			[ngClass]="{'buff-focused': buff.id == focusedBuffId}"
+			(mouseover)="mouseoverBuff(buff)" 
+			(mouseout)="mouseoutBuff()">
 		<button mat-icon-button (click)="rerollColor(buff)">
-			<mat-icon [ngStyle]="{'color': buff.color}" matTooltip="Change color">brightness_1</mat-icon>
+			<mat-icon 	[ngStyle]="{'color': buff.color}"
+						matTooltip="Change color">
+				brightness_1
+			</mat-icon>
 		</button>
 		<span>{{buff.name}} for {{buff.duration}} rounds</span>
 		<button mat-icon-button [matMenuTriggerFor]="menu">

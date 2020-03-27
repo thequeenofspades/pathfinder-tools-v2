@@ -115,7 +115,7 @@ export class FullDetailComponent implements OnInit {
       return;
     }
     let file: File = fileList[0];
-    let storageRef: AngularFireStorageReference = this.storage.ref('images').child(this.es.sessionId).child(file.name);
+    let storageRef: AngularFireStorageReference = this.storage.ref('sessions').child(this.es.sessionId).child(file.name);
     storageRef.put(file).then(snapshot => {
       this.uploadingMsg = 'Done!';
       snapshot.ref.getDownloadURL().then(url => {

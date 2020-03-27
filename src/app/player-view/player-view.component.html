@@ -33,7 +33,13 @@
 								<ng-container *ngIf="creature.basics?.quantity > 1 && init.playerOptions?.nameOption == 'Show names and numbers'"> ({{ creature.basics.idx }})</ng-container>
 							</ng-container>
 							<ng-container *ngFor="let buff of getBuffs(creature, init.buffs); trackBy: buffTrackByFn">
-								<mat-icon [ngStyle]="{'color': buff.color}" class="buff-icon" matTooltip="{{buff.name}}">brightness_1</mat-icon>
+								<span (mouseover)="mouseoverBuff(buff)" (mouseout)="mouseoutBuff()">
+									<mat-icon 	[ngStyle]="{'color': buff.color}"
+												[ngClass]="{'buff-icon': buffViewComponent.focusedBuffId != buff.id, 'buff-icon-focused': buffViewComponent.focusedBuffId == buff.id}"
+												matTooltip="{{buff.name}}">
+										brightness_1
+									</mat-icon>
+								</span>
 							</ng-container>
 						</td>
 
@@ -71,6 +77,7 @@
 			</table>
 
 			<app-buff-view
+				#buffViewComponent
 				class="drawer" fxFlex="0 1 auto"
 				[initiativeService]="initiativeService"
 				[buffs]="init.buffs"

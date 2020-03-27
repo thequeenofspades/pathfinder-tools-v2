@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { InitiativeService } from '../dashboard/initiative.service';
 import { Creature } from '../dashboard/monster';
+import { BuffViewComponent } from './buff-view/buff-view.component';
 
 interface Buff {
+  id: string,
   name: string,
   color: string,
   affected: Creature[],
@@ -23,6 +25,8 @@ export class PlayerViewComponent implements OnInit {
 
   constructor(public initiativeService: InitiativeService,
     private route: ActivatedRoute) { }
+
+  @ViewChild(BuffViewComponent) public buffViewComponent: BuffViewComponent;
 
   ngOnInit() {
     this.route.data.subscribe((data: {id: string}) => {
@@ -49,7 +53,7 @@ export class PlayerViewComponent implements OnInit {
     return (buffs || []).filter(buff => {
       return (buff.affected || []).find(cr => cr.id == creature.id);
     }).map(buff => {
-      return {name: buff.name, color: buff.color};
+      return {id: buff.id, name: buff.name, color: buff.color};
     });
   }
 
@@ -70,8 +74,16 @@ export class PlayerViewComponent implements OnInit {
       }
       return false;
     }).map(buff => {
-      return {name: buff.name, color: buff.color};
+      return {id: buff.id, name: buff.name, color: buff.color};
     });
+  }
+
+  mouseoverBuff(buff: Buff) {
+    this.buffViewComponent.focusedBuffId = buff.id;
+  }
+
+  mouseoutBuff() {
+    this.buffViewComponent.focusedBuffId = undefined;
   }
 
   buffTrackByFn(index, buff) {
