@@ -40,33 +40,39 @@
 			<mat-card-content>
 				<ng-container *ngIf="!encounter.new && !encounter.edit">
 					<mat-accordion>
-						<mat-expansion-panel *ngFor="let monster of sortedMonsters(encounter.monsters)">
-							<mat-expansion-panel-header matBadge="{{badges[monster.id]}}" [matBadgeHidden]="badges[monster.id] == undefined" matBadgeColor="accent" matBadgePosition="before">
-								<mat-panel-title>
-									{{monster.basics.name}} <ng-container *ngIf="monster.basics.quantity > 1">({{ monster.basics.idx }} of {{ monster.basics.quantity }})</ng-container>
-								</mat-panel-title>
-								<mat-panel-description>
-									Details
-								</mat-panel-description>
-							</mat-expansion-panel-header>
-							<ng-container *ngIf="!edit[monster.id]">
-								<app-monster-preview [stats]="monster"></app-monster-preview>
-								<mat-action-row>
-									<button mat-button (click)="edit[monster.id] = true">Edit</button>
-									<button mat-button (click)="duplicate(monster, encounter)">Duplicate</button>
-									<button mat-button (click)="moveToEncounter(monster, encounter)">Move</button>
-									<button mat-button color="primary" (click)="addToInitiative(monster)">Add to Initiative</button>
-									<button mat-button color="warn" (click)="encounterService.removeFromEncounter(monster, encounter)">Remove</button>
-								</mat-action-row>
-							</ng-container>
-							<ng-container *ngIf="edit[monster.id]">
-								<app-monster-form
-									[model]="monster"
-									(onSubmitted)="encounterService.update(encounter, monster, $event); edit[monster.id] = false"
-									(onCanceled)="edit[monster.id] = false">
-								</app-monster-form>
-							</ng-container>
-						</mat-expansion-panel>
+						<div	*ngFor="let monster of sortedMonsters(encounter.monsters)"
+								matBadge="{{badges[monster.id]}}"
+								[matBadgeHidden]="badges[monster.id] == undefined"
+								matBadgeColor="accent"
+								matBadgePosition="before">
+							<mat-expansion-panel>
+								<mat-expansion-panel-header>
+									<mat-panel-title>
+										{{monster.basics.name}} <ng-container *ngIf="monster.basics.quantity > 1">({{ monster.basics.idx }} of {{ monster.basics.quantity }})</ng-container>
+									</mat-panel-title>
+									<mat-panel-description>
+										Details
+									</mat-panel-description>
+								</mat-expansion-panel-header>
+								<ng-container *ngIf="!edit[monster.id]">
+									<app-monster-preview [stats]="monster"></app-monster-preview>
+									<mat-action-row>
+										<button mat-button (click)="edit[monster.id] = true">Edit</button>
+										<button mat-button (click)="duplicate(monster, encounter)">Duplicate</button>
+										<button mat-button (click)="moveToEncounter(monster, encounter)">Move</button>
+										<button mat-button color="primary" (click)="addToInitiative(monster)">Add to Initiative</button>
+										<button mat-button color="warn" (click)="encounterService.removeFromEncounter(monster, encounter)">Remove</button>
+									</mat-action-row>
+								</ng-container>
+								<ng-container *ngIf="edit[monster.id]">
+									<app-monster-form
+										[model]="monster"
+										(onSubmitted)="encounterService.update(encounter, monster, $event); edit[monster.id] = false"
+										(onCanceled)="edit[monster.id] = false">
+									</app-monster-form>
+								</ng-container>
+							</mat-expansion-panel>
+						</div>
 					</mat-accordion>
 				</ng-container>
 				<ng-container *ngIf="encounter.new && !encounter.edit">
