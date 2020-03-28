@@ -30,14 +30,18 @@ export class SlaLevelComponent implements OnInit {
     this.slas.push(this.es.buildSlaFormGroup(this.form));
   }
 
-  addSlaChip(event: MatChipInputEvent) {
-  	if (event.value.trim().length) {
+  tokenEnd(event: MatChipInputEvent) {
+  	this.addSlaChip(event.value);
+    if (event.input) event.input.value = '';
+  }
+
+  addSlaChip(value: string): void {
+    if (value.trim().length) {
       let newSla = this.es.buildSlaFormGroup(this.form);
-      newSla.patchValue({name: event.value.trim()});
+      newSla.patchValue({name: value.trim()});
       this.slas.push(newSla);
   	}
-    	if (event.input) event.input.value = '';
-    }
+  }
 
   removeSla(i: number) {
   	this.slas.removeAt(i);
@@ -49,6 +53,13 @@ export class SlaLevelComponent implements OnInit {
 
   focusSlaInput() {
     this.slaInputs.last.nativeElement.focus();
+  }
+
+  paste(event: ClipboardEvent): void {
+    event.preventDefault();
+    event.clipboardData.getData('text').split(',').forEach(value => {
+      this.addSlaChip(value);
+    });
   }
 
 }

@@ -26,7 +26,9 @@
 				<input placeholder="Spell-Like Abilities..."
 						[matChipInputFor]="chipList"
 						[matChipInputAddOnBlur]="true"
-						(matChipInputTokenEnd)="addSlaChip($event)" #slaInput>
+						(matChipInputTokenEnd)="tokenEnd($event)"
+						(paste)="paste($event)"
+						#slaInput>
 			</mat-chip-list>
 		</mat-form-field>
 

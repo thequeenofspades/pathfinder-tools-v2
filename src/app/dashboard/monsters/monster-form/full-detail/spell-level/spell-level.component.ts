@@ -28,14 +28,18 @@ export class SpellLevelComponent implements OnInit {
     this.spells.push(this.es.buildSpellFormGroup());
   }
 
-  addSpellChip(event: MatChipInputEvent) {
-  	if (event.value.trim().length) {
+  tokenEnd(event: MatChipInputEvent) {
+  	this.addSpellChip(event.value);
+    if (event.input) event.input.value = '';
+  }
+
+  addSpellChip(value: string): void {
+    if (value.trim().length) {
       let newSpell = this.es.buildSpellFormGroup();
-      newSpell.patchValue({name: event.value.trim()});
+      newSpell.patchValue({name: value.trim()});
       this.spells.push(newSpell);
-  	}
-    	if (event.input) event.input.value = '';
     }
+  }
 
   removeSpell(i: number) {
   	this.spells.removeAt(i);
@@ -47,6 +51,13 @@ export class SpellLevelComponent implements OnInit {
 
   focusSpellInput() {
     this.spellInputs.last.nativeElement.focus();
+  }
+
+  paste(event: ClipboardEvent) {
+    event.preventDefault();
+    event.clipboardData.getData('text').split(',').forEach(value => {
+      this.addSpellChip(value);
+    });
   }
 
 }
