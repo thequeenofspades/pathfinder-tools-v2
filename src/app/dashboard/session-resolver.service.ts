@@ -22,8 +22,8 @@ export class SessionResolverService implements Resolve<string> {
   			if (doc.data()) {
           this.localStorage.getItem<string[]>('sessionCodes').subscribe(codes => {
             let sessionCodes: string[] = codes as string[] || [];
-            sessionCodes[id] = Date.now();
-            this.localStorage.setItemSubscribe('sessionCodes', sessionCodes);
+			sessionCodes[id] = Date.now();
+			this.localStorage.setItem('sessionCodes', sessionCodes).subscribe();
           });
   				return id;
   			} else {

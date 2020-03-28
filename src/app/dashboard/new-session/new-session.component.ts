@@ -56,7 +56,7 @@ export class NewSessionComponent implements OnInit {
         this.savedCodes.forEach(c => {
           this.savedSessions[c] = sessionCodes[c];
         });
-        this.localStorage.setItemSubscribe('sessionCodes', this.savedSessions);
+        this.localStorage.setItem('sessionCodes', this.savedSessions).subscribe();
       });
     });
   }
