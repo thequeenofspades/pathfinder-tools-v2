@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable, from } from 'rxjs';
 import { take, map } from 'rxjs/operators';
-import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 
 import { Encounter } from './encounter';

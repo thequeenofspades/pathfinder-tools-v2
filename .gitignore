@@ -37,6 +37,7 @@ testem.log
 /typings
 firebase-debug.log
 /.firebase
+package-lock.json
 
 # System Files
 .DS_Store

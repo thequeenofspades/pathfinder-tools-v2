@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 
 import { BuffFormComponent } from '../buff-form/buff-form.component';
 import { InitiativeService } from '../../dashboard/initiative.service';

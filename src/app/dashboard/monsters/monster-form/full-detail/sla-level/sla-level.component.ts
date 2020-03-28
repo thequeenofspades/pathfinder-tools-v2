@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
-import {MatChipInputEvent} from '@angular/material';
+import { MatChipInputEvent } from '@angular/material/chips';
 import { EncounterService } from '../../../../encounter.service';
 
 @Component({
