@@ -22,8 +22,8 @@ export class EncounterService {
 
   encountersCollection: AngularFirestoreCollection<any>;
 
-  encounters = new Subject();
-  encounters$ = this.encounters.asObservable();
+  encounters: Subject<any[]> = new Subject();
+  encounters$: Observable<any[]> = this.encounters.asObservable();
 
   monsters$: Observable<{name: string, cr: number}[]>;
 
@@ -62,12 +62,14 @@ export class EncounterService {
     });
   }
 
-  addToEncounter(monster: MonsterI, encounter: {id: string, name: string}): void {
+  addToEncounter(monster: MonsterI, encounter: {id: string, name: string}, log: boolean = true): void {
     this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
       let monsters = doc.data().monsters || [];
       monsters.push({...monster, id: this.db.createId()});
       this.encountersCollection.doc(encounter.id).update({monsters: monsters}).then(_ => {
-        this.messageService.add(`Added ${monster.basics.name} to ${encounter.name}`);
+        if (log) {
+          this.messageService.add(`Added ${monster.basics.name} to ${encounter.name}`);
+        }
       });
     });
   }
@@ -84,12 +86,14 @@ export class EncounterService {
     });
   }
 
-  removeFromEncounter(monster: MonsterI, encounter: {id: string, name: string}): void {
+  removeFromEncounter(monster: MonsterI, encounter: {id: string, name: string}, log: boolean = true): void {
     this.encountersCollection.doc(encounter.id).ref.get().then(doc => {
       let monsters = doc.data().monsters || [];
       monsters = monsters.filter(m => m.id != monster.id);
       this.encountersCollection.doc(encounter.id).update({monsters: monsters}).then(_ => {
-        this.messageService.add(`Removed ${monster.basics.name} from ${encounter.name}`);
+        if (log) {
+          this.messageService.add(`Removed ${monster.basics.name} from ${encounter.name}`);
+        }
       });
     });
   }
@@ -103,6 +107,19 @@ export class EncounterService {
         this.messageService.add(`Updated ${updated.basics.name}`);
       });
     });
+  }
+
+  public duplicateMonster(monster: MonsterI): MonsterI {
+    let monsterCopy: MonsterI = JSON.parse(JSON.stringify(monster));
+    monsterCopy.basics.idx = monster.basics.quantity + 1;
+    this.messageService.add(`Created duplicate of ${monster.basics.name}`);
+    return monsterCopy;
+  }
+
+  public moveMonsterToEncounter(monster: MonsterI, oldEncounter: {id: string, name: string}, newEncounter: {id: string, name: string}): void {
+    this.addToEncounter(monster, newEncounter, false);
+    this.removeFromEncounter(monster, oldEncounter, false);
+    this.messageService.add(`Moved ${monster.basics.name} from ${oldEncounter.name} to ${newEncounter.name}`);
   }
 
   addEncounterToInitiative(encounter: {id: string}): void {

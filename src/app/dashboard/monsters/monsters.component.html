@@ -52,6 +52,8 @@
 							<app-monster-preview [stats]="monster"></app-monster-preview>
 							<mat-action-row>
 								<button mat-button (click)="edit[monster.id] = true">Edit</button>
+								<button mat-button (click)="duplicate(monster, encounter)">Duplicate</button>
+								<button mat-button (click)="moveToEncounter(monster, encounter)">Move</button>
 								<button mat-button color="primary" (click)="addToInitiative(monster)">Add to Initiative</button>
 								<button mat-button color="warn" (click)="encounterService.removeFromEncounter(monster, encounter)">Remove</button>
 							</mat-action-row>

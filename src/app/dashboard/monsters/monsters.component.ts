@@ -5,6 +5,8 @@ import { Monster, MonsterI } from '../monster';
 import { InitiativeService } from '../initiative.service';
 import { EncounterService } from '../encounter.service';
 import { Encounter } from '../encounter';
+import { MatDialog } from '@angular/material/dialog';
+import { MoveToEncounterFormComponent } from './move-to-encounter-form/move-to-encounter-form.component';
 
 @Component({
   selector: 'app-monsters',
@@ -15,7 +17,8 @@ export class MonstersComponent implements OnInit {
 
   constructor(public initiativeService: InitiativeService,
     public encounterService: EncounterService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    public dialog: MatDialog) { }
 
   badges = {};
   edit = {};
@@ -43,6 +46,29 @@ export class MonstersComponent implements OnInit {
 
   addToInitiative(monster: MonsterI): void {
     this.initiativeService.add(this.encounterService.prepareMonsterForInitiative(monster));
+  }
+
+  duplicate(monster: MonsterI, encounter: Encounter): void {
+    let monsterCopy: MonsterI = this.encounterService.duplicateMonster(monster);
+    this.encounterService.addToEncounter(monsterCopy, encounter);
+  }
+
+  moveToEncounter(monster: MonsterI, oldEncounter: Encounter): void {
+    let dialogRef = this.dialog.open(MoveToEncounterFormComponent, {
+      data: {
+        encounters: this.encounterService.encounters$
+      },
+      width: '250px'
+    });
+    dialogRef.afterOpened().subscribe(_ => {
+      this.encounterService.refresh();
+    });
+    dialogRef.afterClosed().subscribe((newEncounter: Encounter) => {
+      if (newEncounter == undefined) {
+        return;
+      }
+      this.encounterService.moveMonsterToEncounter(monster, oldEncounter, newEncounter);
+    });
   }
 
   rollPerceptionForEncounter(encounter: Encounter): void {
