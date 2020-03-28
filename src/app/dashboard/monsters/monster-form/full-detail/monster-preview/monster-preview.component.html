@@ -6,7 +6,7 @@
 		<div fxLayout="row" fxLayoutAlign="space-between">
 			<span class="creature-name" fxFlex="3 0 auto">{{basics.name | uppercase}}</span>
 			<span fxFlex="0 0 auto" *ngIf="extras.cr">
-				<b>CR</b> {{extras.cr}}
+				<b>CR</b> {{extras.cr | number:'1.0-2'}}
 			</span>
 			<span fxFlex="0 0 auto" *ngIf="extras.xp" style="margin-left: 10px">
 				<b>XP</b> {{extras.xp}}
