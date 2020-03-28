@@ -26,7 +26,7 @@ export class PlayerViewComponent implements OnInit {
   constructor(public initiativeService: InitiativeService,
     private route: ActivatedRoute) { }
 
-  @ViewChild(BuffViewComponent) public buffViewComponent: BuffViewComponent;
+  @ViewChild(BuffViewComponent, {static: false}) public buffViewComponent: BuffViewComponent;
 
   ngOnInit() {
     this.route.data.subscribe((data: {id: string}) => {

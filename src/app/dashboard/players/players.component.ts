@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 
 import { Player } from '../player';

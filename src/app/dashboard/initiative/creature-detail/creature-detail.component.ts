@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material';
 
 import { Player } from '../../player';

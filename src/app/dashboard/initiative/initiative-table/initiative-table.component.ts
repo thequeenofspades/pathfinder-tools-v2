@@ -41,7 +41,7 @@ export class InitiativeTableComponent implements OnInit {
     }
   };
 
-  @ViewChild(CreatureDetailComponent) public detailComponent: CreatureDetailComponent;
+  @ViewChild(CreatureDetailComponent, {static: false}) public detailComponent: CreatureDetailComponent;
 
   code: string;
 

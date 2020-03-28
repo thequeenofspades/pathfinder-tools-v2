@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, AsyncValidatorFn, AbstractControl } from '@angular/forms';
 import { LocalStorage } from '@ngx-pwa/local-storage';
 import * as moment from 'moment';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { DashboardService } from '../dashboard.service';
