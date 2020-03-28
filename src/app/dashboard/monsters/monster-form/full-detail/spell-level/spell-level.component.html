@@ -30,7 +30,7 @@
 				<input placeholder="Spells..."
 						[matChipInputFor]="chipList"
 						[matChipInputAddOnBlur]="true"
-						(matChipInputTokenEnd)="addSpellChip($event)">
+						(matChipInputTokenEnd)="addSpellChip($event)" #spellInput>
 			</mat-chip-list>
 		</mat-form-field>
 

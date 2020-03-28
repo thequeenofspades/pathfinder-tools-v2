@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { EncounterService } from '../../../../encounter.service';
 
@@ -17,6 +17,8 @@ export class SpellLevelComponent implements OnInit {
 
   @Input() form: FormGroup;
   @Output() remove = new EventEmitter();
+
+  @ViewChildren("spellInput") spellInputs: QueryList<ElementRef>;
 
   get spells(): FormArray {
   	return this.form.get('spells') as FormArray;
@@ -41,6 +43,10 @@ export class SpellLevelComponent implements OnInit {
 
   removeSpellLevel() {
   	this.remove.emit();
+  }
+
+  focusSpellInput() {
+    this.spellInputs.last.nativeElement.focus();
   }
 
 }

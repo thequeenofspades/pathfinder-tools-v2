@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { EncounterService } from '../../../../encounter.service';
 
@@ -17,6 +17,8 @@ export class SlaLevelComponent implements OnInit {
 
   @Input() form: FormGroup;
   @Output() remove = new EventEmitter();
+
+  @ViewChildren("slaInput") slaInputs: QueryList<ElementRef>;
 
   public slaTypes = ['Limited', 'At will', 'Constant'];
 
@@ -43,6 +45,10 @@ export class SlaLevelComponent implements OnInit {
 
   removeSlaLevel() {
   	this.remove.emit();
+  }
+
+  focusSlaInput() {
+    this.slaInputs.last.nativeElement.focus();
   }
 
 }

@@ -1,7 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { EncounterService } from '../../../encounter.service';
 import { AngularFireStorage, AngularFireStorageReference } from '@angular/fire/storage';
+import { SlaLevelComponent } from './sla-level/sla-level.component';
+import { SpellLevelComponent } from './spell-level/spell-level.component';
 
 @Component({
   selector: 'app-monster-form-full-detail',
@@ -19,6 +21,16 @@ export class FullDetailComponent implements OnInit {
   @Input() public showQuantity: boolean;
   @Output() public cancel = new EventEmitter();
   @Output() public submit = new EventEmitter();
+
+  @ViewChildren("classInput") classInputs: QueryList<ElementRef>;
+  @ViewChildren("attackInput") attackInputs: QueryList<ElementRef>;
+  @ViewChildren(SlaLevelComponent) slaLevelComponents: QueryList<SlaLevelComponent>;
+  @ViewChildren(SpellLevelComponent) spellLevelComponents: QueryList<SpellLevelComponent>;
+  @ViewChildren("tacticInput") tacticInputs: QueryList<ElementRef>;
+  @ViewChildren("specialInput") specialInputs: QueryList<ElementRef>;
+
+  @ViewChild("slaCL") slaCLInput: ElementRef;
+  @ViewChild("spellCL") spellCLInput: ElementRef;
 
   public attackTypes = ['melee', 'ranged', 'special'];
   public specialTypes = ['Ex', 'Su', 'Sp'];
@@ -61,7 +73,10 @@ export class FullDetailComponent implements OnInit {
   }
 
   addClass() {
-  	this.classes.push(this.es.buildClassFormGroup());
+    this.classes.push(this.es.buildClassFormGroup());
+    setTimeout(_ => {
+      this.classInputs.last.nativeElement.focus();
+    });
   }
 
   removeClass(i: number) {
@@ -69,7 +84,10 @@ export class FullDetailComponent implements OnInit {
   }
 
   addAttack() {
-  	this.attacks.push(this.es.buildAttackFormGroup());
+    this.attacks.push(this.es.buildAttackFormGroup());
+    setTimeout(_ => {
+      this.attackInputs.last.nativeElement.focus();
+    });
   }
 
   removeAttack(i: number) {
@@ -78,6 +96,13 @@ export class FullDetailComponent implements OnInit {
 
   addSLALevel() {
     this.slaLevels.push(this.es.buildSlaLevelFormGroup());
+    setTimeout(_ => {
+      if (this.slaLevels.length == 1) {
+        this.slaCLInput.nativeElement.focus();
+      } else {
+        this.slaLevelComponents.last.focusSlaInput();
+      }
+    });
   }
 
   removeSLALevel(i: number) {
@@ -86,6 +111,13 @@ export class FullDetailComponent implements OnInit {
 
   addSpellLevel() {
     this.spellLevels.push(this.es.buildSpellLevelFormGroup(this.form.get('spells') as FormGroup));
+    setTimeout(_ => {
+      if (this.spellLevels.length == 1) {
+        this.spellCLInput.nativeElement.focus();
+      } else {
+        this.spellLevelComponents.last.focusSpellInput();
+      }
+    });
   }
 
   removeSpellLevel(i: number) {
@@ -93,7 +125,10 @@ export class FullDetailComponent implements OnInit {
   }
 
   addSpecial() {
-  	this.specials.push(this.es.buildSpecialFormGroup());
+    this.specials.push(this.es.buildSpecialFormGroup());
+    setTimeout(_ => {
+      this.specialInputs.last.nativeElement.focus();
+    });
   }
 
   removeSpecial(i: number) {
@@ -102,6 +137,9 @@ export class FullDetailComponent implements OnInit {
 
   addTactic() {
     this.tactics.push(this.es.buildTacticFormGroup());
+    setTimeout(_ => {
+      this.tacticInputs.last.nativeElement.focus();
+    });
   }
 
   removeTactic(i: number) {
