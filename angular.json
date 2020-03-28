@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -30,6 +31,12 @@
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -119,5 +126,8 @@
       }
     }
   },
-  "defaultProject": "pf-tools"
+  "defaultProject": "pf-tools",
+  "cli": {
+    "analytics": "f341ba59-c7f3-4ce1-a9d8-6b8ca2a7cf00"
+  }
 }
