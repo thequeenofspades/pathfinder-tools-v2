@@ -1,9 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
 import { Encounter } from '../../encounter';
-import { EncounterService } from '../../encounter.service';
 
 @Component({
   selector: 'app-move-to-encounter-form',
@@ -19,6 +17,12 @@ export class MoveToEncounterFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.encounter = new FormControl('', Validators.required);
+  }
+
+  sortedEncounters(encounters: Encounter[]): Encounter[] {
+    return encounters.sort((a, b) => {
+      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    });
   }
 
   trySubmit(): void {

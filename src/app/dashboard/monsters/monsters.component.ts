@@ -77,6 +77,18 @@ export class MonstersComponent implements OnInit {
     }
   }
 
+  sortedEncounters(encounters: Encounter[]): Encounter[] {
+    return encounters.sort((a, b) => {
+      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    });
+  }
+
+  sortedMonsters(monsters: MonsterI[]): MonsterI[] {
+    return monsters.sort((a, b) => {
+      return a.basics.name < b.basics.name ? -1 : a.basics.name > b.basics.name ? 1 : 0;
+    });
+  }
+
 }
 
 // Returns a random integer between min (included) and max (included)

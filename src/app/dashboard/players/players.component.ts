@@ -60,6 +60,12 @@ export class PlayersComponent implements OnInit {
   	}
   }
 
+  sortedPlayers(players: Player[]): Player[] {
+    return players.sort((a, b) => {
+      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    });
+  }
+
 }
 
 // Returns a random integer between min (included) and max (included)

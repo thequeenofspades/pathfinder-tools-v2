@@ -19,8 +19,8 @@
 		<button mat-button (click)="rollSenseMotiveForAll(players)" color="accent">Roll Sense Motive</button>
 	</div>
 </ng-container>
-<div class="container" fxLayout="row wrap" fxLayoutAlign="center start" fxLayout.xs="column">
-	<mat-card *ngFor="let player of playerService.players$ | async" class="player-card" fxFlex="1 0 250px">
+<div class="container" fxLayout="row wrap" fxLayoutAlign="center start" fxLayout.xs="column" *ngIf="playerService.players$ | async as players">
+	<mat-card *ngFor="let player of sortedPlayers(players)" class="player-card" fxFlex="1 0 250px">
 		<mat-card-title>
 			{{player.name}}
 			<button mat-icon-button matTooltip="Edit" (click)="player.edit=true"><mat-icon svgIcon="pencil"></mat-icon></button>
