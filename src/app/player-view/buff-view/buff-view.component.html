@@ -4,17 +4,20 @@
 			[ngClass]="{'buff-focused': buff.id == focusedBuffId}"
 			(mouseover)="mouseoverBuff(buff)" 
 			(mouseout)="mouseoutBuff()">
-		<button mat-icon-button (click)="rerollColor(buff)">
-			<mat-icon 	[ngStyle]="{'color': buff.color}"
-						matTooltip="Change color">
-				brightness_1
-			</mat-icon>
-		</button>
-		<span>{{buff.name}} for {{buff.duration}} rounds</span>
-		<button mat-icon-button [matMenuTriggerFor]="menu">
-			<mat-icon>more_vert</mat-icon>
-		</button>
-
+		<div fxLayout="row" fxLayoutAlign="space-between center">
+			<div>
+				<button mat-icon-button (click)="rerollColor(buff)">
+					<mat-icon 	[ngStyle]="{'color': buff.color}"
+								matTooltip="Change color">
+						brightness_1
+					</mat-icon>
+				</button>
+				<span>{{buff.name}} for {{buff.duration}} rounds</span>
+			</div>
+			<button mat-icon-button [matMenuTriggerFor]="menu">
+				<mat-icon>more_vert</mat-icon>
+			</button>
+		</div>
 		<mat-menu #menu="matMenu">
 			<button mat-menu-item (click)="openBuffFormDialog(buff)">
 				<mat-icon>edit</mat-icon>
@@ -26,7 +29,7 @@
 			</button>
 		</mat-menu>
 
-		<div *ngIf="buff.effect.length" class="buff-effect">{{buff.effect}}</div>
+		<div *ngIf="buff.effect.length && buff.id == focusedBuffId" class="buff-effect">{{buff.effect}}</div>
 	</div>
 
 	<button mat-button (click)="openBuffFormDialog()"><mat-icon svgIcon="plus"></mat-icon> Effect</button>

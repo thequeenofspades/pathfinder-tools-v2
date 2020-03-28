@@ -9,8 +9,8 @@ mat-icon {
 	box-sizing: border-box;
 }
 
-.drawer {
-	max-width: 40%;
+.buff-view {
+	width: 20vw;
 }
 
 .initiativeTable {
@@ -60,6 +60,11 @@ mat-icon {
 	height: 20px;
 	width: 20px;
 	padding: 1px;
+}
+
+.decrease-icon-focused {
+	background: rgba(white, 0.25);
+	border-radius: 20px;
 }
 
 .creature-name {

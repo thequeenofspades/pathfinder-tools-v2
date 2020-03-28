@@ -12,7 +12,14 @@
 						<td class="mat-cell initiativeCell left-aligned-cell">
 							{{creature.initiative}}
 							<ng-container *ngFor="let buff of getBuffDecrements(init.order, i, init.buffs); trackBy: buffTrackByFn">
-								<mat-icon [ngStyle]="{'color': buff.color}" class="decrease-icon" matTooltip="{{buff.name}}">trending_down</mat-icon>
+								<mat-icon	[ngStyle]="{'color': buff.color}"
+											class="decrease-icon"
+											[ngClass]="{'decrease-icon-focused': buffViewComponent.focusedBuffId == buff.id}"
+											matTooltip="{{buff.name}}"
+											(mouseover)="mouseoverBuff(buff)"
+											(mouseout)="mouseoutBuff()">
+									trending_down
+								</mat-icon>
 							</ng-container>
 						</td>
 
@@ -76,14 +83,16 @@
 				</tr>
 			</table>
 
-			<app-buff-view
-				#buffViewComponent
-				class="drawer" fxFlex="0 1 auto"
-				[initiativeService]="initiativeService"
-				[buffs]="init.buffs"
-				[order]="init.order"
-				[active]="init.active"
-				[showNames]="init.playerOptions.nameOption"></app-buff-view>
+			<div class="buff-view">
+				<app-buff-view
+					#buffViewComponent
+					fxFlex="1 1 auto"
+					[initiativeService]="initiativeService"
+					[buffs]="init.buffs"
+					[order]="init.order"
+					[active]="init.active"
+					[showNames]="init.playerOptions.nameOption"></app-buff-view>
+			</div>
 
 		</div>
 	</ng-container>
