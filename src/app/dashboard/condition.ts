@@ -1,9 +1,15 @@
+import { Creature } from "./monster";
+
 export interface Condition {
 	id: string,
 	name: string,
-	duration: number,
-	permanent: boolean,
-	description: string
+	color?: string,
+	duration?: number,
+	permanent?: boolean,
+	initiative?: number,
+	description?: string,
+	affected?: Creature[],
+	playerVisible?: number	// 0: invisible to players, 1: name is visible to players, 2: name and duration are visible to players
 }
 
 export const CONDITIONS = [

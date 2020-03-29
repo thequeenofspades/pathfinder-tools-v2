@@ -13,12 +13,35 @@
           </mat-option>
         </mat-autocomplete>
 
+        <mat-checkbox formControlName="permanent" (keyup.enter)="trySubmit()">Permanent</mat-checkbox>
+
         <mat-form-field appearance="outline">
           <mat-label>Duration</mat-label>
           <input type="number" matInput formControlName="duration" required (keyup.enter)="trySubmit()">
         </mat-form-field>
 
-        <mat-checkbox formControlName="permanent" (keyup.enter)="trySubmit()">Permanent</mat-checkbox>
+        <mat-form-field appearance="outline">
+          <mat-label>Initiative Count</mat-label>
+          <input type="number" matInput formControlName="initiative" required (keyup.enter)="trySubmit()">
+          <mat-hint align="start">When duration ticks down</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Affected Creatures</mat-label>
+          <mat-select placeholder="Choose creatures..." [compareWith]="compareFn" formControlName="affected" multiple (keyup.enter)="trySubmit()" required>
+            <mat-optgroup [label]="'Monsters'">
+          		<mat-option *ngFor="let creature of monsterGroup" [value]="creature">
+          			{{creature.name}}
+          			<ng-container *ngIf="creature.basics?.quantity > 1"> ({{ creature.basics.idx }} of {{ creature.basics.quantity }})</ng-container>
+          		</mat-option>
+          	</mat-optgroup>
+          	<mat-optgroup [label]="'Players'">
+          		<mat-option *ngFor="let creature of playerGroup" [value]="creature">
+          			{{creature.name}}
+          		</mat-option>
+          	</mat-optgroup>
+          </mat-select>
+        </mat-form-field>
       </div>
 
       <mat-form-field appearance="outline">

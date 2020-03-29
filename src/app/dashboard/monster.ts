@@ -1,16 +1,12 @@
-import { Condition } from './condition';
-
 export interface Creature {
 	name: string,
 	initiativeBonus: number,
 	perceptionBonus: number,
 	id: string,
-	conditions: Condition[],
-	attributes: string[],
-	notes: string[],
     initiative?: number,
     hp?: number,
-    imageUrl?: string
+    imageUrl?: string,
+    delayed?: boolean
 }
 
 export interface Monster {
@@ -23,9 +19,6 @@ export interface Monster {
 	quantity: number,
 	idx: number,
 	id: string,
-	conditions: Condition[],
-	attributes: string[],
-	notes: string[]
 }
 
 export interface MonsterI {

@@ -1,13 +1,16 @@
 @import '../../../pf-app-theme.scss';
 
-.buffs-container {
+.buffs-view {
 	padding: 5px;
 }
 
-.buff-effect {
+.buffs-container {
+	padding: 6px;
+}
+
+.buff-description {
 	font-size: small;
 	margin-left: 40px;
-	padding-bottom: 12px;
 	padding-right: 12px;
 	max-width: 30vw;
 }
@@ -15,4 +18,16 @@
 .buff-focused {
 	background: mat-color($pf-app-primary);
 	border-radius: 12px;
+}
+
+.buff-duration {
+	border-radius: 50%;
+	color: black;
+	cursor: pointer;
+	font-size: 14px;
+	height: 24px;
+	line-height: 24px;
+	margin-right: 6px;
+	text-align: center;
+	width: 24px;
 }

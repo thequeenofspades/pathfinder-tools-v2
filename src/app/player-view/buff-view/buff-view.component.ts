@@ -4,16 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BuffFormComponent } from '../buff-form/buff-form.component';
 import { InitiativeService } from '../../dashboard/initiative.service';
 import { Creature } from '../../dashboard/monster';
-
-interface Buff {
-	id: string,
-	color: string,
-	name: string,
-	duration: number,
-	initiative: number,
-	affected: Creature[],
-	effect: string
-};
+import { Condition } from '../../dashboard/condition';
 
 @Component({
   selector: 'app-buff-view',
@@ -28,20 +19,21 @@ export class BuffViewComponent implements OnInit {
   }
 
   @Input() initiativeService: InitiativeService;
-  @Input() buffs: Buff[];
+  @Input() buffs: Condition[];
   @Input() order: Creature[];
   @Input() active: number;
   @Input() showNames: string;
 
   public focusedBuffId : string;
 
-  openBuffFormDialog(buff?: Buff): void {
+  openBuffFormDialog(buff?: Condition): void {
     let dialogRef = this.dialog.open(BuffFormComponent, {
       width: '500px',
       data: {buff: buff, order: this.order, active: this.active, showNames: this.showNames}
     });
     dialogRef.afterClosed().subscribe(newBuff => {
       if (newBuff !== undefined && buff == undefined) {
+        newBuff.playerVisible = 2;
         this.initiativeService.addBuff(newBuff);
       } else if (newBuff != undefined) {
       	console.log('updating buff');
@@ -54,11 +46,11 @@ export class BuffViewComponent implements OnInit {
     this.initiativeService.clearBuffs();
   }
 
-  removeBuff(buff: Buff): void {
+  removeBuff(buff: Condition): void {
   	this.initiativeService.removeBuff(buff);
   }
 
-  rerollColor(buff: Buff): void {
+  rerollColor(buff: Condition): void {
   	this.initiativeService.changeBuffColor(buff);
   }
 
@@ -66,13 +58,15 @@ export class BuffViewComponent implements OnInit {
     return buff.color;
   }
 
-  sortedBuffs(buffs: Buff[]): Buff[] {
+  sortedBuffs(buffs: Condition[]): Condition[] {
     return buffs.sort((a, b) => {
-      return a.duration - b.duration;
+      return a.permanent ? 1 : b.permanent ? -1 : a.duration - b.duration;
+    }).filter(buff => {
+      return buff.playerVisible == undefined || buff.playerVisible > 0;
     });
   }
 
-  mouseoverBuff(buff: Buff) {
+  mouseoverBuff(buff: Condition) {
     this.focusedBuffId = buff.id;
   }
 

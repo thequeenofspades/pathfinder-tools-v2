@@ -64,21 +64,6 @@
 							</ng-container>
 						</td>
 
-						<td class="mat-cell initiativeCell">
-							<ng-container *ngIf="init.playerOptions?.conditionOption != 'None'">
-								<mat-chip-list>
-									<mat-chip *ngIf="delayed(creature)">
-										delayed
-									</mat-chip>
-									<mat-chip *ngFor="let condition of creature.conditions">
-										<ng-container *ngIf="init.playerOptions?.conditionOption == 'Condition and duration' && !condition.permanent">
-											<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
-										</ng-container>
-										{{condition.name}}
-									</mat-chip>
-								</mat-chip-list>
-							</ng-container>
-						</td>
 					</ng-container>
 				</tr>
 			</table>

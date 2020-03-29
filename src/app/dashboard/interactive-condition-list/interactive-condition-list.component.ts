@@ -3,6 +3,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Creature } from '../monster';
 import { Condition } from '../condition';
 import { InitiativeService } from '../initiative.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-interactive-condition-list',
@@ -11,21 +13,31 @@ import { InitiativeService } from '../initiative.service';
 })
 export class InteractiveConditionListComponent implements OnInit {
 
-  constructor(private is: InitiativeService) { }
+  constructor(public is: InitiativeService) { }
 
   ngOnInit() {
   }
 
+  @Input() buffs: Condition[];
   @Input() creature: Creature;
-  @Input() conditions: Condition[];
   @Output() clickEvent = new EventEmitter<Condition>();
 
   click(condition: Condition) {
   	this.clickEvent.emit(condition);
   }
 
-  removeCondition(creature: Creature, condition: Condition) {
-  	this.is.removeCondition(creature, condition);
+  removeCondition(condition: Condition) {
+    this.is.removeBuffFromCreature(condition, this.creature);
+  }
+
+  getBuffs(creature: Creature): Condition[] {
+    return (this.buffs || []).filter(buff => {
+      return (buff.affected || []).find(cr => cr.id == creature.id);
+    });
+  }
+
+  buffTrackByFn(index, buff) {
+    return buff.color;
   }
 
 }

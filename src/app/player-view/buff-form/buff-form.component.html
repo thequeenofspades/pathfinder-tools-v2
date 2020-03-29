@@ -11,6 +11,8 @@
           <input type="text" matInput formControlName="name" required (keyup.enter)="trySubmit()">
         </mat-form-field>
 
+        <mat-checkbox formControlName="permanent" (keyup.enter)="trySubmit()">Permanent</mat-checkbox>
+
         <mat-form-field appearance="outline">
           <mat-label>Duration (rounds)</mat-label>
           <input type="number" matInput formControlName="duration" required (keyup.enter)="trySubmit()">
@@ -24,7 +26,7 @@
 
         <mat-form-field appearance="outline">
           <mat-label>Affected Creatures</mat-label>
-          <mat-select placeholder="Choose creatures..." [compareWith]="compareFn" formControlName="affected" multiple (keyup.enter)="trySubmit()">
+          <mat-select placeholder="Choose creatures..." [compareWith]="compareFn" formControlName="affected" multiple (keyup.enter)="trySubmit()" required>
           	<mat-optgroup [label]="'Players'">
           		<mat-option *ngFor="let creature of playerGroup" [value]="creature">
           			{{creature.name}}
@@ -43,8 +45,8 @@
       </div>
 
       <mat-form-field appearance="outline">
-        <mat-label>Effect</mat-label>
-        <textarea matInput matTextareaAutosize [matAutosizeMaxRows]="9" formControlName="effect"></textarea>
+        <mat-label>Description</mat-label>
+        <textarea matInput matTextareaAutosize [matAutosizeMaxRows]="9" formControlName="description"></textarea>
       </mat-form-field>
     </div>
   </form>

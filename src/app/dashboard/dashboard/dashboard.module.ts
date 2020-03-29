@@ -14,7 +14,6 @@ import { EncounterFormComponent } from '../encounter-form/encounter-form.compone
 import { InitiativeComponent } from '../initiative/initiative.component';
 import { DamageFormComponent } from '../initiative/damage-form.component';
 import { ConditionFormComponent } from '../initiative/condition-form.component';
-import { NoteFormComponent } from '../initiative/note-form.component';
 import { PlayerViewOptionsComponent } from '../initiative/player-view-options/player-view-options.component';
 import { ConditionDetailComponent } from '../initiative/condition-detail/condition-detail.component';
 import { CreatureDetailComponent } from '../initiative/creature-detail/creature-detail.component';
@@ -70,7 +69,6 @@ import { PlusPipe } from '../../plus.pipe';
     DamageFormComponent,
     ConditionFormComponent,
     InitiativeFormComponent,
-    NoteFormComponent,
     EncounterFormComponent,
     DiceRollerComponent,
     PlayerViewOptionsComponent,
@@ -93,7 +91,6 @@ import { PlusPipe } from '../../plus.pipe';
   ],
   entryComponents: [
     InitiativeFormComponent,
-    NoteFormComponent,
     ConditionFormComponent,
     DamageFormComponent,
     ConditionDetailComponent,

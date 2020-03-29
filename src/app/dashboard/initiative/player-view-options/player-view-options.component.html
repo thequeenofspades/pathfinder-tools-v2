@@ -25,15 +25,6 @@
 				</mat-select>
 			</mat-form-field>
 
-			<mat-form-field appearance="outline">
-				<mat-label>Conditions</mat-label>
-				<mat-select formControlName="conditionOption">
-					<mat-option *ngFor="let opt of conditionOptions" [value]="opt">
-						{{opt}}
-					</mat-option>
-				</mat-select>
-			</mat-form-field>
-
 			<mat-form-field appearance="standard">
 				<mat-select formControlName="visibleOption">
 					<mat-option *ngFor="let opt of visibleOptions" [value]="opt">

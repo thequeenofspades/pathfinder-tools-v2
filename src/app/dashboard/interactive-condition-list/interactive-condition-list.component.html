@@ -1,11 +1,10 @@
 <mat-chip-list>
-	<mat-chip 	*ngFor="let condition of creature.conditions"
-				[removable]="true"
-				(click)="click(condition)">
-		<ng-container *ngIf="!condition.permanent">
-			<span matChipAvatar class="condition-chip-avatar">{{condition.duration}}</span>
+	<mat-chip	*ngFor="let buff of getBuffs(creature); trackBy: buffTrackByFn"
+				(click)="click(buff)">
+		<ng-container *ngIf="!buff.permanent">
+			<span matChipAvatar class="buff-chip-avatar" [ngStyle]="{'background-color': buff.color}">{{buff.duration}}</span>
 		</ng-container>
-		{{condition.name}}
-		<mat-icon matChipRemove appStopClick (click)="removeCondition(creature, condition)">cancel</mat-icon>
+		{{buff.name}}
+		<mat-icon matChipRemove appStopClick (click)="removeCondition(buff)">cancel</mat-icon>
 	</mat-chip>
 </mat-chip-list>

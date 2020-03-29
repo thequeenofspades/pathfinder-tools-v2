@@ -6,7 +6,6 @@ import { InitiativeService } from '../../initiative.service';
 import { Creature } from '../../monster';
 import { Condition } from '../../condition';
 
-import { NoteFormComponent } from '../note-form.component';
 import { ConditionFormComponent } from '../condition-form.component';
 import { DamageFormComponent } from '../damage-form.component';
 import { ConditionDetailComponent } from '../condition-detail/condition-detail.component';
@@ -101,25 +100,17 @@ export class InitiativeTableComponent implements OnInit {
   openConditionFormDialog(creature: Creature): void {
     this.listenArrowKeys = false;
     let dialogRef = this.dialog.open(ConditionFormComponent, {
+      data: {
+        creature: creature,
+        currentInitiative: this.init.order[this.init.active].initiative,
+        order: this.init.order
+      },
       width: '500px'
     });
     dialogRef.afterClosed().subscribe(condition => {
       this.listenArrowKeys = true;
       if (condition !== undefined) {
-        this.initiativeService.applyCondition(creature, condition);
-      }
-    });
-  }
-
-  openNoteFormDialog(creature: Creature): void {
-    this.listenArrowKeys = false;
-    let dialogRef = this.dialog.open(NoteFormComponent, {
-      width: '250px'
-    });
-    dialogRef.afterClosed().subscribe(note => {
-      this.listenArrowKeys = true;
-      if (note !== undefined) {
-        this.initiativeService.addNote(creature, note);
+        this.initiativeService.addBuff(condition);
       }
     });
   }
@@ -137,14 +128,6 @@ export class InitiativeTableComponent implements OnInit {
     creatures.forEach(creature => {
       this.badges[creature.id] = this.getRandomInt(1, 20) + creature.perceptionBonus;
     });
-  }
-
-  adjusted(creature: Creature): boolean {
-  	return creature.attributes.some(a => a == "moved");
-  }
-
-  delayed(creature: Creature): boolean {
-  	return creature.attributes.some(a => a == "delayed");
   }
 
   getRandomInt(min: number, max: number): number {

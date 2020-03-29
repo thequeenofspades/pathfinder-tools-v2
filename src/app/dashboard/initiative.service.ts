@@ -18,7 +18,6 @@ class Initiative {
 const defaultPlayerOptions = {
   nameOption: 'Show names and numbers',
   healthOption: 'Detailed',
-  conditionOption: 'Condition only',
   visibleOption: 'invisible'
 }
 
@@ -180,7 +179,6 @@ export class InitiativeService {
       let buffs = doc.data().buffs || [];
       let round = doc.data().round || 1;
       let prev = (order[active] as any).initiative;
-      this.updateConditions(order[active]);
       active += 1;
       if (active >= order.length) {
         active = 0;
@@ -188,7 +186,7 @@ export class InitiativeService {
       }
       let curr = (order[active] as any).initiative;
       buffs = this.updateBuffs(prev, curr, buffs);
-      order[active].attributes = order[active].attributes.filter(a => a != 'delayed');
+      order[active].delayed = false;
       this.initDoc.update({active: active, order: order, round: round, buffs: buffs}).then(_ => {
         this.active.next(order[active]);
       });
@@ -212,20 +210,11 @@ export class InitiativeService {
     });
   }
 
-  updateConditions(creature: Creature): void {
-    for (let condition of creature.conditions) {
-      if (!condition.permanent) {
-        condition.duration--;
-        if (condition.duration == 0) {
-          this.messageService.add(`${creature.name} is no longer ${condition.name}`);
-        }
-      }
-    }
-    creature.conditions = creature.conditions.filter(c => c.duration > 0 || c.permanent);
-  }
-
-  updateBuffs(prev: number, curr: number, buffs: {duration: number, initiative: number}[]): {}[] {
+  updateBuffs(prev: number, curr: number, buffs: Condition[]): {}[] {
     return buffs.map(buff => {
+      if (buff.permanent) {
+        return buff;
+      }
       let duration = buff.duration;
       if (prev < curr && curr < buff.initiative) {  // we're at the top of a new round
         duration -= 1;
@@ -238,7 +227,7 @@ export class InitiativeService {
       };
       return buffCopy;
     }).filter(buff => {
-      return buff.duration > 0;
+      return buff.permanent || buff.duration > 0;
     });
   }
 
@@ -278,7 +267,7 @@ export class InitiativeService {
     this.initDoc.ref.get().then(doc => {
       let order = doc.data().order || [];
       let crIdx = order.findIndex(c => c.id == creature.id);
-      order[crIdx].attributes.push('delayed');
+      order[crIdx].delayed = true;
       let active = doc.data().active || 0;
       let round = doc.data().round || 1;
       if (crIdx == active) {
@@ -300,7 +289,7 @@ export class InitiativeService {
       let active = doc.data().active || 0;
       let crIdx = order.findIndex(c => c.id == creature.id);
       if (crIdx < active) active -= 1;
-      creature.attributes = creature.attributes.filter(a => a != 'delayed');
+      creature.delayed = false;
       order.splice(crIdx, 1);
       let newIdx = active + 1;
       if (newIdx > order.length) newIdx = order.length;
@@ -352,43 +341,7 @@ export class InitiativeService {
     });
   }
 
-  applyCondition(creature: Creature, condition: Condition): void {
-    this.initDoc.ref.get().then(doc => {
-      let order = doc.data().order || [];
-      let cr = order.find(c => c.id == creature.id);
-      this.addConditionSync(cr, condition);
-      this.initDoc.update({order: order});
-    });
-  }
-
-  removeCondition(creature: Creature, condition: Condition): void {
-    this.initDoc.ref.get().then(doc => {
-      let order = doc.data().order || [];
-      let cr = order.find(c => c.id == creature.id);
-      cr.conditions = cr.conditions.filter(c => c.id != condition.id);
-      this.initDoc.update({order: order});
-    });
-  }
-
-  addNote(creature: Creature, note: string): void {
-    this.initDoc.ref.get().then(doc => {
-      let order = doc.data().order || [];
-      let cr = order.find(c => c.id == creature.id);
-      cr.notes.push(note);
-      this.initDoc.update({order: order});
-    });
-  }
-
-  removeNote(creature: Creature, note: string): void {
-    this.initDoc.ref.get().then(doc => {
-      let order = doc.data().order || [];
-      let cr = order.find(c => c.id == creature.id);
-      cr.notes = cr.notes.filter(n => n != note);
-      this.initDoc.update({order: order});
-    });
-  }
-
-  addBuff(buff: {}): void {
+  addBuff(buff: Condition): void {
     this.initDoc.ref.get().then(doc => {
       let buffs = doc.data().buffs || [];
       let buffCopy = {
@@ -401,7 +354,9 @@ export class InitiativeService {
     });
   }
 
-  updateBuff(buff: {id: string}): void {
+  // Do not use this for updating multiple buffs due to synchronicity issues.
+  // Use "updateMultipleBuffs()" instead.
+  updateBuff(buff: Condition): void {
     this.initDoc.ref.get().then(doc => {
       let buffs = doc.data().buffs || [];
       let buffIdx = buffs.findIndex(b => b.id == buff.id);
@@ -410,7 +365,12 @@ export class InitiativeService {
     });
   }
 
-  removeBuff(buff: {id: string}): void {
+  // Replace all active buffs with a new list.
+  updateMultipleBuffs(buffs: Condition[]): void {
+    this.initDoc.update({buffs: buffs});
+  }
+
+  removeBuff(buff: Condition): void {
     this.initDoc.ref.get().then(doc => {
       let buffs = doc.data().buffs || [];
       buffs = buffs.filter(b => b.id != buff.id);
@@ -418,11 +378,22 @@ export class InitiativeService {
     });
   }
 
+  removeBuffFromCreature(buff: Condition, creature: Creature): void {
+    buff.affected = buff.affected.filter(affected => {
+      return affected.id != creature.id;
+    });
+    if (buff.affected.length == 0) {
+      this.removeBuff(buff);
+    } else {
+      this.updateBuff(buff);
+    }
+  }
+
   clearBuffs(): void {
     this.initDoc.update({buffs: []});
   }
 
-  changeBuffColor(buff: {id: string}): void {
+  changeBuffColor(buff: Condition): void {
     this.initDoc.ref.get().then(doc => {
       let buffs = doc.data().buffs || [];
       let buffIndex = buffs.findIndex(b => b.id == buff.id);
@@ -431,64 +402,108 @@ export class InitiativeService {
     });
   }
 
-  checkHpStatus(monster: Monster, amount: number): void {
-    this.removeConditionsByName(monster, ['dead', 'dying', 'disabled', 'bloodied']);
-    if (monster.currentHp - amount <= -1 * monster.conScore) {
-      this.messageService.add(`${monster.name} died!`);
-      monster.attributes.push('dead');
-      let deadCondition = {
-        name: 'dead',
-        duration: 0,
-        permanent: true,
-        description: CONDITIONS.find(c => c.name == 'dead').description
-      };
-      this.addConditionSync(monster, deadCondition, false);
-    } else if (monster.currentHp - amount < 0 && monster.currentHp - amount > -1 * monster.conScore) {
-      this.messageService.add(`${monster.name} is dying!`);
-      monster.attributes.push('dying');
-      let dyingCondition = {
-        name: 'dying',
-        duration: 0,
-        permanent: true,
-        description: CONDITIONS.find(c => c.name == 'dying').description
-      };
-      this.addConditionSync(monster, dyingCondition, false);
-    } else if (monster.currentHp - amount == 0) {
-      this.messageService.add(`${monster.name} is at 0 hp and disabled`);
-      monster.attributes.push('disabled');
-      let disabledCondition = {
-        name: 'disabled',
-        duration: 0,
-        permanent: true,
-        description: CONDITIONS.find(c => c.name == 'disabled').description
-      };
-      this.addConditionSync(monster, disabledCondition, false);
-    } else if (monster.currentHp - amount <= monster.hp / 2 && !(monster.currentHp > monster.hp / 2)) {
-      this.messageService.add(`${monster.name} became bloodied`);
-      monster.attributes.push('bloodied');
+  // Check status of monster's health and return whether a new status was applied.
+  checkHpStatus(monster: Monster, amount: number): boolean {
+    let currentStatus = this.getCurrentStatus(monster, monster.currentHp);
+    let newStatus = this.getCurrentStatus(monster, monster.currentHp - amount);
+
+    // If nothing has changed, exit.
+    if (currentStatus == newStatus) {
+      return false;
     }
+
+    this.initDoc.ref.get().then(doc => {
+      let buffs = doc.data().buffs || [];
+
+      if (newStatus == 'healthy') {
+        this.messageService.add(`${monster.name} became healthy`);
+      }
+      if (newStatus == 'bloodied') {
+        this.messageService.add(`${monster.name} became bloodied`);
+      }
+      if (newStatus == 'dead') {
+        this.messageService.add(`${monster.name} died!`);
+      }
+      if (newStatus == 'dying') {
+        this.messageService.add(`${monster.name} is dying!`);
+      }
+      if (newStatus == 'disabled') {
+        this.messageService.add(`${monster.name} is at 0 hp and disabled`);
+      }
+
+      return this.applyStatusCondition(monster, buffs, newStatus);
+    });    
   }
 
-  removeConditionsByName(monster: Monster, conditions: string[]) {
-    monster.conditions = monster.conditions.filter(c => !conditions.find(name => name == c.name));
-    monster.attributes = monster.attributes.filter(a => !conditions.find(name => name == a));
-  };
-
-  addConditionSync(creature: Creature, condition: any, log: boolean = true): void {
-    if (log && !condition.permanent) {
-      this.messageService.add(`${creature.name} became ${condition.name} for ${condition.duration} rounds`);
-    } else if (log && condition.permanent) {
-      this.messageService.add(`${creature.name} became ${condition.name}`);
+  // Get current status of monster's health.
+  getCurrentStatus(monster: Monster, hp: number): string {
+    if (hp <= -1 * monster.conScore) {
+      return 'dead';
+    } else if (hp < 0) {
+      return 'dying';
+    } else if (hp == 0) {
+      return 'disabled';
+    } else if (hp <= monster.hp / 2) {
+      return 'bloodied';
     }
-    let conditionCopy: Condition = {...condition, id: this.db.createId()};
-    creature.conditions.push(conditionCopy);
+    return 'healthy';
+  }
+
+  // Apply the status condition to the monster and return whether a change was made successfully.
+  // A status condition is permanent, invisible to players, and updates automatically based on the monster's health.
+  applyStatusCondition(monster: Monster, conditions: Condition[], status: string): boolean {
+    let shouldAddStatus = ['dead', 'dying', 'disabled'].includes(status);
+
+    if (shouldAddStatus) {
+      // If the status condition is already active, use it.
+      let statusConditionIdx: number = conditions.findIndex(condition => {
+        return condition.name == status && this.isStatusCondition(condition);
+      });
+      if (statusConditionIdx >= 0) {
+        if (!conditions[statusConditionIdx].affected) {
+          conditions[statusConditionIdx].affected = [];
+        }
+        // If monster is already in the list of affected, do nothing.
+        if (conditions[statusConditionIdx].affected.findIndex(cr => {
+          return cr.id == monster.id;
+        }) < 0) {
+          // Add monster to list of affected.
+          conditions[statusConditionIdx].affected.push(monster);
+        }
+      } else {
+        // Create new global status condition.
+        let statusCondition: Condition = {
+            id: this.db.createId(),
+            name: status,
+            permanent: true,
+            description: CONDITIONS.find(c => c.name == status).description,
+            affected: [monster],
+            playerVisible: 0  // not visible to players
+        };
+        conditions.push(statusCondition);
+      }
+    }
+
+    // Remove other statuses from this creature.
+    conditions.forEach(condition => {
+      if (this.isStatusCondition(condition) && condition.name != status) {
+        condition.affected = condition.affected.filter(cr => {
+          return cr.id != monster.id;
+        });
+      }
+    });
+
+    this.updateMultipleBuffs(conditions);
+    return true;
+  }
+
+  // A status condition is permanent, invisible to players, and updates automatically based on the monster's health.
+  isStatusCondition(condition: Condition): boolean {
+    return ['dead', 'dying', 'disabled'].includes(condition.name) && condition.permanent && !condition.playerVisible;
   }
 
   goesBefore(c1: any, c2: any) : boolean {
   	// Should c1 go before c2 in initiative?
-    // if (c2.attributes.indexOf('moved') > -1) {
-    //   return false;
-    // }
     if (c1.initiative < c2.initiative) {
       return false;
     } else if (c1.initiative > c2.initiative) {

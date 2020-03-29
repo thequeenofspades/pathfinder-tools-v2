@@ -4,14 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { InitiativeService } from '../dashboard/initiative.service';
 import { Creature } from '../dashboard/monster';
 import { BuffViewComponent } from './buff-view/buff-view.component';
-
-interface Buff {
-  id: string,
-  name: string,
-  color: string,
-  affected: Creature[],
-  initiative: number
-};
+import { Condition } from '../dashboard/condition';
 
 @Component({
   selector: 'app-player-view',
@@ -51,17 +44,17 @@ export class PlayerViewComponent implements OnInit {
     return {idx: activeCreatureIdx, imageUrl: activeCreature.imageUrl};
   }
 
-  getBuffs(creature: Creature, buffs: Buff[]): {color: string, name: string}[] {
+  getBuffs(creature: Creature, buffs: Condition[]): Condition[] {
     return (buffs || []).filter(buff => {
       return (buff.affected || []).find(cr => cr.id == creature.id);
-    }).map(buff => {
-      return {id: buff.id, name: buff.name, color: buff.color};
+    }).filter(buff => {
+      return buff.playerVisible == undefined || buff.playerVisible > 1;
     });
   }
 
   getBuffDecrements(order: {initiative: number, id: string, hp: number, visible: boolean}[],
                     i: number,
-                    buffs: Buff[]): {color: string, name: string}[] {
+                    buffs: Condition[]): Condition[] {
     let id = order[i].id;
     order = order.filter(c => c.hp == undefined || c.visible);
     i = order.findIndex(c => c.id == id);
@@ -75,12 +68,10 @@ export class PlayerViewComponent implements OnInit {
         return true;
       }
       return false;
-    }).map(buff => {
-      return {id: buff.id, name: buff.name, color: buff.color};
     });
   }
 
-  mouseoverBuff(buff: Buff) {
+  mouseoverBuff(buff: Condition) {
     this.buffViewComponent.focusedBuffId = buff.id;
   }
 
@@ -88,16 +79,8 @@ export class PlayerViewComponent implements OnInit {
     this.buffViewComponent.focusedBuffId = undefined;
   }
 
-  buffTrackByFn(index, buff) {
+  buffTrackByFn(index, buff: Condition) {
     return buff.color;
-  }
-
-  adjusted(creature: any): boolean {
-  	return creature.attributes.some(a => a == "moved");
-  }
-
-  delayed(creature: any): boolean {
-  	return creature.attributes.some(a => a == "delayed");
   }
 
   healthCategory(percent: number): string {

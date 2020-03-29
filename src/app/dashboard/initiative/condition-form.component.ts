@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { CONDITIONS } from '../condition';
+import { Creature } from '../monster';
 
 interface MockCondition {
   name: string;
@@ -23,7 +24,8 @@ export class ConditionFormComponent implements OnInit {
   conditions: MockCondition[];
 
   constructor(private fb: FormBuilder,
-    public dialogRef: MatDialogRef<ConditionFormComponent>) {  }
+    public dialogRef: MatDialogRef<ConditionFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: {creature: Creature, currentInitiative: number, order: Creature[]}) {  }
 
   ngOnInit() {
     this.createForm();
@@ -35,6 +37,9 @@ export class ConditionFormComponent implements OnInit {
   customCondition: boolean = false;
 
   filteredConditions: Observable<MockCondition[]>;
+
+  playerGroup: Creature[];
+  monsterGroup: Creature[];
 
   filter(val: string): MockCondition[] {
     return this.conditions.filter(c =>
@@ -50,10 +55,15 @@ export class ConditionFormComponent implements OnInit {
       name: ['', Validators.required],
       description: '',
       duration: [0, Validators.required],
-      permanent: [false]
+      permanent: [false],
+      initiative: [this.data.currentInitiative, Validators.required],
+      affected: [[this.data.creature], Validators.required]
     });
     this.conditionForm.get('name').valueChanges.subscribe(data => this.onNameValueChanged(data));
     this.conditionForm.get('permanent').valueChanges.subscribe(data => this.onPermanentValueChanged(data));
+
+    this.playerGroup = this.data.order.filter(cr => cr.hp == undefined);
+  	this.monsterGroup = this.data.order.filter(cr => cr.hp != undefined);
   }
 
   onNameValueChanged(name: string): void {
@@ -72,6 +82,10 @@ export class ConditionFormComponent implements OnInit {
       this.conditionForm.get('duration').enable();
     }
     this.conditionForm.get('duration').updateValueAndValidity();
+  }
+
+  compareFn(c1, c2) {
+  	return c1 && c2 ? c1.id == c2.id : c1 == c2;
   }
 
   trySubmit(): void {

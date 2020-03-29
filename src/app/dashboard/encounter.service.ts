@@ -148,9 +148,6 @@ export class EncounterService {
       hp: monster.defense.hp,
       perceptionBonus: monster.basics.perceptionBonus,
       conScore: monster.statistics.conScore,
-      conditions: [],
-      attributes: [],
-      notes: [],
       notification: {},
       currentHp: monster.defense.hp,
       imageUrl: monster.extras.imageUrl

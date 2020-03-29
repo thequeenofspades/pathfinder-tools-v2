@@ -46,7 +46,7 @@
 								<span class="creature-name"> {{creature.name}}</span>
 								<ng-container *ngIf="creature.basics?.quantity > 1"> ({{ creature.basics.idx }} of {{ creature.basics.quantity }})</ng-container>
 							</span>
-							<ng-container *ngIf="delayed(creature)">
+							<ng-container *ngIf="creature.delayed">
 								<mat-icon class="small-icon">snooze</mat-icon>
 							</ng-container>
 							<ng-container *ngIf="creature.hp && !creature.visible">
@@ -63,31 +63,15 @@
 									</span>
 									<mat-progress-bar mode="determinate" color="warn" [value]="100*(creature.currentHp/creature.hp)"></mat-progress-bar>
 								</div>
-								<app-interactive-condition-list [creature]="creature" (clickEvent)="openConditionDetailDialog($event)"></app-interactive-condition-list>
+								<app-interactive-condition-list [buffs]="init.buffs" [creature]="creature" (clickEvent)="openConditionDetailDialog($event)"></app-interactive-condition-list>
 							</div>
 						</td>
 
 						<td class="mat-cell initiativeCell">
-							<!-- <button mat-icon-button appStopClick (click)="openConditionFormDialog(creature)" matTooltip="Add Condition"><mat-icon svgIcon="skull"></mat-icon></button> -->
-							<!-- <ng-container *ngIf="!delayed(creature)">
-								<button mat-icon-button appStopClick (click)="initiativeService.delay(creature)" matTooltip="Delay"><mat-icon>snooze</mat-icon></button>
-							</ng-container>
-							<ng-container *ngIf="delayed(creature)">
-								<button mat-icon-button appStopClick (click)="initiativeService.undelay(creature)" color="primary" matTooltip="Undelay">
-									<mat-icon>alarm_on</mat-icon>
-								</button>
-							</ng-container> -->
 							<button mat-icon-button appStopClick (click)="initiativeService.moveUp(creature)" matTooltip="Move Up">
 								<mat-icon>arrow_upward</mat-icon>
 							</button>
 							<button mat-icon-button appStopClick (click)="initiativeService.moveDown(creature)" matTooltip="Move Down"><mat-icon>arrow_downward</mat-icon></button>
-							<!-- <button mat-icon-button appStopClick matTooltip="Make Invisible to Players" *ngIf="creature.hp && creature.visible" (click)="initiativeService.toggleVisible(creature)">
-								<mat-icon svgIcon="eye"></mat-icon>
-							</button>
-							<button mat-icon-button appStopClick matTooltip="Make Visible to Players" *ngIf="creature.hp && !creature.visible" (click)="initiativeService.toggleVisible(creature)">
-								<mat-icon svgIcon="eye-off"></mat-icon>
-							</button> -->
-							<!-- <button mat-icon-button appStopClick (click)="initiativeService.remove(creature)" matTooltip="Remove"><mat-icon>delete</mat-icon></button> -->
 							<button mat-icon-button appStopClick [matMenuTriggerFor]="menu">
 								<mat-icon>more_vert</mat-icon>
 							</button>
@@ -96,11 +80,11 @@
 									<mat-icon svgIcon="skull"></mat-icon>
 									<span>Add Condition</span>
 								</button>
-								<button mat-menu-item *ngIf="!delayed(creature)" (click)="initiativeService.delay(creature)">
+								<button mat-menu-item *ngIf="!creature.delayed" (click)="initiativeService.delay(creature)">
 									<mat-icon>snooze</mat-icon>
 									<span>Delay</span>
 								</button>
-								<button mat-menu-item *ngIf="delayed(creature)" (click)="initiativeService.undelay(creature)">
+								<button mat-menu-item *ngIf="creature.delayed" (click)="initiativeService.undelay(creature)">
 									<mat-icon>alarm_on</mat-icon>
 									<span>Undelay</span>
 								</button>

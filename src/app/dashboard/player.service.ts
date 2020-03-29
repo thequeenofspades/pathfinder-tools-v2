@@ -48,9 +48,6 @@ export class PlayerService {
   deepCopyPlayer(player: Player): Player {
     let playerCopy = new Player(player.name);
     Object.assign(playerCopy, player);
-    playerCopy.conditions = [];
-    playerCopy.notes = [];
-    playerCopy.attributes = [];
     playerCopy.notification = {};
     return playerCopy;
   }
