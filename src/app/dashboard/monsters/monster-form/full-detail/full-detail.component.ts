@@ -4,6 +4,7 @@ import { EncounterService } from '../../../encounter.service';
 import { AngularFireStorage, AngularFireStorageReference } from '@angular/fire/storage';
 import { SlaLevelComponent } from './sla-level/sla-level.component';
 import { SpellLevelComponent } from './spell-level/spell-level.component';
+import { xpFromCr, crFromXp } from '../../../encounter';
 
 @Component({
   selector: 'app-monster-form-full-detail',
@@ -46,6 +47,14 @@ export class FullDetailComponent implements OnInit {
 
   abilityBonus(score: number): number {
     return Math.floor((score - 10) / 2);
+  }
+
+  crFromXp(xp: number): number {
+    return crFromXp(xp);
+  }
+
+  xpFromCr(cr: number): number {
+    return xpFromCr(cr);
   }
 
   get classes(): FormArray {

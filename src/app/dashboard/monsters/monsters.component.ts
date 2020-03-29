@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Monster, MonsterI } from '../monster';
+import { MonsterI } from '../monster';
 import { InitiativeService } from '../initiative.service';
 import { EncounterService } from '../encounter.service';
-import { Encounter } from '../encounter';
+import { Encounter, crForEncounter } from '../encounter';
 import { MatDialog } from '@angular/material/dialog';
 import { MoveToEncounterFormComponent } from './move-to-encounter-form/move-to-encounter-form.component';
 
@@ -87,6 +87,10 @@ export class MonstersComponent implements OnInit {
     return monsters.sort((a, b) => {
       return a.basics.name < b.basics.name ? -1 : a.basics.name > b.basics.name ? 1 : 0;
     });
+  }
+
+  crForEncounter(encounter: Encounter): number {
+    return crForEncounter(encounter);
   }
 
 }

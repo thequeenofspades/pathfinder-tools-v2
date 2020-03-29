@@ -417,12 +417,15 @@
 
       <mat-form-field appearance="outline">
         <mat-label>CR</mat-label>
-        <input matInput type="number" formControlName="cr">
+        <input matInput type="number" formControlName="cr" placeholder="{{crFromXp(form.get('extras').get('xp').value)}}">
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>XP</mat-label>
-        <input matInput type="number" formControlName="xp">
+        <input  matInput
+                type="number"
+                placeholder="{{xpFromCr(form.get('extras').get('cr').value)}}"
+                formControlName="xp">
       </mat-form-field>
 
       <mat-divider></mat-divider>
