@@ -9,15 +9,22 @@ export class RollableComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  @Input() base: number = 20;
+  @Input() bonus: number = 0;
+  @Input() iconColor: string = "primary";
+  @Input() badgeColor: string = "accent";
 
-  @Input() bonus: number;
+  ngOnInit() {
+    this.result = undefined;
+  }
 
   public result: number;
 
   roll() {
-  	this.result = this.getRandomInt(1, 20) + this.bonus;
+    this.result = this.getRandomInt(1, Number(this.base)) + Number(this.bonus);
+    setTimeout(_ => {
+      this.result = undefined;
+    }, 1000);
   }
 
   getRandomInt(min: number, max: number): number {

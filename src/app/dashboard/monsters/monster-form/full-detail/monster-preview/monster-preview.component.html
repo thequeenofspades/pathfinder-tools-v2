@@ -59,15 +59,15 @@
 		<p>
 			<ng-container *ngIf="defense.fort">
 				<b>Fort </b> 
-				{{defense.fort | plus}}<ng-container *ngIf="defense.ref || defense.will">, </ng-container>
+				{{defense.fort | plus}} <app-rollable *ngIf="live" [bonus]="defense.fort"></app-rollable><ng-container *ngIf="defense.ref || defense.will">, </ng-container>
 			</ng-container>
 			<ng-container *ngIf="defense.ref">
 				<b>Ref </b>
-				{{defense.ref | plus}}<ng-container *ngIf="defense.will">, </ng-container>
+				{{defense.ref | plus}} <app-rollable *ngIf="live" [bonus]="defense.ref"></app-rollable><ng-container *ngIf="defense.will">, </ng-container>
 			</ng-container>
 			<ng-container *ngIf="defense.will">
 				<b>Will </b>
-				{{defense.will | plus}}
+				{{defense.will | plus}} <app-rollable *ngIf="live" [bonus]="defense.will"></app-rollable>
 			</ng-container>
 			<ng-container *ngIf="defense.savenotes"> {{defense.savenotes}}</ng-container>
 		</p>
