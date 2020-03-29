@@ -25,10 +25,7 @@ export function crFromXp(xp: number): number {
 		return xp >= 200 ? 0.5 : xp >= 135 ? 0.33 : xp >= 100 ? 0.25 : xp >= 65 ? 0.167 : xp >= 50 ? 0.125 : 0;
 	}
 	let cr = Math.log2(xp / 300) * 2;
-	if (cr % 1 == 0) {
-		return Math.floor(cr);
-	}
-	return Math.floor(Math.log2(xp / 400) * 2 + 1);
+	return Math.ceil(cr);
 }
 
 export function xpFromCr(cr: number): number {

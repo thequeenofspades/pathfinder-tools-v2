@@ -39,14 +39,16 @@ export class PlayerViewComponent implements OnInit {
    * If the active creature is invisible, return the closest visible creature in the initiative.
    */
   getActive(order: {id: string, initiative: number, hp: number, visible: boolean, imageUrl: string}[],
-            active: number): number {
+            active: number): {idx: number, imageUrl: string} {
     let init = order[active].initiative;
     let filteredOrder = order.filter(c => c.hp == undefined || c.visible);
-    if (filteredOrder.length == 0) return 0;
+    if (filteredOrder.length == 0) return {idx: 0, imageUrl: ''};
     let idx = filteredOrder.findIndex(c => c.initiative < init) - 1;
     if (idx < 0) idx = filteredOrder.length - 1;
     this.activeImageUrl = filteredOrder[idx].imageUrl;
-    return order.findIndex(c => c.id == filteredOrder[idx].id);
+    let activeCreatureIdx = order.findIndex(c => c.id == filteredOrder[idx].id);
+    let activeCreature = order[activeCreatureIdx];
+    return {idx: activeCreatureIdx, imageUrl: activeCreature.imageUrl};
   }
 
   getBuffs(creature: Creature, buffs: Buff[]): {color: string, name: string}[] {
