@@ -2,6 +2,8 @@ import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Player } from '../../player';
+import { AngularFireStorageReference, AngularFireStorage } from '@angular/fire/storage';
+import { PlayerService } from '../../player.service';
 
 @Component({
   selector: 'app-player-form',
@@ -10,24 +12,50 @@ import { Player } from '../../player';
 })
 export class PlayerFormComponent implements OnInit {
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private playerService: PlayerService,
+    private fb: FormBuilder,
+    private storage: AngularFireStorage) { }
 
   ngOnInit() {
     this.createForm();
   }
 
-  @Input() model: Player = new Player('');
+  @Input() player: Player;
   @Output() onSubmitted = new EventEmitter<Player>();
   @Output() onCanceled = new EventEmitter();
 
   playerForm: FormGroup;
+  uploadingMsg: string;
 
   createForm(): void {
     this.playerForm = this.fb.group({
-      name: [this.model.name, Validators.required],
-      initiativeBonus: [this.model.initiativeBonus, Validators.required],
-      perceptionBonus: [this.model.perceptionBonus, Validators.required],
-      senseMotiveBonus: [this.model.senseMotiveBonus, Validators.required]
+      name: ['', Validators.required],
+      id: [''],
+      initiativeBonus: [undefined, Validators.required],
+      perceptionBonus: [undefined, Validators.required],
+      senseMotiveBonus: [undefined, Validators.required],
+      imageUrl: ['']
+    });
+    if (this.player) {
+      this.playerForm.patchValue(this.player);
+    }
+  }
+
+  uploadImage(event) {
+    this.uploadingMsg = 'Uploading...';
+    let fileList: FileList = event.target.files;
+    if (fileList.length == 0) {
+      return;
+    }
+    let file: File = fileList[0];
+    let storageRef: AngularFireStorageReference = this.storage.ref('sessions').child(this.playerService.sessionId).child(file.name);
+    storageRef.put(file).then(snapshot => {
+      this.uploadingMsg = 'Done!';
+      snapshot.ref.getDownloadURL().then(url => {
+        this.playerForm.get('imageUrl').setValue(url);
+      });
+    }, error => {
+      this.uploadingMsg = 'Error: ' + error.message;
     });
   }
 
@@ -37,12 +65,6 @@ export class PlayerFormComponent implements OnInit {
   }
 
   onSubmit() {
-    let player = new Player(this.playerForm.get('name').value);
-    player.id = this.model.id;
-    player.initiativeBonus = this.playerForm.get('initiativeBonus').value;
-    player.perceptionBonus = this.playerForm.get('perceptionBonus').value;
-    player.senseMotiveBonus = this.playerForm.get('senseMotiveBonus').value;
-    this.createForm();
-  	this.onSubmitted.emit(player);
+  	this.onSubmitted.emit(this.playerForm.value);
   }
 }

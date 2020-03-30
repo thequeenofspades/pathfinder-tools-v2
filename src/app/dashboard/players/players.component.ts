@@ -20,6 +20,8 @@ export class PlayersComponent implements OnInit {
     public dialog: MatDialog,
     private route: ActivatedRoute) { }
 
+  notifications: any = {};
+
   ngOnInit() { 
     this.route.data.subscribe((data: {id: string}) => {
       this.playerService.setup(data.id);
@@ -39,13 +41,15 @@ export class PlayersComponent implements OnInit {
   }
 
   rollPerception(player: Player): void {
-  	let roll = getRandomInt(1, 20);
-  	player.notification.perception = `${roll+player.perceptionBonus}`;
+    let roll = getRandomInt(1, 20);
+    this.notifications[player.id] = {};
+    this.notifications[player.id].perception = `${roll+player.perceptionBonus}`;
   }
 
   rollSenseMotive(player: Player): void {
-  	let roll = getRandomInt(1, 20);
-  	player.notification.senseMotive = `${roll+player.senseMotiveBonus}`;
+    let roll = getRandomInt(1, 20);
+    this.notifications[player.id] = {};
+  	this.notifications[player.id].senseMotive = `${roll+player.senseMotiveBonus}`;
   }
 
   rollPerceptionForAll(players: Player[]): void {

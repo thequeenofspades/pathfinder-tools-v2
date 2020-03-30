@@ -1,22 +1,34 @@
 <form [formGroup]="playerForm" (ngSubmit)="onSubmit()">
-  <mat-form-field appearance="outline">
-    <mat-label>Name</mat-label>
-    <input matInput type="text" formControlName="name" required>
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-label>Initiative Bonus</mat-label>
-    <input type="number" matInput formControlName="initiativeBonus" required>
-  </mat-form-field>
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput type="text" formControlName="name" required>
+    </mat-form-field>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Perception Bonus</mat-label>
-    <input type="number" matInput formControlName="perceptionBonus" required>
-  </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Initiative Bonus</mat-label>
+      <input type="number" matInput formControlName="initiativeBonus" required>
+    </mat-form-field>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Sense Motive Bonus</mat-label>
-    <input type="number" matInput formControlName="senseMotiveBonus" required>
-  </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Perception Bonus</mat-label>
+      <input type="number" matInput formControlName="perceptionBonus" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Sense Motive Bonus</mat-label>
+      <input type="number" matInput formControlName="senseMotiveBonus" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Image URL</mat-label>
+      <input matInput type="text" formControlName="imageUrl">
+    </mat-form-field>
+  
+    <input type="file" (change)="uploadImage($event)" placeholder="Upload file" accept=".jpg,.png">
+    <ng-container *ngIf="uploadingMsg"><br>{{uploadingMsg}}</ng-container>
+
+  </div>
 
   <div class="button-row">
     <button mat-raised-button type="button" (click)="onCancel()">Cancel</button>

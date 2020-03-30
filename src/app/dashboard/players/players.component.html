@@ -21,6 +21,9 @@
 </ng-container>
 <div class="container" fxLayout="row wrap" fxLayoutAlign="center start" fxLayout.xs="column" *ngIf="playerService.players$ | async as players">
 	<mat-card *ngFor="let player of sortedPlayers(players)" class="player-card" fxFlex="1 0 250px">
+		<ng-container *ngIf="player.imageUrl">
+			<img mat-card-image [src]="player.imageUrl">
+		</ng-container>
 		<mat-card-title>
 			{{player.name}}
 			<button mat-icon-button matTooltip="Edit" (click)="player.edit=true"><mat-icon svgIcon="pencil"></mat-icon></button>
@@ -29,22 +32,18 @@
 		<mat-card-content *ngIf="!player.edit">
 			Initiative: <ng-container *ngIf="player.initiativeBonus >= 0">+</ng-container>{{player.initiativeBonus}}<br>
 			Perception: <ng-container *ngIf="player.perceptionBonus >= 0">+</ng-container>{{player.perceptionBonus}}
-			<span matBadge="{{player.notification.perception}}" matBadgeColor="accent" [matBadgeHidden]="player.notification.perception == undefined">
-				<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollPerception(player)">
-					<mat-icon svgIcon="dice-d20"></mat-icon>
-				</button>
-			</span>
+			<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollPerception(player)">
+				<mat-icon svgIcon="dice-d20" matBadge="{{notifications[player.id]?.perception}}" matBadgeColor="accent" [matBadgeHidden]="notifications[player.id]?.perception == undefined"></mat-icon>
+			</button>
 			<br>
 			Sense Motive: <ng-container *ngIf="player.senseMotiveBonus >= 0">+</ng-container>{{player.senseMotiveBonus}}
-			<span matBadge="{{player.notification.senseMotive}}" matBadgeColor="accent" [matBadgeHidden]="player.notification.senseMotive == undefined">
-				<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollSenseMotive(player)">
-					<mat-icon svgIcon="dice-d20"></mat-icon>
-				</button>
-			</span>
+			<button mat-icon-button color="primary" matTooltip="Roll" (click)="rollSenseMotive(player)">
+				<mat-icon svgIcon="dice-d20" matBadge="{{notifications[player.id]?.senseMotive}}" matBadgeColor="accent" [matBadgeHidden]="notifications[player.id]?.senseMotive == undefined"></mat-icon>
+			</button>
 		</mat-card-content>
 		<mat-card-content *ngIf="player.edit">
 			<app-player-form
-				[model]="player"
+				[player]="player"
 				(onSubmitted)="playerService.update(player, $event); player.edit = false"
 				(onCanceled)="player.edit = false"></app-player-form>
 		</mat-card-content>

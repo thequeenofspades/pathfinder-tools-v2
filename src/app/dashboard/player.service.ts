@@ -23,7 +23,10 @@ export class PlayerService {
 
   players$ = this.players.asObservable();
 
+  public sessionId: string;
+
   setup(sessionId: string): void {
+    this.sessionId = sessionId;
     this.playersCollection = this.db.collection('sessions').doc(sessionId).collection('players');
     this.refresh();
   }
@@ -31,25 +34,8 @@ export class PlayerService {
   refresh(): void {
     this.playersCollection.valueChanges().subscribe(
       p => {
-        this.players.next(this.convertPlayers(p));
+        this.players.next((p as Player[]));
       });
-  }
-
-  convertPlayers(players: any[]): Player[] {
-    return players.map(player => this.convertPlayer(player));
-  }
-
-  convertPlayer(player: any): Player {
-    let newPlayer = new Player(player.name);
-    Object.assign(newPlayer, player);
-    return newPlayer;
-  }
-
-  deepCopyPlayer(player: Player): Player {
-    let playerCopy = new Player(player.name);
-    Object.assign(playerCopy, player);
-    playerCopy.notification = {};
-    return playerCopy;
   }
 
   add(player: Player): void {
@@ -75,22 +61,21 @@ export class PlayerService {
   }
 
   addToInitiative(player: Player, initiative: number = null): void {
-    let playerCopy = this.deepCopyPlayer(player);
     if (initiative !== null) {
-      this.initiativeService.add(playerCopy, initiative);
+      this.initiativeService.add(player, initiative);
     } else {
       let roll = getRandomInt(1, 20);
-      this.initiativeService.add(playerCopy, roll + player.initiativeBonus);
+      this.initiativeService.add(player, roll + player.initiativeBonus);
     }
   }
 
   addAllToInitiative(): void {
     this.playersCollection.ref.get()
       .then(q => {
-        let players = q.docs.map(doc => {
-          return this.convertPlayer(doc.data());
+        let players: any[] = q.docs.map(doc => {
+          return doc.data();
         });
-        this.initiativeService.addMultiple(players);
+        this.initiativeService.addMultiple((players as Player[]));
       });
   }
 }
