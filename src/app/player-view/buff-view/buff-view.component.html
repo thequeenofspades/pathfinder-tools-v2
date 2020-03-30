@@ -1,6 +1,6 @@
-<div class="buffs-view">
+<div class="buffs-view" *ngIf="initService.init$ | async as init">
 
-	<div	*ngFor="let buff of sortedBuffs(buffs)"
+	<div	*ngFor="let buff of sortedBuffs(init.buffs)"
 			class="buffs-container"
 			[ngClass]="{'buff-focused': buff.id == focusedBuffId}"
 			(mouseover)="mouseoverBuff(buff)" 
@@ -31,6 +31,6 @@
 	</div>
 
 	<button mat-button (click)="openBuffFormDialog()"><mat-icon svgIcon="plus"></mat-icon> Effect</button>
-	<button mat-button *ngIf="buffs.length" (click)="clearBuffs()">Clear</button>
+	<button mat-button *ngIf="init.buffs.length" (click)="clearBuffs()">Clear</button>
 
 </div>

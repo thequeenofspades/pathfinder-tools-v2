@@ -1,16 +1,16 @@
 import { Component, OnInit, Input, ViewChild, HostListener } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AngularFireStorage } from '@angular/fire/storage';
 
 import { InitiativeService } from '../../initiative.service';
 import { Creature } from '../../monster';
 import { Condition } from '../../condition';
 
-import { ConditionFormComponent } from '../condition-form.component';
 import { DamageFormComponent } from '../damage-form.component';
 import { ConditionDetailComponent } from '../condition-detail/condition-detail.component';
 import { CreatureDetailComponent } from '../creature-detail/creature-detail.component';
 import { CreaturePopoutComponent } from '../creature-detail/creature-popout.component';
+import { BuffFormComponent } from '../../../player-view/buff-form/buff-form.component';
 
 @Component({
   selector: 'app-initiative-table',
@@ -99,20 +99,20 @@ export class InitiativeTableComponent implements OnInit {
 
   openConditionFormDialog(creature: Creature): void {
     this.listenArrowKeys = false;
-    let dialogRef = this.dialog.open(ConditionFormComponent, {
+    let dialogRef = this.dialog.open(BuffFormComponent, {
       data: {
         creature: creature,
-        currentInitiative: this.init.order[this.init.active].initiative,
-        order: this.init.order
+        initService: this.initiativeService,
+        playerView: false
       },
       width: '500px'
     });
     dialogRef.afterClosed().subscribe(condition => {
       this.listenArrowKeys = true;
-      if (condition !== undefined) {
+      if (condition != undefined) {
         this.initiativeService.addBuff(condition);
       }
-    });
+    })
   }
 
   openConditionDetailDialog(condition: Condition): void {

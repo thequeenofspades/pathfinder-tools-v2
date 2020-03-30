@@ -16,13 +16,14 @@ export class PlayerViewOptionsComponent implements OnInit {
   	this.optionsForm = this.fb.group({
   		nameOption: '',
   		healthOption: '',
-  		conditionOption: '',
       visibleOption: ''
-  	});
+    });
+    // When the DB copy gets updated, update this form.
   	this.initService.getPlayerOptions().subscribe(opts => {
   		this.optionsForm.setValue(opts);
-  		this.optionsForm.valueChanges.subscribe(_ => this.updateOptions());
-  	});
+    });
+    // When this form gets updated, update the DB copy.
+    this.optionsForm.valueChanges.subscribe(_ => this.updateOptions());
   }
 
   @Input() code: string;
@@ -32,7 +33,6 @@ export class PlayerViewOptionsComponent implements OnInit {
 
   nameOptions: string[] = ['Show names and numbers', 'Show names', "Don't show"];
   healthOptions: string[] = ['Health bar', 'Detailed', 'Vague', 'None'];
-  conditionOptions: string[] = ['Condition and duration', 'Condition only', 'None'];
   visibleOptions: string[] = ['visible', 'invisible'];
 
   updateOptions(): void {

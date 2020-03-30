@@ -6,7 +6,8 @@ export interface Creature {
     initiative?: number,
     hp?: number,
     imageUrl?: string,
-    delayed?: boolean
+    delayed?: boolean,
+    visible?: boolean
 }
 
 export interface Monster {

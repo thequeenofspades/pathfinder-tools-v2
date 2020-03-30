@@ -9,14 +9,29 @@ import { Monster, Creature } from './monster';
 import { MessageService } from '../message.service';
 import { Condition, CONDITIONS } from './condition';
 
-class Initiative {
-  order: any[];
+export class Initiative {
+  order: Creature[];
   active: number;
   round: number;
+  playerOptions: PlayerOptions;
+  buffs: Condition[];
+  timestamp: number;
 }
 
-const defaultPlayerOptions = {
-  nameOption: 'Show names and numbers',
+export class PlayerOptions {
+  nameOption: string;
+  healthOption: string;
+  visibleOption: string;
+}
+
+export enum VisibleOption {
+  NoShow = "Don't show",
+  ShowNameOnly = "Show names",
+  ShowNameAndNumber = "Show names and numbers"
+}
+
+const defaultPlayerOptions: PlayerOptions = {
+  nameOption: VisibleOption.ShowNameAndNumber,
   healthOption: 'Detailed',
   visibleOption: 'invisible'
 }
@@ -32,8 +47,8 @@ export class InitiativeService {
 
   initDoc: AngularFirestoreDocument<any>;
 
-  private init = new Subject<any>();
-  public init$ = this.init.asObservable();
+  private init: Subject<Initiative> = new Subject<Initiative>();
+  public init$: Observable<Initiative> = this.init.asObservable();
 
   private active = new Subject<Creature>();
   public active$ = this.active.asObservable();
@@ -66,7 +81,23 @@ export class InitiativeService {
     this.initDoc.update({round: 1});
   }
 
-  getPlayerOptions(): Observable<Object> {
+  // Get a snapshot of the current Initiative, as an Observable.
+  getInit(): Observable<Initiative> {
+    return from(this.initDoc.ref.get()).pipe(take(1), map(doc => {
+      return (doc.data() as Initiative);
+    }));
+  }
+
+  getOrder(): Observable<Creature[]> {
+    return this.init$.pipe(
+      take(1),
+      map(init => {
+        return init.order ? init.order : [];
+      })
+    );
+  }
+
+  getPlayerOptions(): Observable<PlayerOptions> {
     return from(this.initDoc.ref.get()).pipe(
       take(1),
       map(doc => {
@@ -74,7 +105,7 @@ export class InitiativeService {
       }));
   }
 
-  updatePlayerOptions(options: Object): void {
+  updatePlayerOptions(options: PlayerOptions): void {
     this.initDoc.update({playerOptions: options}).then(_ => {
       this.messageService.add('Updated player view options');
     });
@@ -91,7 +122,7 @@ export class InitiativeService {
   add(creature: Creature, initiative: number = null): void {
     this.initDoc.ref.get().then(doc => {
       let order = doc.data().order || [];
-      let playerOptions = doc.data().playerOptions || {}
+      let playerOptions: PlayerOptions = doc.data().playerOptions || {}
       if (initiative == null) initiative = getRandomInt(1, 20) + creature.initiativeBonus;
       let creatureCopy = {
         ...JSON.parse(JSON.stringify(creature)),
@@ -116,7 +147,7 @@ export class InitiativeService {
     }
     this.initDoc.ref.get().then(doc => {
       let order = doc.data().order || [];
-      let playerOptions = doc.data().playerOptions || {}
+      let playerOptions: PlayerOptions = doc.data().playerOptions || {}
       creatures.forEach((creature, i) => {
         let creatureCopy = {
           ...JSON.parse(JSON.stringify(creature)),

@@ -1,15 +1,15 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Condition } from '../../dashboard/condition';
+import { Condition, CONDITIONS } from '../../dashboard/condition';
+import { PlayerOptions, InitiativeService, Initiative, VisibleOption } from '../../dashboard/initiative.service';
+import { Observable, Subscription } from 'rxjs';
+import { Creature, MonsterI, Monster } from '../../dashboard/monster';
+import { startWith, map } from 'rxjs/operators';
 
-// import { Creature } from '../../dashboard/monster';
-
-interface Creature {
-	initiative: number,
-	name: string,
-	hp: number,
-	visible: boolean
+interface MockCondition {
+  name: string;
+  description: string
 }
 
 @Component({
@@ -20,35 +20,73 @@ interface Creature {
 export class BuffFormComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<BuffFormComponent>,
-  	private fb: FormBuilder,
-  	@Inject(MAT_DIALOG_DATA) public data: {buff: Condition, order: Creature[], active: number, showNames: string}) { }
+    private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data: {buff: Condition, creature: Creature, initService: InitiativeService, playerView: boolean}) { }
+    
+  private active: number = 0;
+  conditions: MockCondition[];
+  filteredConditions: Observable<MockCondition[]>;
+  form: FormGroup;
+  private init$: Subscription;
+  monsterGroup: Creature[] = [];
+  private order: Creature[] = [];
+  playerGroup: Creature[] = [];
+  private playerOptions: PlayerOptions;
 
   ngOnInit() {
-  	this.createForm();
+    this.createForm();
+    this.conditions = CONDITIONS;
+    this.filteredConditions = this.form.get('name').valueChanges
+      .pipe(startWith(''), map(val => this.filter(val)));
+    this.init$ = this.data.initService.getInit().subscribe((init: Initiative) => {
+      this.active = init.active;
+      this.order = init.order;
+      this.playerOptions = init.playerOptions;
+
+      this.playerGroup = this.order.filter(cr => cr.hp == undefined);
+      this.monsterGroup = this.order.filter(cr => cr.hp != undefined && this.shouldShowMonster(cr));
+    
+      this.form.get('initiative').setValue(this.order[this.active].initiative);
+    });
   }
 
-  form: FormGroup;
-
-  playerGroup: Creature[];
-  monsterGroup: Creature[];
+  ngOnDestroy() {
+    this.init$.unsubscribe();
+  }
 
   createForm() {
   	this.form = this.fb.group({
   		name: ['', Validators.required],
-      duration: ['', Validators.required],
+      duration: [undefined, Validators.required],
       permanent: [false],
-  		initiative: [this.data.order[this.data.active].initiative, Validators.required],
-  		affected: [[], Validators.required],
+  		initiative: [undefined, Validators.required],
+  		affected: [this.data.creature ? [this.data.creature] : [], Validators.required],
   		description: ''
     });
 
+    this.form.get('name').valueChanges.subscribe(data => this.onNameValueChanged(data));
     this.form.get('permanent').valueChanges.subscribe(data => this.onPermanentValueChanged(data));
 
   	if (this.data.buff) {
+      // If a buff input was provided, we are editing a buff.
   		this.form.patchValue(this.data.buff);
   	}
-  	this.playerGroup = this.data.order.filter(cr => cr.hp == undefined);
-  	this.monsterGroup = this.data.order.filter(cr => cr.hp != undefined && cr.visible);
+  }
+
+  displayName(condition?: MockCondition): string | undefined {
+    return condition ? condition.name : undefined;
+  }
+
+  filter(val: string): MockCondition[] {
+    return this.conditions.filter(c =>
+      c.name.toLowerCase().includes(val.toLowerCase()));
+  }
+
+  onNameValueChanged(name: string): void {
+    let condition = this.conditions.find(c => c.name == name);
+    if (condition) {
+      this.form.get('description').setValue(condition.description);
+    }
   }
 
   onPermanentValueChanged(selected: boolean): void {
@@ -69,6 +107,29 @@ export class BuffFormComponent implements OnInit {
 
   compareFn(c1, c2) {
   	return c1 && c2 ? c1.id == c2.id : c1 == c2;
+  }
+
+  getDisplayName(monster: MonsterI): string {
+    if (this.data.playerView) {
+      if (this.playerOptions.nameOption == VisibleOption.NoShow) {
+        return `Monster (init ${(monster as any).initiative})`;
+      }
+      let displayName = monster.basics.name;
+      if (this.playerOptions.nameOption == VisibleOption.ShowNameAndNumber && monster.basics.quantity > 1) {
+        displayName = `${displayName} (${monster.basics.idx})`;
+      }
+      return displayName;
+    } else {
+      let displayName = monster.basics.name;
+      if (monster.basics.quantity > 1) {
+        displayName = `${displayName} (${monster.basics.idx} of ${monster.basics.quantity})`;
+      }
+      return displayName;
+    }
+  }
+
+  shouldShowMonster(monster: Creature): boolean {
+    return !this.data.playerView || monster.visible;
   }
 
   trySubmit(): void {

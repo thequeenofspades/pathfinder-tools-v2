@@ -1,15 +1,20 @@
 <h1 mat-dialog-title>
-	<ng-container *ngIf="this.data.buff">Edit Effect</ng-container>
-	<ng-container *ngIf="!this.data.buff">Add Effect</ng-container>
+	<ng-container *ngIf="data.buff">Edit Effect</ng-container>
+  <ng-container *ngIf="!data.buff">Add Effect</ng-container>
 </h1>
-<div mat-dialog-content>
+<div mat-dialog-content *ngIf="form">
   <form [formGroup]="form" (ngSubmit)="trySubmit()">
     <div fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="10px">
       <div fxLayout="column">
         <mat-form-field appearance="outline">
-          <mat-label>Name</mat-label>
-          <input type="text" matInput formControlName="name" required (keyup.enter)="trySubmit()">
+          <mat-label>Condition</mat-label>
+          <input type="text" matInput formControlName="name" [matAutocomplete]="auto" required>
         </mat-form-field>
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let condition of filteredConditions | async" [value]="condition.name">
+            {{condition.name}}
+          </mat-option>
+        </mat-autocomplete>
 
         <mat-checkbox formControlName="permanent" (keyup.enter)="trySubmit()">Permanent</mat-checkbox>
 
@@ -34,9 +39,7 @@
           	</mat-optgroup>
           	<mat-optgroup [label]="'Monsters'">
           		<mat-option *ngFor="let creature of monsterGroup" [value]="creature">
-          			<ng-container *ngIf="data.showNames != 'Don\'t show'">{{creature.name}}</ng-container>
-          			<ng-container *ngIf="data.showNames == 'Don\'t show'">Monster</ng-container>
-          			<ng-container *ngIf="data.showNames == 'Show names and numbers' && creature.basics?.quantity > 1"> ({{ creature.basics.idx }} of {{ creature.basics.quantity }})</ng-container>
+                {{getDisplayName(creature)}}
           		</mat-option>
           	</mat-optgroup>
           </mat-select>
@@ -51,7 +54,7 @@
     </div>
   </form>
 </div>
-<div mat-dialog-actions>
+<div mat-dialog-actions *ngIf="form">
   <button mat-raised-button (click)="onCancel()">Cancel</button>
   <button mat-raised-button color="primary" (click)="trySubmit()" [disabled]="form.invalid">Submit</button>
 </div>

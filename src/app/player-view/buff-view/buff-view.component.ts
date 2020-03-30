@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { BuffFormComponent } from '../buff-form/buff-form.component';
-import { InitiativeService } from '../../dashboard/initiative.service';
+import { InitiativeService, PlayerOptions } from '../../dashboard/initiative.service';
 import { Creature } from '../../dashboard/monster';
 import { Condition } from '../../dashboard/condition';
 
@@ -13,45 +13,43 @@ import { Condition } from '../../dashboard/condition';
 })
 export class BuffViewComponent implements OnInit {
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog,
+    public initService: InitiativeService) { }
 
   ngOnInit() {
   }
-
-  @Input() initiativeService: InitiativeService;
-  @Input() buffs: Condition[];
-  @Input() order: Creature[];
-  @Input() active: number;
-  @Input() showNames: string;
 
   public focusedBuffId : string;
 
   openBuffFormDialog(buff?: Condition): void {
     let dialogRef = this.dialog.open(BuffFormComponent, {
       width: '500px',
-      data: {buff: buff, order: this.order, active: this.active, showNames: this.showNames}
+      data: {
+        buff: buff,
+        initService: this.initService,
+        playerView: true
+      }
     });
     dialogRef.afterClosed().subscribe(newBuff => {
       if (newBuff !== undefined && buff == undefined) {
         newBuff.playerVisible = 2;
-        this.initiativeService.addBuff(newBuff);
+        this.initService.addBuff(newBuff);
       } else if (newBuff != undefined) {
-      	console.log('updating buff');
-      	this.initiativeService.updateBuff({...newBuff, id: buff.id, color: buff.color});
+      	this.initService.updateBuff({...newBuff, id: buff.id, color: buff.color});
       }
     });
   }
 
   clearBuffs(): void {
-    this.initiativeService.clearBuffs();
+    this.initService.clearBuffs();
   }
 
   removeBuff(buff: Condition): void {
-  	this.initiativeService.removeBuff(buff);
+  	this.initService.removeBuff(buff);
   }
 
   rerollColor(buff: Condition): void {
-  	this.initiativeService.changeBuffColor(buff);
+  	this.initService.changeBuffColor(buff);
   }
 
   buffTrackByFn(index, buff) {
