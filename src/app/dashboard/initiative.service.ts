@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable, of, from } from 'rxjs';
-import { take, map } from 'rxjs/operators';
+import { take, map, reduce } from 'rxjs/operators';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { randomColor } from 'randomcolor';
 
@@ -13,7 +13,7 @@ export class Initiative {
   active: number;
   round: number;
   playerOptions: PlayerOptions;
-  buffs: Condition[];
+  conditions: Condition[];
   timestamp: number;
 }
 
@@ -59,7 +59,7 @@ export class InitiativeService {
         this.initDoc.set({
           order: [],
           active: 0,
-          buffs: [],
+          conditions: [],
           round: 1,
           playerOptions: defaultPlayerOptions,
           timestamp: Date.now()});
@@ -206,7 +206,7 @@ export class InitiativeService {
     this.initDoc.ref.get().then(doc => {
       let active = doc.data().active || 0;
       let order = (doc.data().order as Creature[]) || [];
-      let buffs = doc.data().buffs || [];
+      let conditions = doc.data().conditions || [];
       let round = doc.data().round || 1;
       let prev = (order[active] as any).initiative;
       active += 1;
@@ -215,9 +215,9 @@ export class InitiativeService {
         round += 1;
       }
       let curr = (order[active] as any).initiative;
-      buffs = this.updateBuffs(prev, curr, buffs);
+      conditions = this.updateConditions(prev, curr, conditions);
       order[active].delayed = false;
-      this.initDoc.update({active: active, order: order, round: round, buffs: buffs}).then(_ => {
+      this.initDoc.update({active: active, order: order, round: round, conditions: conditions}).then(_ => {
         this.active.next(order[active]);
       });
     });
@@ -240,24 +240,24 @@ export class InitiativeService {
     });
   }
 
-  updateBuffs(prev: number, curr: number, buffs: Condition[]): {}[] {
-    return buffs.map(buff => {
-      if (buff.permanent) {
-        return buff;
+  updateConditions(prev: number, curr: number, conditions: Condition[]): {}[] {
+    return conditions.map(condition => {
+      if (condition.permanent) {
+        return condition;
       }
-      let duration = buff.duration;
-      if (prev < curr && curr < buff.initiative) {  // we're at the top of a new round
+      let duration = condition.duration;
+      if (prev < curr && curr < condition.initiative) {  // we're at the top of a new round
         duration -= 1;
-      } else if (prev > buff.initiative && curr <= buff.initiative) {
+      } else if (prev > condition.initiative && curr <= condition.initiative) {
         duration -= 1;
       }
-      let buffCopy = {
-        ...buff,
+      let conditionCopy = {
+        ...condition,
         duration: duration
       };
-      return buffCopy;
-    }).filter(buff => {
-      return buff.permanent || buff.duration > 0;
+      return conditionCopy;
+    }).filter(condition => {
+      return condition.permanent || condition.duration > 0;
     });
   }
 
@@ -371,64 +371,64 @@ export class InitiativeService {
     });
   }
 
-  addBuff(buff: Condition): void {
+  addCondition(condition: Condition): void {
     this.initDoc.ref.get().then(doc => {
-      let buffs = doc.data().buffs || [];
-      let buffCopy = {
-        ...buff,
+      let conditions = doc.data().conditions || [];
+      let conditionCopy = {
+        ...condition,
         id: this.db.createId(),
         color: randomColor({luminosity: 'light'})
       };
-      buffs.push(buffCopy);
-      this.initDoc.update({buffs: buffs});
+      conditions.push(conditionCopy);
+      this.initDoc.update({conditions: conditions});
     });
   }
 
-  // Do not use this for updating multiple buffs due to synchronicity issues.
-  // Use "updateMultipleBuffs()" instead.
-  updateBuff(buff: Condition): void {
+  // Do not use this for updating multiple conditions due to synchronicity issues.
+  // Use "updateMultipleConditions()" instead.
+  updateCondition(condition: Condition): void {
     this.initDoc.ref.get().then(doc => {
-      let buffs = doc.data().buffs || [];
-      let buffIdx = buffs.findIndex(b => b.id == buff.id);
-      buffs[buffIdx] = buff;
-      this.initDoc.update({buffs: buffs});
+      let conditions = doc.data().conditions || [];
+      let conditionIdx = conditions.findIndex(b => b.id == condition.id);
+      conditions[conditionIdx] = condition;
+      this.initDoc.update({conditions: conditions});
     });
   }
 
-  // Replace all active buffs with a new list.
-  updateMultipleBuffs(buffs: Condition[]): void {
-    this.initDoc.update({buffs: buffs});
+  // Replace all active conditions with a new list.
+  updateMultipleConditions(conditions: Condition[]): void {
+    this.initDoc.update({conditions: conditions});
   }
 
-  removeBuff(buff: Condition): void {
+  removeCondition(condition: Condition): void {
     this.initDoc.ref.get().then(doc => {
-      let buffs = doc.data().buffs || [];
-      buffs = buffs.filter(b => b.id != buff.id);
-      this.initDoc.update({buffs: buffs});
+      let conditions = doc.data().conditions || [];
+      conditions = conditions.filter(b => b.id != condition.id);
+      this.initDoc.update({conditions: conditions});
     });
   }
 
-  removeBuffFromCreature(buff: Condition, creature: Creature): void {
-    buff.affected = buff.affected.filter(affected => {
+  removeConditionFromCreature(condition: Condition, creature: Creature): void {
+    condition.affected = condition.affected.filter(affected => {
       return affected.id != creature.id;
     });
-    if (buff.affected.length == 0) {
-      this.removeBuff(buff);
+    if (condition.affected.length == 0) {
+      this.removeCondition(condition);
     } else {
-      this.updateBuff(buff);
+      this.updateCondition(condition);
     }
   }
 
-  clearBuffs(): void {
-    this.initDoc.update({buffs: []});
+  clearConditions(): void {
+    this.initDoc.update({conditions: []});
   }
 
-  changeBuffColor(buff: Condition): void {
+  changeConditionColor(condition: Condition): void {
     this.initDoc.ref.get().then(doc => {
-      let buffs = doc.data().buffs || [];
-      let buffIndex = buffs.findIndex(b => b.id == buff.id);
-      buffs[buffIndex].color = randomColor();
-      this.initDoc.update({buffs: buffs});
+      let conditions = doc.data().conditions || [];
+      let conditionIndex = conditions.findIndex(b => b.id == condition.id);
+      conditions[conditionIndex].color = randomColor();
+      this.initDoc.update({conditions: conditions});
     });
   }
 
@@ -443,7 +443,7 @@ export class InitiativeService {
     }
 
     this.initDoc.ref.get().then(doc => {
-      let buffs = doc.data().buffs || [];
+      let conditions = doc.data().conditions || [];
 
       if (newStatus == 'healthy') {
         this.messageService.add(`${monster.name} became healthy`);
@@ -461,7 +461,7 @@ export class InitiativeService {
         this.messageService.add(`${monster.name} is at 0 hp and disabled`);
       }
 
-      return this.applyStatusCondition(monster, buffs, newStatus);
+      return this.applyStatusCondition(monster, conditions, newStatus);
     });    
   }
 
@@ -505,6 +505,7 @@ export class InitiativeService {
         let statusCondition: Condition = {
             id: this.db.createId(),
             name: status,
+            color: randomColor({luminosity: 'light'}),
             permanent: true,
             description: CONDITIONS.find(c => c.name == status).description,
             affected: [monster],
@@ -523,7 +524,7 @@ export class InitiativeService {
       }
     });
 
-    this.updateMultipleBuffs(conditions);
+    this.updateMultipleConditions(conditions);
     return true;
   }
 

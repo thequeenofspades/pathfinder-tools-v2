@@ -11,13 +11,13 @@
 					<ng-container *ngIf="!creature.hp || creature.visible">
 						<td class="mat-cell initiativeCell left-aligned-cell">
 							{{creature.initiative}}
-							<ng-container *ngFor="let buff of getBuffDecrements(init.order, i, init.buffs); trackBy: buffTrackByFn">
-								<mat-icon	[ngStyle]="{'color': buff.color}"
+							<ng-container *ngFor="let condition of getConditionDecrements(init.order, i, init.conditions); trackBy: conditionTrackByFn">
+								<mat-icon	[ngStyle]="{'color': condition.color}"
 											class="decrease-icon"
-											[ngClass]="{'decrease-icon-focused': buffViewComponent.focusedBuffId == buff.id}"
-											matTooltip="{{buff.name}}"
-											(mouseover)="mouseoverBuff(buff)"
-											(mouseout)="mouseoutBuff()">
+											[ngClass]="{'decrease-icon-focused': conditionViewComponent.focusedConditionId == condition.id}"
+											matTooltip="{{condition.name}}"
+											(mouseover)="mouseoverCondition(condition)"
+											(mouseout)="mouseoutCondition()">
 									trending_down
 								</mat-icon>
 							</ng-container>
@@ -34,11 +34,11 @@
 								</span>
 								{{ getDisplayIdx(creature, init.playerOptions) }}
 							</ng-container>
-							<ng-container *ngFor="let buff of getBuffs(creature, init.buffs); trackBy: buffTrackByFn">
-								<span (mouseover)="mouseoverBuff(buff)" (mouseout)="mouseoutBuff()">
-									<mat-icon 	[ngStyle]="{'color': buff.color}"
-												[ngClass]="{'buff-icon': buffViewComponent.focusedBuffId != buff.id, 'buff-icon-focused': buffViewComponent.focusedBuffId == buff.id}"
-												matTooltip="{{buff.name}}">
+							<ng-container *ngFor="let condition of getConditions(creature, init.conditions); trackBy: conditionTrackByFn">
+								<span (mouseover)="mouseoverCondition(condition)" (mouseout)="mouseoutCondition()">
+									<mat-icon 	[ngStyle]="{'color': condition.color}"
+												[ngClass]="{'condition-icon': conditionViewComponent.focusedConditionId != condition.id, 'condition-icon-focused': conditionViewComponent.focusedConditionId == condition.id}"
+												matTooltip="{{condition.name}}">
 										brightness_1
 									</mat-icon>
 								</span>
@@ -63,10 +63,10 @@
 				</tr>
 			</table>
 
-			<div class="buff-view">
-				<app-buff-view
-					#buffViewComponent
-					fxFlex="1 1 auto"></app-buff-view>
+			<div class="condition-view">
+				<app-condition-view
+					#conditionViewComponent
+					fxFlex="1 1 auto"></app-condition-view>
 			</div>
 
 		</div>

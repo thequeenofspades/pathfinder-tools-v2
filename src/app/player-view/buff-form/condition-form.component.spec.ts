@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BuffViewComponent } from './buff-view.component';
+import { ConditionFormComponent } from './condition-form.component';
 
-describe('BuffViewComponent', () => {
-  let component: BuffViewComponent;
-  let fixture: ComponentFixture<BuffViewComponent>;
+describe('ConditionFormComponent', () => {
+  let component: ConditionFormComponent;
+  let fixture: ComponentFixture<ConditionFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BuffViewComponent ]
+      declarations: [ ConditionFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BuffViewComponent);
+    fixture = TestBed.createComponent(ConditionFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Condition, CONDITIONS } from '../../dashboard/condition';
 import { PlayerOptions, InitiativeService, Initiative, ShowNamesOption } from '../../dashboard/initiative.service';
 import { Observable, Subscription } from 'rxjs';
-import { Creature, MonsterI, Monster } from '../../dashboard/monster';
+import { Creature, MonsterI } from '../../dashboard/monster';
 import { startWith, map } from 'rxjs/operators';
 
 interface MockCondition {
@@ -13,15 +13,15 @@ interface MockCondition {
 }
 
 @Component({
-  selector: 'app-buff-form',
-  templateUrl: './buff-form.component.html',
-  styleUrls: ['./buff-form.component.css']
+  selector: 'app-condition-form',
+  templateUrl: './condition-form.component.html',
+  styleUrls: ['./condition-form.component.css']
 })
-export class BuffFormComponent implements OnInit {
+export class ConditionFormComponent implements OnInit {
 
-  constructor(public dialogRef: MatDialogRef<BuffFormComponent>,
+  constructor(public dialogRef: MatDialogRef<ConditionFormComponent>,
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: {buff: Condition, creature: Creature, initService: InitiativeService, playerView: boolean}) { }
+    @Inject(MAT_DIALOG_DATA) public data: {condition: Condition, creature: Creature, initService: InitiativeService, playerView: boolean}) { }
     
   private active: number = 0;
   conditions: MockCondition[];
@@ -72,13 +72,13 @@ export class BuffFormComponent implements OnInit {
     this.form.get('playersCanSeeDuration').valueChanges.subscribe(data => this.onPlayersCanSeeDurationValueChanged(data));
     this.form.get('visibleToPlayers').valueChanges.subscribe(data => this.onVisibleToPlayersValueChanged(data));
 
-  	if (this.data.buff) {
-      // If a buff input was provided, we are editing a buff.
-      this.form.patchValue(this.data.buff);
-      if (this.data.buff.playerVisible < 2) {
+  	if (this.data.condition) {
+      // If a condition input was provided, we are editing a condition.
+      this.form.patchValue(this.data.condition);
+      if (this.data.condition.playerVisible < 2) {
         this.form.get('playersCanSeeDuration').setValue(false);
       }
-      if (this.data.buff.playerVisible < 1) {
+      if (this.data.condition.playerVisible < 1) {
         this.form.get('visibleToPlayers').setValue(false);
       }
       this.form.get('visibleToPlayers').updateValueAndValidity();

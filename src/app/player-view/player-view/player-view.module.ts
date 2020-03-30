@@ -7,8 +7,8 @@ import { NoSessionComponent } from '../no-session/no-session.component';
 
 import { MaterialModule } from '../../material-module/material-module.module';
 import { PlayerViewRoutingModule } from '../player-view-routing/player-view-routing.module';
-import { BuffFormComponent } from '../buff-form/buff-form.component';
-import { BuffViewComponent } from '../buff-view/buff-view.component';
+import { ConditionFormComponent } from '../condition-form/condition-form.component';
+import { ConditionViewComponent } from '../condition-view/condition-view.component';
 
 @NgModule({
   imports: [
@@ -21,11 +21,11 @@ import { BuffViewComponent } from '../buff-view/buff-view.component';
   declarations: [
   	PlayerViewComponent,
   	NoSessionComponent,
-  	BuffFormComponent,
-  	BuffViewComponent
+  	ConditionFormComponent,
+  	ConditionViewComponent
   ],
   entryComponents: [
-    BuffFormComponent
+    ConditionFormComponent
   ]
 })
 export class PlayerViewModule { }

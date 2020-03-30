@@ -1,0 +1,33 @@
+@import '../../../pf-app-theme.scss';
+
+.conditions-view {
+	padding: 5px;
+}
+
+.conditions-container {
+	padding: 6px;
+}
+
+.condition-description {
+	font-size: small;
+	margin-left: 40px;
+	padding-right: 12px;
+	max-width: 30vw;
+}
+
+.condition-focused {
+	background: mat-color($pf-app-primary);
+	border-radius: 12px;
+}
+
+.condition-duration {
+	border-radius: 50%;
+	color: black;
+	cursor: pointer;
+	font-size: 14px;
+	height: 24px;
+	line-height: 24px;
+	margin-right: 6px;
+	text-align: center;
+	width: 24px;
+}

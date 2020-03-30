@@ -1,0 +1,36 @@
+<div class="conditions-view" *ngIf="initService.init$ | async as init">
+
+	<div	*ngFor="let condition of sortedConditions(init.conditions)"
+			class="conditions-container"
+			[ngClass]="{'condition-focused': condition.id == focusedConditionId}"
+			(mouseover)="mouseoverCondition(condition)" 
+			(mouseout)="mouseoutCondition()">
+		<div fxLayout="row" fxLayoutAlign="space-between center">
+			<div fxLayout="row" fxLayoutAlign="center center">
+				<span class="condition-duration" (click)="rerollColor(condition)" [ngStyle]="{'background-color': condition.color}" matTooltip="Change color">
+					<ng-container *ngIf="condition.playerVisible > 1">{{condition.duration}}</ng-container>
+					<ng-container *ngIf="!condition.playerVisible || condition.playerVisible < 2">?</ng-container>
+				</span>
+				<span>{{condition.name}}</span>
+			</div>
+			<button mat-icon-button [matMenuTriggerFor]="menu">
+				<mat-icon>more_vert</mat-icon>
+			</button>
+		</div>
+		<mat-menu #menu="matMenu">
+			<button mat-menu-item (click)="openConditionFormDialog(condition)">
+				<mat-icon>edit</mat-icon>
+				<span>Edit</span>
+			</button>
+			<button mat-menu-item (click)="removeCondition(condition)">
+				<mat-icon>delete</mat-icon>
+				<span>Remove</span>
+			</button>
+		</mat-menu>
+
+		<div *ngIf="condition.description.length && condition.id == condition" class="condition-description">{{condition.description}}</div>
+	</div>
+
+	<button mat-button (click)="openConditionFormDialog()"><mat-icon svgIcon="plus"></mat-icon> Condition</button>
+
+</div>

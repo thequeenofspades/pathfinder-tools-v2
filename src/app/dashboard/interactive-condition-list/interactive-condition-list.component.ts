@@ -18,13 +18,13 @@ export class InteractiveConditionListComponent implements OnInit {
   ngOnInit() {
   }
 
-  @Input() buffs: Condition[];
+  @Input() conditions: Condition[];
   @Input() creature: Creature;
   @Output() clickEvent = new EventEmitter<Condition>();
   @Output() editEvent = new EventEmitter<Condition>();
 
   changeColor(condition: Condition) {
-    this.is.changeBuffColor(condition);
+    this.is.changeConditionColor(condition);
   }
 
   click(condition: Condition) {
@@ -36,17 +36,17 @@ export class InteractiveConditionListComponent implements OnInit {
   }
 
   removeCondition(condition: Condition) {
-    this.is.removeBuffFromCreature(condition, this.creature);
+    this.is.removeConditionFromCreature(condition, this.creature);
   }
 
-  getBuffs(creature: Creature): Condition[] {
-    return (this.buffs || []).filter(buff => {
-      return (buff.affected || []).find(cr => cr.id == creature.id);
+  getConditions(creature: Creature): Condition[] {
+    return (this.conditions || []).filter(condition => {
+      return (condition.affected || []).find(cr => cr.id == creature.id);
     });
   }
 
-  buffTrackByFn(index, buff) {
-    return buff.color;
+  conditionTrackByFn(index, condition) {
+    return condition.color;
   }
 
 }

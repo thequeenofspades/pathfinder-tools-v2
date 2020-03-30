@@ -1,0 +1,67 @@
+<h1 mat-dialog-title>
+	<ng-container *ngIf="data.condition">Edit Effect</ng-container>
+  <ng-container *ngIf="!data.condition">Add Effect</ng-container>
+</h1>
+<div mat-dialog-content *ngIf="form">
+  <form [formGroup]="form" (ngSubmit)="trySubmit()">
+    <div fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="10px">
+      <div fxLayout="column">
+        <mat-form-field appearance="outline">
+          <mat-label>Condition</mat-label>
+          <input type="text" matInput formControlName="name" [matAutocomplete]="auto" required>
+        </mat-form-field>
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let condition of filteredConditions | async" [value]="condition.name">
+            {{condition.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-checkbox formControlName="permanent" (keyup.enter)="trySubmit()">Permanent</mat-checkbox>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Duration (rounds)</mat-label>
+          <input type="number" matInput formControlName="duration" required (keyup.enter)="trySubmit()">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Initiative Count</mat-label>
+          <input type="number" matInput formControlName="initiative" required (keyup.enter)="trySubmit()">
+          <mat-hint align="start">When duration ticks down</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Affected Creatures</mat-label>
+          <mat-select placeholder="Choose creatures..." [compareWith]="compareFn" formControlName="affected" multiple (keyup.enter)="trySubmit()" required>
+          	<mat-optgroup [label]="'Players'">
+          		<mat-option *ngFor="let creature of playerGroup" [value]="creature">
+          			{{creature.name}}
+          		</mat-option>
+          	</mat-optgroup>
+          	<mat-optgroup [label]="'Monsters'">
+          		<mat-option *ngFor="let creature of monsterGroup" [value]="creature">
+                {{getDisplayName(creature)}}
+          		</mat-option>
+          	</mat-optgroup>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+
+      <div fxLayout="column">
+        <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <textarea matInput matTextareaAutosize [matAutosizeMaxRows]="9" formControlName="description"></textarea>
+        </mat-form-field>
+
+        <ng-container *ngIf="!data.playerView">
+          <mat-checkbox formControlName="visibleToPlayers" (keyup.enter)="trySubmit()">Visible to players</mat-checkbox>
+          <mat-checkbox formControlName="playersCanSeeDuration" (keyup.enter)="trySubmit()">Players can see duration</mat-checkbox>
+        </ng-container>
+      </div>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions *ngIf="form">
+  <button mat-raised-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="trySubmit()" [disabled]="form.invalid">Submit</button>
+</div>

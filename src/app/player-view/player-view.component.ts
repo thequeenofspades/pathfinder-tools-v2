@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { InitiativeService, ShowNamesOption, PlayerOptions } from '../dashboard/initiative.service';
 import { Creature, MonsterI } from '../dashboard/monster';
-import { BuffViewComponent } from './buff-view/buff-view.component';
+import { ConditionViewComponent } from './condition-view/condition-view.component';
 import { Condition } from '../dashboard/condition';
 
 @Component({
@@ -19,7 +19,7 @@ export class PlayerViewComponent implements OnInit {
   constructor(public initiativeService: InitiativeService,
     private route: ActivatedRoute) { }
 
-  @ViewChild(BuffViewComponent) public buffViewComponent: BuffViewComponent;
+  @ViewChild(ConditionViewComponent) public conditionViewComponent: ConditionViewComponent;
 
   ngOnInit() {
     this.route.data.subscribe((data: {id: string}) => {
@@ -44,27 +44,27 @@ export class PlayerViewComponent implements OnInit {
     return {idx: activeCreatureIdx, imageUrl: activeCreature.imageUrl};
   }
 
-  getBuffs(creature: Creature, buffs: Condition[]): Condition[] {
-    return (buffs || []).filter(buff => {
-      return (buff.affected || []).find(cr => cr.id == creature.id);
-    }).filter(buff => {
-      return buff.playerVisible == undefined || buff.playerVisible > 0;
+  getConditions(creature: Creature, conditions: Condition[]): Condition[] {
+    return (conditions || []).filter(condition => {
+      return (condition.affected || []).find(cr => cr.id == creature.id);
+    }).filter(condition => {
+      return condition.playerVisible == undefined || condition.playerVisible > 0;
     });
   }
 
-  getBuffDecrements(order: {initiative: number, id: string, hp: number, visible: boolean}[],
+  getConditionDecrements(order: {initiative: number, id: string, hp: number, visible: boolean}[],
                     i: number,
-                    buffs: Condition[]): Condition[] {
+                    conditions: Condition[]): Condition[] {
     let id = order[i].id;
     order = order.filter(c => c.hp == undefined || c.visible);
     i = order.findIndex(c => c.id == id);
-    return (buffs || []).filter(buff => {
+    return (conditions || []).filter(condition => {
       let prev = i - 1;
       if (prev < 0) {
-        if (order[i].initiative <= buff.initiative) {
+        if (order[i].initiative <= condition.initiative) {
           return true;
         }
-      } else if (order[prev].initiative > buff.initiative && order[i].initiative <= buff.initiative) {
+      } else if (order[prev].initiative > condition.initiative && order[i].initiative <= condition.initiative) {
         return true;
       }
       return false;
@@ -85,16 +85,16 @@ export class PlayerViewComponent implements OnInit {
     return `(${monster.basics.idx})`;
   }
 
-  mouseoverBuff(buff: Condition) {
-    this.buffViewComponent.focusedBuffId = buff.id;
+  mouseoverCondition(condition: Condition) {
+    this.conditionViewComponent.focusedConditionId = condition.id;
   }
 
-  mouseoutBuff() {
-    this.buffViewComponent.focusedBuffId = undefined;
+  mouseoutCondition() {
+    this.conditionViewComponent.focusedConditionId = undefined;
   }
 
-  buffTrackByFn(index, buff: Condition) {
-    return buff.color;
+  conditionTrackByFn(index, condition: Condition) {
+    return condition.color;
   }
 
   healthCategory(percent: number): string {

@@ -63,7 +63,7 @@
 									</span>
 									<mat-progress-bar mode="determinate" color="warn" [value]="100*(creature.currentHp/creature.hp)"></mat-progress-bar>
 								</div>
-								<app-interactive-condition-list [buffs]="init.buffs" [creature]="creature" (clickEvent)="openConditionDetailDialog($event)" (editEvent)="openConditionFormDialog(creature, $event)"></app-interactive-condition-list>
+								<app-interactive-condition-list [conditions]="init.conditions" [creature]="creature" (clickEvent)="openConditionDetailDialog($event)" (editEvent)="openConditionFormDialog(creature, $event)"></app-interactive-condition-list>
 							</div>
 						</td>
 

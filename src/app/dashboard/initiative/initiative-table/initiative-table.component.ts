@@ -10,7 +10,7 @@ import { DamageFormComponent } from '../damage-form.component';
 import { ConditionDetailComponent } from '../condition-detail/condition-detail.component';
 import { CreatureDetailComponent } from '../creature-detail/creature-detail.component';
 import { CreaturePopoutComponent } from '../creature-detail/creature-popout.component';
-import { BuffFormComponent } from '../../../player-view/buff-form/buff-form.component';
+import { ConditionFormComponent } from '../../../player-view/condition-form/condition-form.component';
 
 @Component({
   selector: 'app-initiative-table',
@@ -99,20 +99,20 @@ export class InitiativeTableComponent implements OnInit {
 
   openConditionFormDialog(creature: Creature, condition: Condition = undefined): void {
     this.listenArrowKeys = false;
-    let dialogRef = this.dialog.open(BuffFormComponent, {
+    let dialogRef = this.dialog.open(ConditionFormComponent, {
       data: {
-        buff: condition,
+        condition: condition,
         creature: creature,
         initService: this.initiativeService,
         playerView: false
       },
       width: '500px'
     });
-    dialogRef.afterClosed().subscribe(newBuff => {
-      if (newBuff !== undefined && condition == undefined) {
-        this.initiativeService.addBuff(newBuff);
-      } else if (newBuff != undefined) {
-      	this.initiativeService.updateBuff({...newBuff, id: condition.id, color: condition.color});
+    dialogRef.afterClosed().subscribe(newCondition => {
+      if (newCondition !== undefined && condition == undefined) {
+        this.initiativeService.addCondition(newCondition);
+      } else if (newCondition != undefined) {
+      	this.initiativeService.updateCondition({...newCondition, id: condition.id, color: condition.color});
       }
     });
   }

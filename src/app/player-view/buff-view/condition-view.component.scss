@@ -1,26 +1,26 @@
 @import '../../../pf-app-theme.scss';
 
-.buffs-view {
+.conditions-view {
 	padding: 5px;
 }
 
-.buffs-container {
+.conditions-container {
 	padding: 6px;
 }
 
-.buff-description {
+.condition-description {
 	font-size: small;
 	margin-left: 40px;
 	padding-right: 12px;
 	max-width: 30vw;
 }
 
-.buff-focused {
+.condition-focused {
 	background: mat-color($pf-app-primary);
 	border-radius: 12px;
 }
 
-.buff-duration {
+.condition-duration {
 	border-radius: 50%;
 	color: black;
 	cursor: pointer;
