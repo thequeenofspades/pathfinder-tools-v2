@@ -28,7 +28,7 @@
 </mat-accordion>
 <div class="container" fxLayout="row wrap" fxLayoutAlign="center start" fxLayout.xs="column">
 	<ng-container *ngIf="encounterService.encounters$ | async as encounters">
-		<mat-card *ngFor="let encounter of sortedEncounters(encounters)" class="player-card" fxFlex="1 0 500px">
+		<mat-card *ngFor="let encounter of sortedEncounters(encounters)" class="monster-card" fxFlex="1 0 500px">
 			<mat-card-title>
 				{{encounter.name}} <span *ngIf="crForEncounter(encounter)">(CR {{crForEncounter(encounter)}})</span>
 				<ng-container *ngIf="!encounter.new && !encounter.edit">
