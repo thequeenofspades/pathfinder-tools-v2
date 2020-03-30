@@ -8,7 +8,8 @@
 		<div fxLayout="row" fxLayoutAlign="space-between center">
 			<div fxLayout="row" fxLayoutAlign="center center">
 				<span class="buff-duration" (click)="rerollColor(buff)" [ngStyle]="{'background-color': buff.color}" matTooltip="Change color">
-					<ng-container *ngIf="buff.playerVisible == undefined || buff.playerVisible > 1">{{buff.duration}}</ng-container>
+					<ng-container *ngIf="buff.playerVisible > 1">{{buff.duration}}</ng-container>
+					<ng-container *ngIf="!buff.playerVisible || buff.playerVisible < 2">?</ng-container>
 				</span>
 				<span>{{buff.name}}</span>
 			</div>

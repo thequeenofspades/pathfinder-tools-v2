@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { InitiativeService } from '../dashboard/initiative.service';
-import { Creature } from '../dashboard/monster';
+import { InitiativeService, ShowNamesOption, PlayerOptions } from '../dashboard/initiative.service';
+import { Creature, MonsterI } from '../dashboard/monster';
 import { BuffViewComponent } from './buff-view/buff-view.component';
 import { Condition } from '../dashboard/condition';
 
@@ -48,7 +48,7 @@ export class PlayerViewComponent implements OnInit {
     return (buffs || []).filter(buff => {
       return (buff.affected || []).find(cr => cr.id == creature.id);
     }).filter(buff => {
-      return buff.playerVisible == undefined || buff.playerVisible > 1;
+      return buff.playerVisible == undefined || buff.playerVisible > 0;
     });
   }
 
@@ -69,6 +69,20 @@ export class PlayerViewComponent implements OnInit {
       }
       return false;
     });
+  }
+
+  getDisplayName(monster: MonsterI, playerOptions: PlayerOptions): string {
+    if (!playerOptions || playerOptions.nameOption == ShowNamesOption.NoShow) {
+      return `Monster`;
+    }
+    return monster.basics.name;
+  }
+
+  getDisplayIdx(monster: MonsterI, playerOptions: PlayerOptions): string {
+    if (!playerOptions || playerOptions.nameOption != ShowNamesOption.ShowNameAndNumber) {
+      return "";
+    }
+    return `(${monster.basics.idx})`;
   }
 
   mouseoverBuff(buff: Condition) {

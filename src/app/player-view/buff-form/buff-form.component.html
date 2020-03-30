@@ -47,10 +47,17 @@
 
       </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Description</mat-label>
-        <textarea matInput matTextareaAutosize [matAutosizeMaxRows]="9" formControlName="description"></textarea>
-      </mat-form-field>
+      <div fxLayout="column">
+        <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <textarea matInput matTextareaAutosize [matAutosizeMaxRows]="9" formControlName="description"></textarea>
+        </mat-form-field>
+
+        <ng-container *ngIf="!data.playerView">
+          <mat-checkbox formControlName="visibleToPlayers" (keyup.enter)="trySubmit()">Visible to players</mat-checkbox>
+          <mat-checkbox formControlName="playersCanSeeDuration" (keyup.enter)="trySubmit()">Players can see duration</mat-checkbox>
+        </ng-container>
+      </div>
     </div>
   </form>
 </div>

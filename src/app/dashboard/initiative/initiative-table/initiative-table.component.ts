@@ -97,22 +97,24 @@ export class InitiativeTableComponent implements OnInit {
     });
   }
 
-  openConditionFormDialog(creature: Creature): void {
+  openConditionFormDialog(creature: Creature, condition: Condition = undefined): void {
     this.listenArrowKeys = false;
     let dialogRef = this.dialog.open(BuffFormComponent, {
       data: {
+        buff: condition,
         creature: creature,
         initService: this.initiativeService,
         playerView: false
       },
       width: '500px'
     });
-    dialogRef.afterClosed().subscribe(condition => {
-      this.listenArrowKeys = true;
-      if (condition != undefined) {
-        this.initiativeService.addBuff(condition);
+    dialogRef.afterClosed().subscribe(newBuff => {
+      if (newBuff !== undefined && condition == undefined) {
+        this.initiativeService.addBuff(newBuff);
+      } else if (newBuff != undefined) {
+      	this.initiativeService.updateBuff({...newBuff, id: condition.id, color: condition.color});
       }
-    })
+    });
   }
 
   openConditionDetailDialog(condition: Condition): void {

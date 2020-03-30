@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
-import { InitiativeService } from '../../initiative.service';
+import { InitiativeService, ShowNamesOption } from '../../initiative.service';
 
 @Component({
   selector: 'app-player-view-options',
@@ -31,7 +31,7 @@ export class PlayerViewOptionsComponent implements OnInit {
 
   optionsForm: FormGroup;
 
-  nameOptions: string[] = ['Show names and numbers', 'Show names', "Don't show"];
+  nameOptions: string[] = [ShowNamesOption.NoShow, ShowNamesOption.ShowNameOnly, ShowNamesOption.ShowNameAndNumber];
   healthOptions: string[] = ['Health bar', 'Detailed', 'Vague', 'None'];
   visibleOptions: string[] = ['visible', 'invisible'];
 

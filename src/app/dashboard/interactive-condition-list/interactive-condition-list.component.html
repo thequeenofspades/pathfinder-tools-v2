@@ -1,10 +1,18 @@
 <mat-chip-list>
 	<mat-chip	*ngFor="let buff of getBuffs(creature); trackBy: buffTrackByFn"
 				(click)="click(buff)">
-		<ng-container *ngIf="!buff.permanent">
-			<span matChipAvatar class="buff-chip-avatar" [ngStyle]="{'background-color': buff.color}">{{buff.duration}}</span>
-		</ng-container>
+		<span matChipAvatar appStopClick class="buff-chip-avatar" (click)="changeColor(buff)" [ngStyle]="{'background-color': buff.color}">{{buff.duration}}</span>
 		{{buff.name}}
-		<mat-icon matChipRemove appStopClick (click)="removeCondition(buff)">cancel</mat-icon>
+		<mat-icon matChipRemove appStopClick [matMenuTriggerFor]="menu">more_vert</mat-icon>
+		<mat-menu #menu="matMenu">
+			<button mat-menu-item (click)="editCondition(buff)">
+				<mat-icon>edit</mat-icon>
+				<span>Edit</span>
+			</button>
+			<button mat-menu-item (click)="removeCondition(buff)">
+				<mat-icon>delete</mat-icon>
+				<span>Remove</span>
+			</button>
+		</mat-menu>
 	</mat-chip>
 </mat-chip-list>

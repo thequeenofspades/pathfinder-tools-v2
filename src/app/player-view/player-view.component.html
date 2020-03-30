@@ -30,14 +30,9 @@
 							</ng-container>
 							<ng-container *ngIf="creature.hp">
 								<span class="creature-name">
-									<ng-container *ngIf="!init.playerOptions || init.playerOptions.nameOption != 'Don\'t show'">
-										 {{creature.name}}
-									</ng-container>
-									<ng-container *ngIf="init.playerOptions?.nameOption == 'Don\'t show'">
-										 Monster
-									</ng-container>
+									{{ getDisplayName(creature, init.playerOptions) }}
 								</span>
-								<ng-container *ngIf="creature.basics?.quantity > 1 && init.playerOptions?.nameOption == 'Show names and numbers'"> ({{ creature.basics.idx }})</ng-container>
+								{{ getDisplayIdx(creature, init.playerOptions) }}
 							</ng-container>
 							<ng-container *ngFor="let buff of getBuffs(creature, init.buffs); trackBy: buffTrackByFn">
 								<span (mouseover)="mouseoverBuff(buff)" (mouseout)="mouseoutBuff()">

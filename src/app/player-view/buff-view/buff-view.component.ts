@@ -58,7 +58,7 @@ export class BuffViewComponent implements OnInit {
 
   sortedBuffs(buffs: Condition[]): Condition[] {
     return buffs.sort((a, b) => {
-      return a.permanent ? 1 : b.permanent ? -1 : a.duration - b.duration;
+      return a.permanent || a.playerVisible < 2 ? 1 : b.permanent || b.playerVisible < 2 ? -1 : a.duration - b.duration;
     }).filter(buff => {
       return buff.playerVisible == undefined || buff.playerVisible > 0;
     });

@@ -4,7 +4,6 @@ import { take, map } from 'rxjs/operators';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { randomColor } from 'randomcolor';
 
-import { Player } from './player';
 import { Monster, Creature } from './monster';
 import { MessageService } from '../message.service';
 import { Condition, CONDITIONS } from './condition';
@@ -24,14 +23,14 @@ export class PlayerOptions {
   visibleOption: string;
 }
 
-export enum VisibleOption {
+export enum ShowNamesOption {
   NoShow = "Don't show",
   ShowNameOnly = "Show names",
   ShowNameAndNumber = "Show names and numbers"
 }
 
 const defaultPlayerOptions: PlayerOptions = {
-  nameOption: VisibleOption.ShowNameAndNumber,
+  nameOption: ShowNamesOption.ShowNameAndNumber,
   healthOption: 'Detailed',
   visibleOption: 'invisible'
 }

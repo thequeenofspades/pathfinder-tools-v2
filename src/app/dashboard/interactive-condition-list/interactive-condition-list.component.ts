@@ -21,9 +21,18 @@ export class InteractiveConditionListComponent implements OnInit {
   @Input() buffs: Condition[];
   @Input() creature: Creature;
   @Output() clickEvent = new EventEmitter<Condition>();
+  @Output() editEvent = new EventEmitter<Condition>();
+
+  changeColor(condition: Condition) {
+    this.is.changeBuffColor(condition);
+  }
 
   click(condition: Condition) {
   	this.clickEvent.emit(condition);
+  }
+
+  editCondition(condition: Condition) {
+    this.editEvent.emit(condition);
   }
 
   removeCondition(condition: Condition) {
