@@ -82,6 +82,9 @@ export class PlayerViewComponent implements OnInit {
     if (!playerOptions || playerOptions.nameOption != ShowNamesOption.ShowNameAndNumber) {
       return "";
     }
+    if (monster.basics.quantity <= 1) {
+      return "";
+    }
     return `(${monster.basics.idx})`;
   }
 
