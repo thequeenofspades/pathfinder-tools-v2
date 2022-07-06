@@ -27,7 +27,7 @@
     "core-js": "^3.6.4",
     "firebase": "^7.13.1",
     "firebase-admin": "^8.10.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "ngx-moment": "^3.5.0",
     "randomcolor": "^0.5.4",
     "rxjs": "^6.5.4",
