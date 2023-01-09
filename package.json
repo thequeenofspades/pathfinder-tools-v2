@@ -26,7 +26,7 @@
     "@ngx-pwa/local-storage": "^9.0.3",
     "core-js": "^3.6.4",
     "firebase": "^7.13.1",
-    "firebase-admin": "^8.10.0",
+    "firebase-admin": "^11.4.1",
     "moment": "^2.24.0",
     "ngx-moment": "^3.5.0",
     "randomcolor": "^0.5.4",
